@@ -22,5 +22,4 @@ public class AskApplication {
         .apis(RequestHandlerSelectors.basePackage("com.revature.ask")).build();
 
   }
-
 }

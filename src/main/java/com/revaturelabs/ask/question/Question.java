@@ -3,27 +3,33 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "questions")
 public class Question {
 
 		@Id
+		@Column(name = "id")
+		@GeneratedValue
 		private Integer id;
 		
-		@Column
+		@Column(name = "userId")
 		private Integer userId;
 		
-		@Column
-		private String header;
+		@Column(name = "head")
+		private String head;
 		
-		@Column 
+		@Column(name = "body")
 		private String body;
 		
-		@Column
-		private Date timestamp;
+		@Column(name = "poststamp")
+		@CreatedDate
+		private Date poststamp;
 
 		public Integer getId() {
 			return id;
@@ -41,12 +47,12 @@ public class Question {
 			this.userId = userId;
 		}
 
-		public String getHeader() {
-			return header;
+		public String getHead() {
+			return head;
 		}
 
-		public void setHeader(String header) {
-			this.header = header;
+		public void setHead(String head) {
+			this.head = head;
 		}
 
 		public String getBody() {
@@ -57,20 +63,68 @@ public class Question {
 			this.body = body;
 		}
 
-		public Date getTimestamp() {
-			return timestamp;
+		public Date getPoststamp() {
+			return poststamp;
 		}
 
-		public void setTimestamp(Date timestamp) {
-			this.timestamp = timestamp;
+		public void setPoststamp(Date poststamp) {
+			this.poststamp = poststamp;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((body == null) ? 0 : body.hashCode());
+			result = prime * result + ((head == null) ? 0 : head.hashCode());
+			result = prime * result + ((id == null) ? 0 : id.hashCode());
+			result = prime * result + ((poststamp == null) ? 0 : poststamp.hashCode());
+			result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Question other = (Question) obj;
+			if (body == null) {
+				if (other.body != null)
+					return false;
+			} else if (!body.equals(other.body))
+				return false;
+			if (head == null) {
+				if (other.head != null)
+					return false;
+			} else if (!head.equals(other.head))
+				return false;
+			if (id == null) {
+				if (other.id != null)
+					return false;
+			} else if (!id.equals(other.id))
+				return false;
+			if (poststamp == null) {
+				if (other.poststamp != null)
+					return false;
+			} else if (!poststamp.equals(other.poststamp))
+				return false;
+			if (userId == null) {
+				if (other.userId != null)
+					return false;
+			} else if (!userId.equals(other.userId))
+				return false;
+			return true;
 		}
 
 		@Override
 		public String toString() {
-			return "Question [id=" + id + ", userId=" + userId + ", header=" + header + ", body=" + body
-					+ ", timestamp=" + timestamp + "]";
+			return "Question [id=" + id + ", userId=" + userId + ", head=" + head + ", body=" + body + ", poststamp="
+					+ poststamp + "]";
 		}
-	
 		
 		
 }

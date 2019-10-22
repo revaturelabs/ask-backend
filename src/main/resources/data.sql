@@ -1,4 +1,7 @@
-INSERT INTO TBL_EMPLOYEES (first_name, last_name, email) VALUES
-  ('Lokesh', 'Gupta', 'abc@gmail.com'),
-  ('Deja', 'Vu', 'xyz@email.com'),
-  ('Caption', 'America', 'cap@marvel.com');
+INSERT INTO tags VALUES
+	(1, 'JavaScript'),
+	(2, 'SQL'),
+	(3, 'Java'),
+	(4, 'HTML'),
+	(5, 'Angular'),
+	(6, 'Bootstrap');

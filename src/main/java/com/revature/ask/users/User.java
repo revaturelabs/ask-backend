@@ -1,4 +1,4 @@
-package com.revature.beans;
+package com.revature.ask.users;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
 
 	@Id
 	private long userId;
@@ -18,12 +18,11 @@ public class Users {
 	@Column
 	private String password;
 	
-	
-	public Users() {
+	public User() {
 		super();
 	}
 
-	public Users(long userId, String username, String password) {
+	public User(long userId, String username, String password) {
 		super();
 		this.userId = userId;
 		this.username = username;
@@ -56,7 +55,7 @@ public class Users {
 
 	@Override
 	public String toString() {
-		return "Users [userId=" + userId + ", username=" + username + ", password=" + password + "]";
+		return "User [userId=" + userId + ", username=" + username + ", password=" + password + "]";
 	}
 	
 	

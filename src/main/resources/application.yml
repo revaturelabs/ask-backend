@@ -1,0 +1,27 @@
+#Profile for Local
+spring:
+  profiles: local
+  application:
+    name: ask
+  datasource:
+    url: jdbc:h2:file:~/project3db;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    driverClassName: org.h2.Driver
+    username: admin
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+      path: /h2
+server:
+  port: 1337 
+  
+---
+
+#Additional comments go here
+  
+  
+

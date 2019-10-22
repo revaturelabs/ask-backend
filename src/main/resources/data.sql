@@ -1,1 +1,1 @@
-INSERT INTO users VALUES('joke','aahahahahaha');
+INSERT INTO users VALUES(0,'joke','aahahahahaha');

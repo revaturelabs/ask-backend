@@ -1,6 +1,9 @@
 #Profile for Local
 spring:
-  profiles: local
+  profiles:
+    active:
+    - local
+    
   application:
     name: ask
   datasource:
@@ -21,7 +24,7 @@ server:
   
 ---
 
-#Additional comments go here
+#Additional profiles can go here
   
   
 

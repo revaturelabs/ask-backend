@@ -55,9 +55,9 @@ public class TagServiceImpl implements TagService {
   public Tag createOrUpdate(Tag tag) {
     Tag updatedTag = null;
     try {
-        updatedTag = tagRepo.save(tag);
+      updatedTag = tagRepo.save(tag);
     } catch (DataIntegrityViolationException e) {
-        throw new TagConflictException("Category name already exists");
+      throw new TagConflictException("Category name already exists");
     }
 
     return updatedTag;
@@ -68,7 +68,7 @@ public class TagServiceImpl implements TagService {
     boolean TagExists = tagRepo.existsById(id);
 
     if (!TagExists) {
-        throw new TagNotFoundException("Unable to find Tag to delete");
+      throw new TagNotFoundException("Unable to find Tag to delete");
     }
 
     tagRepo.deleteById(id);

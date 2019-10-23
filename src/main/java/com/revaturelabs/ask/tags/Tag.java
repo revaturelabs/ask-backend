@@ -1,7 +1,6 @@
 package com.revaturelabs.ask.tags;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,15 +11,15 @@ import javax.persistence.Table;
 @Table(name = "tags")
 public class Tag implements Serializable {
 
-	private static final long serialVersionUID = -7136050878066116590L;
-	
-	@Id
-	@Column(name = "id")
-	@GeneratedValue
-	private Integer id;
+  private static final long serialVersionUID = -7136050878066116590L;
 
-	@Column (name = "tag_name")
-	private String tagName;
+  @Id
+  @Column(name = "id")
+  @GeneratedValue
+  private Integer id;
+
+  @Column(name = "tag_name")
+  private String tagName;
 
   public Integer getId() {
     return id;
@@ -73,6 +72,6 @@ public class Tag implements Serializable {
   public String toString() {
     return "Tag [id=" + id + ", tagName=" + tagName + "]";
   }
-	
-	
+
+
 }

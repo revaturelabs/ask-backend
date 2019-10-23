@@ -17,8 +17,8 @@ public class Question {
   @GeneratedValue
   private Integer id;
 
-  @Column(name = "userId")
-  private Integer userId;
+  @Column(name = "user_Id")
+  private Integer user_Id;
 
   @Column(name = "head")
   private String head;
@@ -26,9 +26,9 @@ public class Question {
   @Column(name = "body")
   private String body;
 
-  @Column(name = "poststamp")
+  @Column(name = "creation_date")
   @CreatedDate
-  private Date poststamp;
+  private Date creation_date;
 
   public Integer getId() {
     return id;
@@ -38,12 +38,12 @@ public class Question {
     this.id = id;
   }
 
-  public Integer getUserId() {
-    return userId;
+  public Integer getUser_Id() {
+    return user_Id;
   }
 
-  public void setUserId(Integer userId) {
-    this.userId = userId;
+  public void setUser_Id(Integer user_Id) {
+    this.user_Id = user_Id;
   }
 
   public String getHead() {
@@ -62,12 +62,12 @@ public class Question {
     this.body = body;
   }
 
-  public Date getPoststamp() {
-    return poststamp;
+  public Date getCreation_date() {
+    return creation_date;
   }
 
-  public void setPoststamp(Date poststamp) {
-    this.poststamp = poststamp;
+  public void setCreation_date(Date creation_date) {
+    this.creation_date = creation_date;
   }
 
   @Override
@@ -75,10 +75,10 @@ public class Question {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((body == null) ? 0 : body.hashCode());
+    result = prime * result + ((creation_date == null) ? 0 : creation_date.hashCode());
     result = prime * result + ((head == null) ? 0 : head.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((poststamp == null) ? 0 : poststamp.hashCode());
-    result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+    result = prime * result + ((user_Id == null) ? 0 : user_Id.hashCode());
     return result;
   }
 
@@ -96,6 +96,11 @@ public class Question {
         return false;
     } else if (!body.equals(other.body))
       return false;
+    if (creation_date == null) {
+      if (other.creation_date != null)
+        return false;
+    } else if (!creation_date.equals(other.creation_date))
+      return false;
     if (head == null) {
       if (other.head != null)
         return false;
@@ -106,23 +111,18 @@ public class Question {
         return false;
     } else if (!id.equals(other.id))
       return false;
-    if (poststamp == null) {
-      if (other.poststamp != null)
+    if (user_Id == null) {
+      if (other.user_Id != null)
         return false;
-    } else if (!poststamp.equals(other.poststamp))
-      return false;
-    if (userId == null) {
-      if (other.userId != null)
-        return false;
-    } else if (!userId.equals(other.userId))
+    } else if (!user_Id.equals(other.user_Id))
       return false;
     return true;
   }
 
   @Override
   public String toString() {
-    return "Question [id=" + id + ", userId=" + userId + ", head=" + head + ", body=" + body
-        + ", poststamp=" + poststamp + "]";
+    return "Question [id=" + id + ", user_Id=" + user_Id + ", head=" + head + ", body=" + body
+        + ", creation_date=" + creation_date + "]";
   }
 
 

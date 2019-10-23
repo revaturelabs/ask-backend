@@ -59,7 +59,7 @@ public class QuestionController {
     try {
       return questionService.createOrUpdate(question);
     } catch (QuestionConflictException e) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Question already exists", e);
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Error during update/creation of question", e);
     }
   }
 }

@@ -5,5 +5,5 @@ CREATE TABLE questions (
 	user_Id Integer ,
 	head varchar(100),
 	body varchar(100),
-	poststamp Date NOT null
+	creation_date Date NOT null
 );

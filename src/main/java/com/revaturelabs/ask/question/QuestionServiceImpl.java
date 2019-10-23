@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 public class QuestionServiceImpl implements QuestionService {
   
   @Autowired
-  QuestionRepo questionRepo;
+  QuestionRepository questionRepository;
 
   @Override
   public List<Question> getAll() {
-    return (List<Question>) questionRepo.findAll();
+    return (List<Question>) questionRepository.findAll();
   }
 
   @Override
   public Question getById(int id) throws QuestionNotFoundException {
-    Optional<Question> question = questionRepo.findById(id);
+    Optional<Question> question = questionRepository.findById(id);
     
     if(!question.isPresent()) {
       throw new QuestionNotFoundException("Question not found");
@@ -31,17 +31,17 @@ public class QuestionServiceImpl implements QuestionService {
   @Override
   public Question create(Question question) {
     question.setId(0);
-    return questionRepo.save(question);
+    return questionRepository.save(question);
   }
 
   @Override
   public Question update(Question question) throws QuestionConflictException, QuestionNotFoundException {
-    Optional<Question> existingQuestion = questionRepo.findById(question.getId());
+    Optional<Question> existingQuestion = questionRepository.findById(question.getId());
     
     Question updateQuestion = null;
     if (existingQuestion.isPresent()) {
       try {
-        updateQuestion = questionRepo.save(question);
+        updateQuestion = questionRepository.save(question);
       } catch (DataIntegrityViolationException e) {
         throw new QuestionConflictException("Question already exist");
       }
@@ -56,7 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
     Question updateQuestion = null;
 
     try {
-      updateQuestion = questionRepo.save(question);
+      updateQuestion = questionRepository.save(question);
     } catch (DataIntegrityViolationException e) {
       throw new QuestionConflictException("Question already exists");
     }

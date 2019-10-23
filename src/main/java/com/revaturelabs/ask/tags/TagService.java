@@ -7,11 +7,11 @@ public interface TagService {
 
   Tag getById(int i) throws TagNotFoundException;
 
-//  Tag create(Tag tag);
-//
-//  Tag update(Tag tag);
-//
-//  Tag createOrUpdate(Tag tag);
-//
-//  void delete(int id);
+  Tag create(Tag tag);
+
+  Tag update(Tag tag);
+
+  Tag createOrUpdate(Tag tag);
+
+  void delete(int id);
 }

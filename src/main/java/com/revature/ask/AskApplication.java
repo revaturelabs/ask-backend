@@ -17,8 +17,8 @@ public class AskApplication {
   }
 
   /**
-   * 
-   * @return Docket for com.revature.ask using Swagger 2 documentation
+   * Create Docket Bean necessary for Swagger
+   * @return Docket for package com.revature.ask using Swagger 2 documentation
    */
   @Bean
   public Docket productApi() {

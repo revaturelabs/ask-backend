@@ -16,8 +16,12 @@ public class AskApplication {
     SpringApplication.run(AskApplication.class, args);
   }
 
+  /**
+   * 
+   * @return Docket for com.revature.ask using Swagger 2 documentation
+   */
   @Bean
-  public Docket productAPI() {
+  public Docket productApi() {
     return new Docket(DocumentationType.SWAGGER_2).select()
         .apis(RequestHandlerSelectors.basePackage("com.revature.ask")).build();
 

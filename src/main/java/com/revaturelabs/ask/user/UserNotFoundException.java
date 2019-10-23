@@ -1,4 +1,4 @@
-package com.revature.ask;
+package com.revaturelabs.ask.user;
 
 public class UserNotFoundException extends Exception {
   public UserNotFoundException() {

@@ -1,4 +1,4 @@
-package com.revature.ask;
+package com.revaturelabs.ask.user;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import com.revaturelabs.ask.user.UserRepo;
 
 @Service
 public class UserServices {
@@ -29,6 +30,34 @@ public class UserServices {
 
   public User create(User user) {
     return userRepo.save(user);
+  }
+
+  public User update(User user) throws UserNotFoundException, UserConflictException {
+    Optional<User> existingUser = userRepo.findById(user.getid());
+
+    User updatedUser = null;
+    if (existingUser.isPresent()) {
+      try {
+        updatedUser = userRepo.save(user);
+      } catch (DataIntegrityViolationException e) {
+        throw new UserConflictException();
+      }
+    } else {
+      throw new UserNotFoundException("to update");
+    }
+
+    return updatedUser;
+  }
+
+  public User createOrUpdate(User user) throws UserConflictException {
+    User updatedUser = null;
+    try {
+      updatedUser = userRepo.save(user);
+    } catch (DataIntegrityViolationException e) {
+      throw new UserConflictException();
+    }
+
+    return updatedUser;
   }
 
   public void delete(int id) throws UserNotFoundException {

@@ -11,7 +11,7 @@ public class QuestionServiceImpl implements QuestionService {
   @Autowired
   QuestionRepo questionRepo;
 
-  
+  @Override
   public List<Question> getAll() {
     return (List<Question>) questionRepo.findAll();
   }

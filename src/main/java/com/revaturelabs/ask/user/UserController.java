@@ -41,26 +41,26 @@ public class UserController {
 
   @PutMapping("/users/createOrUpdate/{id}")
   public User createOrUpdate(@RequestBody User user, @PathVariable int id) {
-      user.setid(id);
-      try {
-          return userService.createOrUpdate(user);
-      } catch (UserConflictException e) {
-          throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists", e);
-      }
+    user.setId(id);
+    try {
+      return userService.createOrUpdate(user);
+    } catch (UserConflictException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists", e);
+    }
   }
 
   @PatchMapping("users/update/{id}")
   public User updateUser(@RequestBody User user, @PathVariable int id) {
-      user.setid(id);
-      try {
-          return userService.update(user);
-      } catch (UserConflictException e) {
-          throw new ResponseStatusException(HttpStatus.CONFLICT, "User name already exists", e);
-      } catch (UserNotFoundException e) {
-          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
-      }
+    user.setId(id);
+    try {
+      return userService.update(user);
+    } catch (UserConflictException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "User name already exists", e);
+    } catch (UserNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+    }
   }
-  
+
   @PostMapping("users/create")
   public User createUser(@RequestBody User user) {
     return userService.create(user);

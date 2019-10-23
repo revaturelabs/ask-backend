@@ -33,7 +33,7 @@ public class UserServices {
   }
 
   public User update(User user) throws UserNotFoundException, UserConflictException {
-    Optional<User> existingUser = userRepo.findById(user.getid());
+    Optional<User> existingUser = userRepo.findById(user.getId());
 
     User updatedUser = null;
     if (existingUser.isPresent()) {

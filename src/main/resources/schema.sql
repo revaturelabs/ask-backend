@@ -4,6 +4,6 @@ CREATE TABLE questions (
 	id SERIAL PRIMARY KEY,
 	userId Integer NOT NULL,
 	head varchar(100),
-	body varchar(1000),
+	body varchar(100),
 	poststamp Date NOT null
 );

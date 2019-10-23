@@ -2,6 +2,7 @@ package com.revature.ask.users;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -10,7 +11,9 @@ import javax.persistence.Table;
 public class User {
 
 	@Id
-	private long userId;
+	@Column
+	@GeneratedValue
+	private int id;
 	
 	@Column
 	private String username;
@@ -22,19 +25,18 @@ public class User {
 		super();
 	}
 
-	public User(long userId, String username, String password) {
-		super();
-		this.userId = userId;
+	public User(int id, String username, String password) {
+		this.id = id;
 		this.username = username;
 		this.password = password;
 	}
 
-	public long getUserId() {
-		return userId;
+	public int getid() {
+		return id;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setid(int id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -55,7 +57,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", username=" + username + ", password=" + password + "]";
+		return "User [id=" + id + ", username=" + username + ", password=" + password + "]";
 	}
 	
 	

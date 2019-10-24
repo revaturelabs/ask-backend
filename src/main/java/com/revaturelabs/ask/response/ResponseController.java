@@ -17,7 +17,7 @@ public class ResponseController {
   ResponseService responseService;
   
   @GetMapping
-  public List<Response> getAllQuestions() {
+  public List<Response> getAllResponses() {
     return this.responseService.getAll();
   }
   

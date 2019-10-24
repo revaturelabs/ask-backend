@@ -1,4 +1,4 @@
-package com.revaturelabs.ask.question;
+package com.revaturelabs.ask.response;
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-@Table(name="res")
+@Table(name="responses")
 public class Response {
 
   @Id
@@ -17,15 +17,18 @@ public class Response {
   @GeneratedValue
   private int id;
   
+  @Column(name = "responder_id")
+  private Integer responderId;
+  
   @Column(name = "title")
   private String title;
   
   @Column(name = "body")
   private String body;
   
-  @Column(name = "post_stamp", updatable = false)
+  @Column(name = "creation_date", updatable = false)
   @CreatedDate
-  private Date postStamp;
+  private Date creation_date;
 
 //  IDEA for later iteration... also store/use last edited date
 //  @Column(name = "updated_on")
@@ -61,16 +64,24 @@ public class Response {
   }
 
   public Date getPostStamp() {
-    return this.postStamp;
+    return this.creation_date;
+  }
+  
+  public Integer getUserId() {
+    return this.responderId;
+  }
+
+  public void setUserId(Integer userId) {
+    this.responderId = userId;
   }
 
   public void setPostStamp(Date postStamp) {
-    this.postStamp = postStamp;
+    this.creation_date = postStamp;
   }
 
   @Override
   public String toString() {
-    return "Response [id=" + this.id + ", title=" + this.title + ", body=" + this.body + ", postStamp=" + postStamp
+    return "Response [id=" + this.id + ", title=" + this.title + ", body=" + this.body + ", postStamp=" + this.creation_date
         + "]";
   }
 

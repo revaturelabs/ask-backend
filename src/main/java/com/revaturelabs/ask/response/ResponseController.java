@@ -1,4 +1,4 @@
-package com.revaturelabs.ask.question;
+package com.revaturelabs.ask.response;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/question")
-public class QuestionController {
+@RequestMapping(path = "/response")
+public class ResponseController {
 
   @Autowired
-  QuestionService questionService;
+  ResponseService responseService;
   
   @GetMapping
-  public List<Question> getAllQuestions() {
-    return questionService.getAll();
+  public List<Response> getAllQuestions() {
+    return this.responseService.getAll();
   }
   
   @GetMapping("/{id}")
-  public Question getQuestionById(@PathVariable int id) {
+  public Response getResponseById(@PathVariable int id) {
     try {
-      return questionService.getById(id);
-    } catch (QuestionNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
+      return this.responseService.getById(id);
+    } catch (ResponseNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
     }
   }
 }

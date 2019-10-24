@@ -1,10 +1,10 @@
-package com.revaturelabs.ask.question;
+package com.revaturelabs.ask.response;
 
 import org.springframework.data.repository.CrudRepository;
 //import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface QuestionRepo extends CrudRepository<Question, Integer> {
+public interface ResponseRepo extends CrudRepository<Response, Integer> {
 
 }

@@ -1,4 +1,4 @@
-package com.revature.ask;
+package com.revaturelabs.ask;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,7 +19,7 @@ public class AskApplication {
   @Bean
   public Docket productAPI() {
     return new Docket(DocumentationType.SWAGGER_2).select()
-        .apis(RequestHandlerSelectors.basePackage("com.revature.ask")).build();
+        .apis(RequestHandlerSelectors.basePackage("com.revaturelabs.ask")).build();
 
   }
 }

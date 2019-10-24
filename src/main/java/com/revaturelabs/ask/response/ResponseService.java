@@ -8,4 +8,12 @@ public interface ResponseService {
   
   Response getById(int id) throws ResponseNotFoundException;
 
+  Response create(Response response);
+
+  Response update(Response response);
+
+  Response createOrUpdate(Response category);
+
+  void delete(int id);
+
 }

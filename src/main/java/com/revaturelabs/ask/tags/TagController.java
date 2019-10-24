@@ -36,7 +36,6 @@ public class TagController {
     try {
       return tagService.getById(id);
     } catch (TagNotFoundException e) {
-
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tag not found", e);
     }
   }
@@ -45,7 +44,6 @@ public class TagController {
   public Tag createTag(@RequestBody Tag tag) {
     return tagService.create(tag);
   }
-
 
   @PutMapping("/{id}")
   public Tag createOrUpdate(@RequestBody Tag tag, @PathVariable int id) {

@@ -2,5 +2,5 @@ DROP TABLE IF EXISTS tags;
   
 CREATE TABLE tags (
   id INT AUTO_INCREMENT  PRIMARY KEY,
-  tag_name VARCHAR(30) 
+  tag_name VARCHAR(30) UNIQUE
 );

@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 public class TagServiceImpl implements TagService {
 
   @Autowired
-  TagRepo tagRepo;
+  TagRepository tagRepository;
 
   @Override
   public List<Tag> getAll() {
-    return (List<Tag>) tagRepo.findAll();
+    return (List<Tag>) tagRepository.findAll();
   }
 
   @Override
-  public Tag getById(int i) throws TagNotFoundException {
-    Optional<Tag> tag = tagRepo.findById(i);
+  public Tag getById(int id) throws TagNotFoundException {
+    Optional<Tag> tag = tagRepository.findById(id);
     if (!tag.isPresent()) {
       throw new TagNotFoundException("Tag Not Found");
     }
@@ -28,20 +28,19 @@ public class TagServiceImpl implements TagService {
 
   @Override
   public Tag create(Tag tag) {
-    return tagRepo.save(tag);
-
+    return tagRepository.save(tag);
   }
 
   @Override
   public Tag update(Tag tag) {
-    Optional<Tag> existingTag = tagRepo.findById(tag.getId());
+    Optional<Tag> existingTag = tagRepository.findById(tag.getId());
 
     Tag updatedTag = null;
     if (existingTag.isPresent()) {
       try {
-        updatedTag = tagRepo.save(tag);
+        updatedTag = tagRepository.save(tag);
       } catch (DataIntegrityViolationException e) {
-        throw new TagConflictException("Tag name already exists");
+        throw new TagConflictException("Tag fails to satisfy constraints");
       }
     } else {
       throw new TagNotFoundException("Unable to find tag to update");
@@ -49,30 +48,25 @@ public class TagServiceImpl implements TagService {
     return updatedTag;
   }
 
-
-
   @Override
   public Tag createOrUpdate(Tag tag) {
     Tag updatedTag = null;
     try {
-      updatedTag = tagRepo.save(tag);
+      updatedTag = tagRepository.save(tag);
     } catch (DataIntegrityViolationException e) {
-      throw new TagConflictException("Category name already exists");
+      throw new TagConflictException("Tag fails to satisfy constraints");
     }
-
     return updatedTag;
   }
 
   @Override
   public void delete(int id) {
-    boolean TagExists = tagRepo.existsById(id);
+    boolean TagExists = tagRepository.existsById(id);
 
     if (!TagExists) {
       throw new TagNotFoundException("Unable to find Tag to delete");
     }
-
-    tagRepo.deleteById(id);
-
+    tagRepository.deleteById(id);
   }
 
 }

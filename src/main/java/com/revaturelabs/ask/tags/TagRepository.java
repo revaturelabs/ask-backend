@@ -5,6 +5,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TagRepo extends CrudRepository<Tag, Integer> {
+public interface TagRepository extends CrudRepository<Tag, Integer> {
 
 }

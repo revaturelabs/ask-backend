@@ -5,7 +5,7 @@ import java.util.List;
 public interface TagService {
   List<Tag> getAll();
 
-  Tag getById(int i) throws TagNotFoundException;
+  Tag getById(int id) throws TagNotFoundException;
 
   Tag create(Tag tag);
 

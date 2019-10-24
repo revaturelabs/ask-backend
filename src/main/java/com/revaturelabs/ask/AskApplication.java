@@ -16,6 +16,9 @@ public class AskApplication {
     SpringApplication.run(AskApplication.class, args);
   }
 
+  /**
+  * Produces the Swagger 2 Docket Bean for the apis in com.revaturelabs.ask
+  */
   @Bean
   public Docket productAPI() {
     return new Docket(DocumentationType.SWAGGER_2).select()

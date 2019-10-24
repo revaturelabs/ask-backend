@@ -7,3 +7,10 @@ CREATE TABLE questions (
 	body varchar(100),
 	creation_date Date NOT null
 );
+
+DROP TABLE IF EXISTS tags;
+  
+CREATE TABLE tags (
+  id INT AUTO_INCREMENT  PRIMARY KEY,
+  tag_name VARCHAR(30) UNIQUE
+);

@@ -38,7 +38,7 @@ public class Question {
   private Date creationDate;
 
   /**
-   * Auto-generated setter for id
+   * Auto-generated setter for id.
    * 
    * @return a Integer that holds the questions id
    */
@@ -47,7 +47,7 @@ public class Question {
   }
 
   /**
-   * Auto-generated setter for id
+   * Auto-generated setter for id.
    * 
    * @param id an integer that holds the questions id
    */
@@ -56,7 +56,7 @@ public class Question {
   }
 
   /**
-   * Auto-generated getter for user_Id
+   * Auto-generated getter for userId.
    * 
    * @return a Integer that holds the id of the user who submitted the question
    */
@@ -65,16 +65,16 @@ public class Question {
   }
 
   /**
-   * Auto-generated setter for user_Id
+   * Auto-generated setter for userId.
    * 
-   * @param user_Id an integer that holds the id of the user who submitted the question
+   * @param userId an integer that holds the id of the user who submitted the question
    */
   public void setUser_Id(Integer userId) {
     this.userId = userId;
   }
 
   /**
-   * Auto-generated getter for question-head
+   * Auto-generated getter for question-head.
    * 
    * @return a String that contains a header of the question
    */
@@ -83,7 +83,7 @@ public class Question {
   }
 
   /**
-   * Auto-generated setter for question-head
+   * Auto-generated setter for question-head.
    * 
    * @param head a String that holds the header of the question
    */
@@ -92,7 +92,7 @@ public class Question {
   }
 
   /**
-   * Auto-generated getter for question-body
+   * Auto-generated getter for question-body.
    * 
    * @return a String that contains the question body
    */
@@ -101,7 +101,7 @@ public class Question {
   }
 
   /**
-   * Auto-generated setter for question-body
+   * Auto-generated setter for question-body.
    * 
    * @param body a String that holds the questions body content
    */
@@ -110,7 +110,7 @@ public class Question {
   }
 
   /**
-   * Auto-generated getter for creation_date
+   * Auto-generated getter for creationDate.
    * 
    * @return a Date of the question when created
    */
@@ -119,9 +119,9 @@ public class Question {
   }
 
   /**
-   * Auto-generated setter for creation_date
+   * Auto-generated setter for creationDate.
    * 
-   * @param creation_Date a Date type variable that holds the questions date of creation
+   * @param creationDate a Date type variable that holds the questions date of creation
    */
   public void setCreation_date(Date creationDate) {
     this.creationDate = creationDate;
@@ -141,43 +141,56 @@ public class Question {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     Question other = (Question) obj;
     if (body == null) {
-      if (other.body != null)
+      if (other.body != null) {
         return false;
-    } else if (!body.equals(other.body))
+      }
+    } else if (!body.equals(other.body)) {
       return false;
+    }
     if (creationDate == null) {
-      if (other.creationDate != null)
+      if (other.creationDate != null) {
         return false;
-    } else if (!creationDate.equals(other.creationDate))
+      }
+    } else if (!creationDate.equals(other.creationDate)) {
       return false;
+    }
     if (head == null) {
-      if (other.head != null)
+      if (other.head != null) {
         return false;
-    } else if (!head.equals(other.head))
+      }
+    } else if (!head.equals(other.head)) {
       return false;
+    }
     if (id == null) {
-      if (other.id != null)
+      if (other.id != null) {
         return false;
-    } else if (!id.equals(other.id))
+      }
+    } else if (!id.equals(other.id)) {
       return false;
+    }
     if (userId == null) {
-      if (other.userId != null)
+      if (other.userId != null) {
         return false;
-    } else if (!userId.equals(other.userId))
+      }
+    } else if (!userId.equals(other.userId)) {
       return false;
+    }
     return true;
   }
 
   /**
-   * Auto-generated ToString for question class
+   * Auto-generated ToString for question class.
    * 
    * @return A string to represent the question class
    */

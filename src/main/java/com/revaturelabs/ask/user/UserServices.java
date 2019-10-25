@@ -42,8 +42,8 @@ public class UserServices {
   }
 
   /**
-   * "create" gets the user object from the API and 
-   * saves it into the database.
+   * "create" gets the user object and
+   * creates a new row for it in the database.
    * 
    * @param user
    * @return
@@ -83,7 +83,7 @@ public class UserServices {
 
   /**
    * "createOrUpdate" does the same function as
-   * "update" except it also creates the function
+   * "update" except it also creates the user
    * if the user in question doesn't exist.
    * 
    * @param user

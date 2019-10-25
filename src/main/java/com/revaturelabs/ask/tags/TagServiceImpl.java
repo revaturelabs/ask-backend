@@ -28,6 +28,28 @@ public class TagServiceImpl implements TagService {
   }
 
   /**
+   * Takes in a string and returns the Tab matching that string.
+   * 
+   * @param String name -The tag name of the tag being searched for
+   * @return Tag tag - Returns the tag matching the string.
+   * 
+   */
+  @Override
+  public Tag getTagByName(String name) {
+    Tag tag = null;
+    List<Tag> list = (List<Tag>) tagRepository.findAll();
+    for (Tag t : list) {
+      if (t.getTagName().contentEquals(name)) {
+        tag = t;
+      }
+    }
+    if (tag.equals(null)) {
+      throw new TagNotFoundException("Tag Not Found");
+    }
+    return tag;
+  }
+
+  /**
    * Returns an individual tag in a database.
    * 
    * @return Tag for a specific id.

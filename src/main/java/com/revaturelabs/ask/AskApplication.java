@@ -34,7 +34,7 @@ public class AskApplication {
    * Provides Cors filtering for the local Spring Boot profile
    */
   @Bean
-  @Profile("dev")
+  @Profile("local")
   public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurerAdapter() {
       @Override

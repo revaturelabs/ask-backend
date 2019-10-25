@@ -24,7 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
  *
  */
 @RestController
-@RequestMapping(path = "/response")
+@RequestMapping(path = "/responses")
 public class ResponseController {
 
   @Autowired

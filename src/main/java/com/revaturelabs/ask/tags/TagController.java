@@ -1,6 +1,5 @@
 package com.revaturelabs.ask.tags;
 
-import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * The TagController is responsible for handling requests involving tags. TagController can return a
+ * list of tags, a tag by id and can add, update or delete tags from a database.
+ * 
+ */
 @RestController
 @RequestMapping(path = "/tags")
 public class TagController {
@@ -26,11 +27,22 @@ public class TagController {
   @Autowired
   TagService tagService;
 
+  /**
+   * A mapping used to request a list of tags. Accepts HTTP GET request.
+   * 
+   * @return a list of the tags in a database.
+   */
   @GetMapping
   public List<Tag> getAllTags() {
     return tagService.getAll();
   }
 
+  /**
+   * A mapping used to return an individual tag. Accepts HTTP GET request.
+   * 
+   * @param id -path id for an individual tag
+   * @return a tag for a specific id.
+   */
   @GetMapping("/{id}")
   public Tag getTagById(@PathVariable int id) {
     try {
@@ -40,11 +52,25 @@ public class TagController {
     }
   }
 
+  /**
+   * A mapping used to create a new tags. Accepts HTTP POST requests.
+   * 
+   * @param tag - Tag to be created.
+   * @return tag - Created tag.
+   */
   @PostMapping
   public Tag createTag(@RequestBody Tag tag) {
     return tagService.create(tag);
   }
 
+  /**
+   * A mapping used to create or update a tag. Accepts HTTP put requests. If no tag in the database
+   * has a matching id. The given tag is added to the database.
+   * 
+   * @param tag
+   * @param id
+   * @return tag created or throws exception.
+   */
   @PutMapping("/{id}")
   public Tag createOrUpdate(@RequestBody Tag tag, @PathVariable int id) {
     tag.setId(id);
@@ -55,6 +81,13 @@ public class TagController {
     }
   }
 
+  /**
+   * A mapping used for updating a tag. Accepts HTTP PATCH requests and updates the specified tag.
+   * 
+   * @param tag
+   * @param id
+   * @return Tag that was updated or throws exception
+   */
   @PatchMapping("/{id}")
   public Tag updateTag(@RequestBody Tag tag, @PathVariable int id) {
     tag.setId(id);
@@ -67,6 +100,12 @@ public class TagController {
     }
   }
 
+  /**
+   * A mapping used for deleting tags. Deletes the tag at a particular path. Accepts HTTP DELETE
+   * requests.
+   * 
+   * @param id
+   */
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteTag(@PathVariable int id) {

@@ -2,14 +2,11 @@ package com.revaturelabs.ask.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 public class User {
 
@@ -23,7 +20,10 @@ public class User {
 
   @Column
   private String password;
-
+  
+  @Column
+  private boolean isExpert;
+  
   public User() {
     super();
   }
@@ -56,6 +56,14 @@ public class User {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public boolean isExpert() {
+    return isExpert;
+  }
+
+  public void setExpert(boolean isExpert) {
+    this.isExpert = isExpert;
   }
 
   @Override

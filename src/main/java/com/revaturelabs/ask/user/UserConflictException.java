@@ -8,6 +8,7 @@ package com.revaturelabs.ask.user;
  */
 public class UserConflictException extends RuntimeException {
   public UserConflictException() {
-    super("User already exists.");
+    super("Error: 1. User already exists\n" 
+        + " 2. Can't overwrite user data at this point.");
   }
 }

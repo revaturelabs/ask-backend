@@ -17,18 +17,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-@Controller
+@RestController
+@RequestMapping(path = "/users")
 public class UserController {
 
   @Autowired
   UserServices userService;
 
-  @GetMapping("/users")
+  @GetMapping
   public ResponseEntity<List<User>> findAll() {
     return ResponseEntity.ok(userService.findAll());
   }
 
-  @GetMapping("/users/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<User> findById(@PathVariable int id) {
     try {
       return ResponseEntity.ok(userService.findById(id));
@@ -39,7 +40,7 @@ public class UserController {
     }
   }
 
-  @PutMapping("/users/createOrUpdate/{id}")
+  @PutMapping("/{id}")
   public User createOrUpdate(@RequestBody User user, @PathVariable int id) {
     user.setId(id);
     try {
@@ -49,7 +50,7 @@ public class UserController {
     }
   }
 
-  @PatchMapping("users/update/{id}")
+  @PatchMapping("/{id}")
   public User updateUser(@RequestBody User user, @PathVariable int id) {
     user.setId(id);
     try {
@@ -61,12 +62,12 @@ public class UserController {
     }
   }
 
-  @PostMapping("users/create")
+  @PostMapping
   public User createUser(@RequestBody User user) {
     return userService.create(user);
   }
 
-  @DeleteMapping("users/delete/{id}")
+  @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteUser(@PathVariable int id) {
     try {

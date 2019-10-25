@@ -60,7 +60,7 @@ public class Question {
    * 
    * @return a Integer that holds the id of the user who submitted the question
    */
-  public Integer getUser_Id() {
+  public Integer getUserId() {
     return userId;
   }
 
@@ -69,7 +69,7 @@ public class Question {
    * 
    * @param userId an integer that holds the id of the user who submitted the question
    */
-  public void setUser_Id(Integer userId) {
+  public void setUserId(Integer userId) {
     this.userId = userId;
   }
 
@@ -114,7 +114,7 @@ public class Question {
    * 
    * @return a Date of the question when created
    */
-  public Date getCreation_date() {
+  public Date getCreationDate() {
     return creationDate;
   }
 
@@ -123,7 +123,7 @@ public class Question {
    * 
    * @param creationDate a Date type variable that holds the questions date of creation
    */
-  public void setCreation_date(Date creationDate) {
+  public void setCreationDate(Date creationDate) {
     this.creationDate = creationDate;
   }
 

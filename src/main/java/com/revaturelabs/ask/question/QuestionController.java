@@ -31,7 +31,7 @@ public class QuestionController {
   /**
    * Accepts HTTP GET request. Returns a list of all questions on the database as a JSON object
    * 
-   * @return a List<Question> that contain all questions on the database
+   * @return a List of Question that contain all questions on the database
    */
   @GetMapping
   public List<Question> getAllQuestions() {
@@ -39,9 +39,9 @@ public class QuestionController {
   }
 
   /**
-   * Accepts HTTP GET request Returns a Question instance as a JSON entity based on the given id
+   * Accepts HTTP GET request Returns a Question instance as a JSON entity based on the given id.
    * 
-   * @param id
+   * @param id receives the id of a question
    * @return a question entity which has the same id as the given id.
    */
   @GetMapping("/{id}")
@@ -54,9 +54,9 @@ public class QuestionController {
   }
 
   /**
-   * Accepts a HTTP POST request. Attemps to add a question to the database
+   * Accepts a HTTP POST request. Attempts to add a question to the database
    * 
-   * @param question
+   * @param question receives object of question 
    * @return
    */
   @PostMapping
@@ -68,8 +68,8 @@ public class QuestionController {
    * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
    * database. If no question on the database has a matching id, then the given question is
    * added to the database.
-   * @param question
-   * @param id
+   * @param question receives an object of question.
+   * @param id receives an id of a question for update.
    */
   @PatchMapping("/{id}")
   public Question updateQuestion(@RequestBody Question question, @PathVariable int id) {
@@ -83,7 +83,13 @@ public class QuestionController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
     }
   }
-
+  /**
+   * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
+   * database. If no question on the database has a matching id, then the given question is
+   * added to the database.
+   * @param question
+   * @param id
+   */
   @PutMapping("/{id}")
   public Question createOrUpdate(@RequestBody Question question, @PathVariable int id) {
     question.setId(id);

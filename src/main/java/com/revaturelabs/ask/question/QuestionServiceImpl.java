@@ -22,7 +22,7 @@ public class QuestionServiceImpl implements QuestionService {
   /**
    * Returns a list of all questions on the database
    * 
-   * @return a List<Question> that contains all questions on the database.
+   * @return a List of Question that contains all questions on the database.
    */
   @Override
   public List<Question> getAll() {
@@ -46,23 +46,25 @@ public class QuestionServiceImpl implements QuestionService {
 
     return question.get();
   }
-/**
- * Adds to the database an instance of Question, before adding to database the instance id
- * is set to zero to allow the database to auto-generate the id of the new added instance.
- * 
- * @param question
- */
+
+ /**
+  * Adds to the database an instance of Question, before adding to database the instance id is set
+  * to zero to allow the database to auto-generate the id of the new added instance.
+  * 
+  * @param question receives a question object
+  */
   @Override
   public Question create(Question question) {
     question.setId(0);
     return questionRepository.save(question);
   }
-/**
- * Takes a Question object and updates any matching entity in the database
- * if no entities match the question will be created
- * 
- * @param question
- */
+
+ /**
+  * Takes a Question object and updates any matching entity in the database if no entities match
+  * the question will be created.
+  * 
+  * @param question receives a question object
+  */
   @Override
   public Question update(Question question)
       throws QuestionConflictException, QuestionNotFoundException {

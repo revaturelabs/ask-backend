@@ -7,6 +7,8 @@ public interface TagService {
 
   Tag getById(int id) throws TagNotFoundException;
 
+  Tag getTagByName(String name);
+
   Tag create(Tag tag);
 
   Tag update(Tag tag);

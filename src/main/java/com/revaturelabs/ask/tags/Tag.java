@@ -1,11 +1,14 @@
 package com.revaturelabs.ask.tags;
 
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import com.revaturelabs.ask.question.Question;
 
 /**
  * Tags class represent a tag. It holds an Integer id and TagName String.
@@ -23,6 +26,9 @@ public class Tag implements Serializable {
   private Integer id;
 
   @Column(name = "tag_name")
+
+  @ManyToMany(mappedBy = "associatedTags")
+  Set<Question> taggedQuestion;
   private String tagName;
 
   /**

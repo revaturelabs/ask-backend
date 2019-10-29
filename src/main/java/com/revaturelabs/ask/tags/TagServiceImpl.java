@@ -1,7 +1,9 @@
 package com.revaturelabs.ask.tags;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -129,6 +131,24 @@ public class TagServiceImpl implements TagService {
       throw new TagNotFoundException("Unable to find Tag to delete");
     }
     tagRepository.deleteById(id);
+  }
+
+  /**
+   * Given a set of tag objects that don't exist in the database,
+   * retrieves a set of corresponding tags that are in the database.
+   * 
+   * @param associatedTags -A set of tag objects to be converted to existing objects
+   * in the database.
+   */
+  @Override
+  public Set<Tag> getValidTags(Set<Tag> associatedTags) {
+    
+    Set<Tag> validTags = new HashSet<Tag>();
+    for(Tag t : associatedTags) {
+      validTags.add(getTagByName(t.getTagName()));
+    }
+    
+    return validTags;
   }
 
 

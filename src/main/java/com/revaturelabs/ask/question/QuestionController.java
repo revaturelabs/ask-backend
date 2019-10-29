@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionService;
+import com.revaturelabs.ask.tags.Tag;
 import com.revaturelabs.ask.tags.TagService;
 import com.revaturelabs.ask.user.UserNotFoundException;
 
@@ -36,7 +39,9 @@ public class QuestionController {
 
   @Autowired
   QuestionService questionService;
-  QuestionTagsJunctionService questionTagsJunctionService;
+  
+  @Autowired
+  TagService tagService;
 
 
   /**
@@ -83,36 +88,17 @@ public class QuestionController {
   }
 
   /**
-   * Accepts a HTTP POST request. Attempts to add a question to the database
-   * 
-   * @param question receives object of question
-   * @return
+   * Accepts a HTTP POST request. Will take a question JSON with optional tag names
+   * and return a valid question object with all specified tags as tag objects
+   * @param a JSON
+   * @return question object with correct wiring from JSON to Question object
    */
   @PostMapping("/create")
-  public Question createQuestion(@RequestBody Question question, @RequestBody String[] names) {
+  public Question createQuestion(@RequestBody Question question) {
 
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-    LocalDateTime now = LocalDateTime.now();
-    System.out.println(dtf.format(now)); // 2016/11/16 12:08:43
+    question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
 
-    Date date1 = null;
-    try {
-      date1 = new SimpleDateFormat("dd/MM/yyyy").parse(dtf.format(now));
-    } catch (ParseException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-
-    question.setCreationDate(date1);
-
-    String[] tags = names;
-
-    int id = questionService.create(question).getId();
-
-    questionTagsJunctionService.create(id, tags);
-
-    return question;
+    return questionService.create(question);
   }
 
   /**

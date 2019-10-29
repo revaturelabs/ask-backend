@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import com.revaturelabs.ask.user.UserRepo;
+import com.revaturelabs.ask.user.UserRepository;
 
 @Service
-public class UserServices {
+public class UserService {
 
   @Autowired
-  private UserRepo userRepo;
+  private UserRepository userRepo;
 
   /**
    * "findAll" basically gets all

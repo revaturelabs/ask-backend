@@ -21,7 +21,7 @@ public class User {
   @Column
   private String password;
   
-  @Column
+  @Column(name = "expert")
   private boolean isExpert;
   
   public User() {

@@ -22,7 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
   @Autowired
-  UserServices userService;
+  UserService userService;
 
   @GetMapping
   public ResponseEntity<List<User>> findAll() {

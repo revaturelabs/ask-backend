@@ -1,4 +1,4 @@
-
+DROP TABLE IF EXISTS questions_tags;
 --users table
 DROP TABLE IF EXISTS USERS;
 
@@ -36,8 +36,6 @@ CREATE TABLE responses (
   body varchar(1000),
   creation_date Date NOT null
 );
-
-DROP TABLE IF EXISTS question_tags;
 
 CREATE TABLE questions_tags (
  question_id INT REFERENCES questions(id),

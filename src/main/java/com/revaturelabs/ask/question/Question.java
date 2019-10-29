@@ -146,6 +146,10 @@ public class Question {
     this.creationDate = creationDate;
   }
 
+  public void addTagToQuestion(Tag t) {
+    associatedTags.add(t);
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;

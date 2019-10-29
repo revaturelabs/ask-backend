@@ -20,13 +20,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionService;
 import com.revaturelabs.ask.tags.TagService;
+import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * The QuestionController is responsible for handling request about Questions. QuestionController
  * can return list of questions, a question by id, add question to database and update. Request and
  * responses are in JSON format.
  * 
- * @author Roy L. Brow De Jesús
+ * @author Roy L. Brow De Jesús, Chris Allen
  *
  */
 @RestController
@@ -36,24 +37,42 @@ public class QuestionController {
   @Autowired
   QuestionService questionService;
   QuestionTagsJunctionService questionTagsJunctionService;
-  
 
- /**
-  * Accepts HTTP GET request. Returns a list of all questions on the database as a JSON object
-  * 
-  * @return a List of Question that contain all questions on the database
-  */
+
+  /**
+   * Accepts HTTP GET request. Returns a list of all questions on the database as a JSON object
+   * 
+   * @return a List of Question that contain all questions on the database
+   */
   @GetMapping
   public List<Question> getAllQuestions() {
     return questionService.getAll();
   }
 
- /**
-  * Accepts HTTP GET request Returns a Question instance as a JSON entity based on the given id.
-  * 
-  * @param id receives the id of a question
-  * @return a question entity which has the same id as the given id.
-  */
+  /**
+   * Accepts HTTP GET request Returns a Question instance as a JSON entity based on the given id.
+   * 
+   * @param id receives the id of a question
+   * @return a question entity which has the same id as the given id.
+   */
+
+  /**
+   * Accepts HTTP Get request Returns a list of Question instances as a JSON entity based on the
+   * given user id.
+   * 
+   * @param id receives the id of a user.
+   * @return a list of questions which have the same user id as the given id.
+   */
+
+  @GetMapping("/fromUser/{id}")
+  public List<Question> getQuestionByUserId(@PathVariable int id) {
+    try {
+      return questionService.getByUserId(id);
+    } catch (UserNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+    }
+  }
+
   @GetMapping("/{id}")
   public Question getQuestionById(@PathVariable int id) {
     try {
@@ -63,46 +82,47 @@ public class QuestionController {
     }
   }
 
- /**
-  * Accepts a HTTP POST request. Attempts to add a question to the database
-  * 
-  * @param question receives object of question
-  * @return
-  */
+  /**
+   * Accepts a HTTP POST request. Attempts to add a question to the database
+   * 
+   * @param question receives object of question
+   * @return
+   */
   @PostMapping("/create")
-  public Question createQuestion(@RequestBody Question question, @RequestBody String [] names) {
-    
+  public Question createQuestion(@RequestBody Question question, @RequestBody String[] names) {
+
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
-    System.out.println(dtf.format(now)); //2016/11/16 12:08:43
-    
+    System.out.println(dtf.format(now)); // 2016/11/16 12:08:43
+
     Date date1 = null;
     try {
       date1 = new SimpleDateFormat("dd/MM/yyyy").parse(dtf.format(now));
     } catch (ParseException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    }  
-    
-    
+    }
+
+
     question.setCreationDate(date1);
-    
+
     String[] tags = names;
-    
+
     int id = questionService.create(question).getId();
-    
+
     questionTagsJunctionService.create(id, tags);
-    
+
     return question;
   }
 
- /**
-  * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
-  * database. If no question on the database has a matching id, then the given question is added to
-  * the database.
-  * @param question receives an object of question.
-  * @param id receives an id of a question for update.
-  */
+  /**
+   * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
+   * database. If no question on the database has a matching id, then the given question is added to
+   * the database.
+   * 
+   * @param question receives an object of question.
+   * @param id receives an id of a question for update.
+   */
   @PatchMapping("/{id}")
   public Question updateQuestion(@RequestBody Question question, @PathVariable int id) {
     question.setId(id);
@@ -116,14 +136,14 @@ public class QuestionController {
     }
   }
 
- /**
-  * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
-  * database. If no question on the database has a matching id, then the given question is added to
-  * the database.
-  * 
-  * @param question receives an object of question.
-  * @param id receives an id of a question for update.
-  */
+  /**
+   * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
+   * database. If no question on the database has a matching id, then the given question is added to
+   * the database.
+   * 
+   * @param question receives an object of question.
+   * @param id receives an id of a question for update.
+   */
   @PutMapping("/{id}")
   public Question createOrUpdate(@RequestBody Question question, @PathVariable int id) {
     question.setId(id);

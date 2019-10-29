@@ -9,21 +9,11 @@ CREATE TABLE questions (
 );
 
 DROP TABLE IF EXISTS tags;
-DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS responses;
   
 CREATE TABLE tags (
   id INT AUTO_INCREMENT  PRIMARY KEY,
   tag_name VARCHAR(30) UNIQUE
-);
-
-
-CREATE TABLE questions (
-	id SERIAL PRIMARY KEY,
-	user_Id Integer ,
-	head varchar(140),
-	body varchar(1000),
-	poststamp Date NOT null
 );
 
 

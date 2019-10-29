@@ -26,5 +26,6 @@ INSERT INTO responses VALUES
 
 INSERT INTO questions_tags VALUES
  (1, 1),
- (2, 1);
+ (1, 2),
+ (2, 3);
 

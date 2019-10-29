@@ -40,6 +40,7 @@ CREATE TABLE responses (
 DROP TABLE IF EXISTS question_tags;
 
 CREATE TABLE questions_tags (
- question_id FOREIGN KEY,
- tags_id FOREIGN KEY
-)
+ question_id INT REFERENCES questions(id),
+ tags_id INT REFERENCES tags(id),
+ CONSTRAINT id PRIMARY KEY (question_id, tags_id)
+);

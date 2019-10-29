@@ -1,4 +1,4 @@
-
+DROP TABLE IF EXISTS questions_tags;
 --users table
 DROP TABLE IF EXISTS USERS;
 

@@ -14,4 +14,6 @@ public interface QuestionService {
 
   Question createOrUpdate(Question question) throws QuestionConflictException;
 
+  List<Question> getByUserId(int id);
+
 }

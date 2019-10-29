@@ -1,6 +1,7 @@
 package com.revaturelabs.ask.tags;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TagService {
   List<Tag> getAll();
@@ -16,4 +17,6 @@ public interface TagService {
   Tag createOrUpdate(Tag tag);
 
   void delete(int id);
+
+  Set<Tag> getValidTags(Set<Tag> associatedTags);
 }

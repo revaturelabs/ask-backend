@@ -1,6 +1,7 @@
 package com.revaturelabs.ask.question;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.tags.Tag;
@@ -47,8 +49,7 @@ public class Question {
   @ManyToMany
   @JoinTable(name = "associated_tags", joinColumns = @JoinColumn(name = "question_id"),
       inverseJoinColumns = @JoinColumn(name = "tags_id"))
-
-  Set<Tag> associatedTags;
+  private Set<Tag> associatedTags;
 
   /**
    * Auto-generated setter for id.
@@ -149,6 +150,9 @@ public class Question {
   }
 
   public void addTagToQuestion(Tag t) {
+    if (this.associatedTags == null) {
+      this.associatedTags = new HashSet<Tag>();
+    }
     associatedTags.add(t);
   }
 

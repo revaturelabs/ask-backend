@@ -28,7 +28,7 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
           Tag tag = new Tag();
           tag.setTagName(tagName);
           tag.setId(0);
-          question.getAssociatedTags().add(tag);
+          question.addTagToQuestion(tag);
         }
       }
 

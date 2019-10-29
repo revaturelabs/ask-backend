@@ -14,44 +14,40 @@ import com.revaturelabs.ask.tags.TagService;
 
 public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
-  @Autowired
-  TagService tagService;
-
   @Override
   public Question deserialize(JsonParser p, DeserializationContext ctxt)
       throws IOException, JsonProcessingException {
+
     Root root = p.readValueAs(Root.class);
 
 
     Question question = new Question();
-
     if (root != null) {
       if (root.tagList != null) {
         for (String tagName : root.tagList) {
-          Tag tag = tagService.getTagByName(tagName);
+          Tag tag = new Tag();
+          tag.setTagName(tagName);
+          tag.setId(0);
           question.getAssociatedTags().add(tag);
         }
-
-        if (root.questionToConvert == null) {
-          throw new Exception();
-        }
-        else {
-          question.setId(0);
-          question.setHead(root.questionToConvert.title);
-          question.setBody(root.questionToConvert.body);
-        }
       }
+
+      if (root.title != null) {
+        question.setHead(root.title);
+      }
+      if (root.body != null) {
+        question.setBody(root.body);
+      }
+      question.setId(0);
 
       if ((Integer) root.userId != null) {
         question.setUserId(root.userId);
       }
-      
-      else {
-        question.setHead("The custom deserializer works!");
-      }
-      
-      return question;
     }
+
+
+
+    return question;
 
   }
 
@@ -60,18 +56,14 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
     @JsonProperty("tags")
     public List<String> tagList;
-    public QuestionConverter questionToConvert;
-    
-    @JsonProperty("userId")
-    public int userId;
-  }
-
-  private static class QuestionConverter {
 
     @JsonProperty("title")
     public String title;
 
     @JsonProperty("body")
     public String body;
+
+    @JsonProperty("userId")
+    public int userId;
   }
 }

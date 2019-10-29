@@ -11,6 +11,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.tags.Tag;
 
 /**
@@ -22,6 +23,7 @@ import com.revaturelabs.ask.tags.Tag;
  */
 @Entity
 @Table(name = "questions")
+@JsonDeserialize(using = QuestionJsonDeserializer.class)
 public class Question {
 
   @Id

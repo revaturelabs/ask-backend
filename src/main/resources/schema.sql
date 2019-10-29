@@ -2,6 +2,14 @@
 --users table
 DROP TABLE IF EXISTS USERS;
 
+DROP TABLE IF EXISTS tags;
+
+DROP TABLE IF EXISTS questions;
+
+DROP TABLE IF EXISTS responses;
+  
+DROP TABLE IF EXISTS questions_tags;
+
 CREATE TABLE USERS (
 	id SERIAL PRIMARY KEY,
 	username VARCHAR,
@@ -9,12 +17,6 @@ CREATE TABLE USERS (
 	expert BOOLEAN
 );
 
-DROP TABLE IF EXISTS tags;
-
-DROP TABLE IF EXISTS questions;
-
-DROP TABLE IF EXISTS responses;
-  
 CREATE TABLE tags (
   id INT AUTO_INCREMENT  PRIMARY KEY,
   tag_name VARCHAR(30) UNIQUE
@@ -36,8 +38,6 @@ CREATE TABLE responses (
   body varchar(1000),
   creation_date Date NOT null
 );
-
-DROP TABLE IF EXISTS question_tags;
 
 CREATE TABLE questions_tags (
  question_id INT REFERENCES questions(id),

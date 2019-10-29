@@ -20,13 +20,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionService;
 import com.revaturelabs.ask.tags.TagService;
+import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * The QuestionController is responsible for handling request about Questions. QuestionController
  * can return list of questions, a question by id, add question to database and update. Request and
  * responses are in JSON format.
  * 
- * @author Roy L. Brow De Jesús
+ * @author Roy L. Brow De Jesús, Chris Allen
  *
  */
 @RestController
@@ -54,6 +55,25 @@ public class QuestionController {
   * @param id receives the id of a question
   * @return a question entity which has the same id as the given id.
   */
+  
+  /**
+   * Accepts HTTP Get request Returns a list of Question instances as a JSON entity
+   * based on the given user id.
+   * 
+   * @param id receives the id of a user.
+   * @return a list of questions which have the same user id as the given id.
+   */
+  
+  @GetMapping("/fromUser/{id}")
+  public List<Question> getQuestionByUserId(@PathVariable int id) {
+    try {
+      return questionService.getByUserId(id);
+    }
+    catch(UserNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+    }
+  }
+  
   @GetMapping("/{id}")
   public Question getQuestionById(@PathVariable int id) {
     try {

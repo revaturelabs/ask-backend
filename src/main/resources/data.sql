@@ -1,3 +1,8 @@
+
+--data for the users table
+INSERT INTO users VALUES(default,'joke','aahahahahaha',false);
+INSERT INTO users VALUES(default,'mweklf','wfjwioej',true);
+
 INSERT INTO questions VALUES 
   (DEFAULT, 9, 'what ever header', 'what ever post', '2015-12-17'),
   (DEFAULT, 8, 'what ever ', 'what ever ', '2015-12-17'),

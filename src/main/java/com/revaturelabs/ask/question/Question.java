@@ -1,12 +1,17 @@
 package com.revaturelabs.ask.question;
 
 import java.util.Date;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
+import com.revaturelabs.ask.tags.Tag;
 
 /**
  * Question class to represent a question. It holds the id of the user who submitted the question,
@@ -37,6 +42,12 @@ public class Question {
   @CreatedDate
   private Date creationDate;
 
+  @ManyToMany
+  @JoinTable(name = "associated_tags", joinColumns = @JoinColumn(name = "question_id"),
+      inverseJoinColumns = @JoinColumn(name = "tags_id"))
+
+  Set<Tag> associatedTags;
+
   /**
    * Auto-generated setter for id.
    * 
@@ -53,6 +64,14 @@ public class Question {
    */
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public Set<Tag> getAssociatedTags() {
+    return associatedTags;
+  }
+
+  public void setAssociatedTags(Set<Tag> associatedTags) {
+    this.associatedTags = associatedTags;
   }
 
   /**

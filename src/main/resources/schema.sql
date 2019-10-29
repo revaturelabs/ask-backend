@@ -36,3 +36,10 @@ CREATE TABLE responses (
   body varchar(1000),
   creation_date Date NOT null
 );
+
+DROP TABLE IF EXISTS question_tags;
+
+CREATE TABLE questions_tags (
+ question_id FOREIGN KEY,
+ tags_id FOREIGN KEY
+)

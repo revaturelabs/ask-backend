@@ -28,13 +28,12 @@ CREATE TABLE questions (
   user_Id Integer ,
   head varchar(140),
   body varchar(1000),
-  poststamp Date NOT null
+  creation_Date Date NOT null
 );
 
 CREATE TABLE responses (
   id SERIAL PRIMARY KEY,
   responder_Id Integer, 
-  title varchar(140),
   body varchar(1000),
   creation_date Date NOT null
 );

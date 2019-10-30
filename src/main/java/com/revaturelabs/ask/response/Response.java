@@ -134,7 +134,7 @@ public class Response {
 
   @Override
   public String toString() {
-    return "Response [id=" + id + ", responderId=" + this.responderId + ", title=" + this.title
+    return "Response [id=" + this.id + ", responderId=" + this.responderId + ", title=" + this.title
         + ", body=" + this.body + ", creationDate=" + this.creationDate + "]";
   }
 

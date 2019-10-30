@@ -54,7 +54,7 @@ public class QuestionController {
   }
 
   /**
-   * Accepts a HTTP POST request. Attemps to add a question to the database
+   * Accepts a HTTP POST request. Attempts to add a question to the database
    * 
    * @param question
    * @return
@@ -66,8 +66,9 @@ public class QuestionController {
 
   /**
    * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
-   * database. If no question on the database has a matching id, then the given question is
-   * added to the database.
+   * database. If no question on the database has a matching id, then the given question is added to
+   * the database.
+   * 
    * @param question
    * @param id
    */

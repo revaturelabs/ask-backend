@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * Service class for managing responses. It contains methods for finding all responses, finding a
  * response by id, creating a response, and updating.
  * 
- * @author Bryan Ritter
+ * @author Bryan_Ritter
  *
  */
 @Service

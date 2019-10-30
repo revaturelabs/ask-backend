@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS responses;
+DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS questions;
 
 CREATE TABLE questions (

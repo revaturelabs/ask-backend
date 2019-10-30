@@ -7,17 +7,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.revaturelabs.ask.question.QuestionJsonDeserializer;
 
 /**
  * Holds the information about a response to a question. It holds the id of the responder, it's
  * title and body, as well as it's creation date.
  * 
- * @author Bryan Ritter
+ * @author Bryan Ritter, Chris Allen
  *
  */
 
 @Entity
 @Table(name = "responses")
+@JsonDeserialize(using = ResponseJSonDeserializer.class)
 public class Response {
 
   @Id
@@ -27,9 +30,6 @@ public class Response {
 
   @Column(name = "responder_id")
   private Integer responderId;
-
-  @Column(name = "title")
-  private String title;
 
   @Column(name = "body")
   private String body;
@@ -58,24 +58,6 @@ public class Response {
    */
   public void setId(int id) {
     this.id = id;
-  }
-
-  /**
-   * Auto-generated setter for title.
-   * 
-   * @return id A String that holds the title of the response
-   */
-  public String getTitle() {
-    return this.title;
-  }
-
-  /**
-   * Auto-generated setter for title.
-   * 
-   * @param id String that holds the title of the response
-   */
-  public void setTitle(String title) {
-    this.title = title;
   }
 
   /**
@@ -132,11 +114,18 @@ public class Response {
     this.creationDate = creationDate;
   }
 
+  /**
+   * Auto-generated toString method
+   * 
+   * @return String representation of Response
+   */
   @Override
   public String toString() {
-    return "Response [id=" + id + ", responderId=" + this.responderId + ", title=" + this.title
-        + ", body=" + this.body + ", creationDate=" + this.creationDate + "]";
+    return "Response [id=" + id + ", responderId=" + responderId + ", body=" + body
+        + ", creationDate=" + creationDate + "]";
   }
+
+
 
 }
 

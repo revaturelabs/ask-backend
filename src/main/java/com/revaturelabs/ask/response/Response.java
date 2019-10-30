@@ -28,9 +28,6 @@ public class Response {
   @Column(name = "responder_id")
   private Integer responderId;
 
-  @Column(name = "title")
-  private String title;
-
   @Column(name = "body")
   private String body;
 
@@ -38,8 +35,25 @@ public class Response {
   @CreatedDate
   private Date creationDate;
 
+  @Column(name = "Question_id")
+  private Integer questionId;
+
   public Response() {
 
+  }
+
+  /**
+   * @return the questionId
+   */
+  public Integer getQuestionId() {
+    return this.questionId;
+  }
+
+  /**
+   * @param questionId the questionId to set
+   */
+  public void setQuestionId(Integer questionId) {
+    this.questionId = questionId;
   }
 
   /**
@@ -58,24 +72,6 @@ public class Response {
    */
   public void setId(int id) {
     this.id = id;
-  }
-
-  /**
-   * Auto-generated setter for title.
-   * 
-   * @return id A String that holds the title of the response
-   */
-  public String getTitle() {
-    return this.title;
-  }
-
-  /**
-   * Auto-generated setter for title.
-   * 
-   * @param id String that holds the title of the response
-   */
-  public void setTitle(String title) {
-    this.title = title;
   }
 
   /**
@@ -132,10 +128,13 @@ public class Response {
     this.creationDate = creationDate;
   }
 
+  /**
+   * Auto-generated toString
+   */
   @Override
   public String toString() {
-    return "Response [id=" + this.id + ", responderId=" + this.responderId + ", title=" + this.title
-        + ", body=" + this.body + ", creationDate=" + this.creationDate + "]";
+    return "Response [id=" + this.id + ", responderId=" + this.responderId + ", body=" + this.body
+        + ", creationDate=" + this.creationDate + ", questionId=" + this.questionId + "]";
   }
 
 }

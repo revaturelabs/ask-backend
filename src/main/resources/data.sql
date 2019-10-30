@@ -19,10 +19,10 @@ INSERT INTO tags VALUES
 	(6, 'Bootstrap');
 
 INSERT INTO responses VALUES 
-  (1, 9, 'what ever title 1', 'what ever body 11', '2019-10-31'),
-  (2, 8, 'what ever title 2', 'what ever body 22', '2019-10-31'),
-  (3, 7, 'what ever title 3', 'what ever body 33', '2019-10-31'),
-  (4, 6, 'what ever title 4', 'what ever body 44', '2019-10-31');
+  (1, 9, 'what ever body 11', '2019-10-31'),
+  (2, 8, 'what ever body 22', '2019-10-31'),
+  (3, 7, 'what ever body 33', '2019-10-31'),
+  (4, 6, 'what ever body 44', '2019-10-31');
 
 INSERT INTO questions_tags VALUES
  (1, 1),

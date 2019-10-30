@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
-import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionService;
-import com.revaturelabs.ask.tags.Tag;
 import com.revaturelabs.ask.tags.TagService;
 import com.revaturelabs.ask.user.UserNotFoundException;
 

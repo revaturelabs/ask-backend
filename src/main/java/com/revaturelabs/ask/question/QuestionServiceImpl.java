@@ -1,5 +1,6 @@
 package com.revaturelabs.ask.question;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,9 @@ public class QuestionServiceImpl implements QuestionService {
    */
   @Override
   public Question create(Question question) {
+    Date date = new Date();
     question.setId(0);
+    question.setCreationDate(date);
     return questionRepository.save(question);
   }
 
@@ -98,7 +101,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   public List<Question> getByUserId(int id) {
-    Optional<List<Question>> questionList = questionRepository.findByUserId(id);
+    Optional<List<Question>> questionList = questionRepository.findByQuestionerId(id);
 
     if (!questionList.isPresent()) {
       throw new UserNotFoundException("No questions found for that user");

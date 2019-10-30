@@ -31,11 +31,13 @@ public class Response {
   @Column(name = "responder_id")
   private Integer responderId;
 
+  @Column(name = "question_id")
+  private Integer questionId;
+
   @Column(name = "body")
   private String body;
 
   @Column(name = "creation_date", updatable = false)
-  @CreatedDate
   private Date creationDate;
 
   public Response() {
@@ -60,8 +62,26 @@ public class Response {
     this.id = id;
   }
 
+  /** * Auto-generated getter for the question id.
+   * 
+   * @return the corresponding question's id
+   */
+  public Integer getQuestionId() {
+    return questionId;
+  }
+
   /**
-   * Auto-generated getter for the responder's id
+   * Auto-generated setter for the question id.
+   * 
+   * @param questionId the id of a question this is a response to
+   */
+  public void setQuestionId(Integer questionId) {
+    this.questionId = questionId;
+  }
+  
+
+  /**
+   * Auto-generated getter for the responder's id.
    * 
    * @return the responderId
    */
@@ -70,7 +90,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated setter for the responder's id
+   * Auto-generated setter for the responder's id.
    * 
    * @param responderId the responderId to set
    */
@@ -79,7 +99,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated getter for the body's text
+   * Auto-generated getter for the body's text.
    * 
    * @return the body
    */
@@ -88,7 +108,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated setter for the body's text
+   * Auto-generated setter for the body's text.
    * 
    * @param body the body to set
    */
@@ -97,7 +117,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated getter for the creation date
+   * Auto-generated getter for the creation date.
    * 
    * @return the creationDate
    */
@@ -106,7 +126,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated setter for the creation date
+   * Auto-generated setter for the creation date.
    * 
    * @param creationDate the creationDate to set
    */
@@ -121,8 +141,8 @@ public class Response {
    */
   @Override
   public String toString() {
-    return "Response [id=" + id + ", responderId=" + responderId + ", body=" + body
-        + ", creationDate=" + creationDate + "]";
+    return "Response [id=" + id + ", responderId=" + responderId + ", questionId=" + questionId
+        + ", body=" + body + ", creationDate=" + creationDate + "]";
   }
 
 

@@ -144,6 +144,10 @@ public class TagServiceImpl implements TagService {
   public Set<Tag> getValidTags(Set<Tag> associatedTags) {
     
     Set<Tag> validTags = new HashSet<Tag>();
+    
+    if(associatedTags == null) {
+      return validTags;
+    }
     for(Tag t : associatedTags) {
       validTags.add(getTagByName(t.getName()));
     }

@@ -32,8 +32,8 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
         }
       }
 
-      if (root.title != null) {
-        question.setHead(root.title);
+      if (root.head != null) {
+        question.setHead(root.head);
       }
       if (root.body != null) {
         question.setBody(root.body);
@@ -42,6 +42,10 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
       if ((Integer) root.userId != null) {
         question.setQuestionerId(root.userId);
+      }
+      
+      if(root.associatedTags != null) {
+        question.setAssociatedTags(root.associatedTags);
       }
     }
 
@@ -54,16 +58,22 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
   private static class Root {
 
-    @JsonProperty("tags")
+    @JsonProperty("tagList")
     public List<String> tagList;
+    
+    @JsonProperty("creation_date")
+    public String creation_date;
 
-    @JsonProperty("title")
-    public String title;
+    @JsonProperty("head")
+    public String head;
 
     @JsonProperty("body")
     public String body;
 
     @JsonProperty("userId")
     public int userId;
+    
+    @JsonProperty("associatedTags")
+    public Set<Tag> associatedTags;
   }
 }

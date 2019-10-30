@@ -35,7 +35,7 @@ public class Response {
   @CreatedDate
   private Date creationDate;
 
-  @Column(name = "Question_id")
+  @Column(name = "question_id")
   private Integer questionId;
 
   public Response() {

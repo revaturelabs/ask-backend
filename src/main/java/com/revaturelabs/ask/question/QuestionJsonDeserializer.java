@@ -26,7 +26,7 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
       if (root.tagList != null) {
         for (String tagName : root.tagList) {
           Tag tag = new Tag();
-          tag.setTagName(tagName);
+          tag.setName(tagName);
           tag.setId(0);
           question.addTagToQuestion(tag);
         }
@@ -41,7 +41,7 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
       question.setId(0);
 
       if ((Integer) root.userId != null) {
-        question.setUserId(root.userId);
+        question.setQuestionerId(root.userId);
       }
     }
 

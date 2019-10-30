@@ -1,12 +1,20 @@
 package com.revaturelabs.ask.question;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.revaturelabs.ask.tags.Tag;
 
 /**
  * Question class to represent a question. It holds the id of the user who submitted the question,
@@ -17,6 +25,7 @@ import org.springframework.data.annotation.CreatedDate;
  */
 @Entity
 @Table(name = "questions")
+@JsonDeserialize(using = QuestionJsonDeserializer.class)
 public class Question {
 
   @Id
@@ -37,6 +46,11 @@ public class Question {
   @CreatedDate
   private Date creationDate;
 
+  @ManyToMany
+  @JoinTable(name = "associated_tags", joinColumns = @JoinColumn(name = "question_id"),
+      inverseJoinColumns = @JoinColumn(name = "tags_id"))
+  private Set<Tag> associatedTags;
+
   /**
    * Auto-generated setter for id.
    * 
@@ -53,6 +67,14 @@ public class Question {
    */
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public Set<Tag> getAssociatedTags() {
+    return associatedTags;
+  }
+
+  public void setAssociatedTags(Set<Tag> associatedTags) {
+    this.associatedTags = associatedTags;
   }
 
   /**
@@ -125,6 +147,13 @@ public class Question {
    */
   public void setCreationDate(Date creationDate) {
     this.creationDate = creationDate;
+  }
+
+  public void addTagToQuestion(Tag t) {
+    if (this.associatedTags == null) {
+      this.associatedTags = new HashSet<Tag>();
+    }
+    associatedTags.add(t);
   }
 
   @Override

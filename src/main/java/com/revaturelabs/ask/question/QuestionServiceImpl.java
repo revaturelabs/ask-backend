@@ -60,7 +60,6 @@ public class QuestionServiceImpl implements QuestionService {
     Date date = new Date();
     question.setId(0);
     question.setCreationDate(date);
-    System.out.println(date);
     return questionRepository.save(question);
   }
 

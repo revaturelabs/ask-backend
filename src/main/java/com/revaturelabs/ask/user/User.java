@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import com.revaturelabs.ask.tag.Tag;
 
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -20,12 +21,12 @@ public class User {
   @GeneratedValue
   private int id;
 
-  @Column
+  @Column(name = "username")
   private String username;
 
-  @Column
+  @Column(name = "password")
   private String password;
-  
+
   @Column(name = "expert")
   private boolean isExpert;
   
@@ -33,7 +34,7 @@ public class User {
   @JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> subjects;
-  
+
   public User() {
     super();
   }

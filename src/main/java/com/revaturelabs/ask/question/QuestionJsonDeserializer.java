@@ -1,6 +1,9 @@
 package com.revaturelabs.ask.question;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -59,12 +62,24 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
       }
       question.setId(0);
 
-      if ((Integer) root.userId != null) {
+      if (root.userId != null) {
         question.setQuestionerId(root.userId);
       }
+     
 
       if (root.associatedTags != null) {
         question.setAssociatedTags(root.associatedTags);
+      }
+
+      if (root.creation_date != null) {
+        try {
+          Date currentDate = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").parse(root.creation_date);
+          question.setCreationDate(currentDate);
+        } catch (ParseException e) {
+        }
+      } else {
+        Date currentDate = new Date();
+        question.setCreationDate(currentDate);
       }
     }
 
@@ -98,7 +113,8 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
     public String body;
 
     @JsonProperty("userId")
-    public int userId;
+    public Integer userId;
+
 
     @JsonProperty("associatedTags")
     public Set<Tag> associatedTags;

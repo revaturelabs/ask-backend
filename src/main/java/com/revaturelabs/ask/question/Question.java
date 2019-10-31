@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.CreatedDate;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.tags.Tag;
 

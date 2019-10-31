@@ -6,9 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.data.annotation.CreatedDate;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.revaturelabs.ask.question.QuestionJsonDeserializer;
 
 /**
  * Holds the information about a response to a question. It holds the id of the responder, it's

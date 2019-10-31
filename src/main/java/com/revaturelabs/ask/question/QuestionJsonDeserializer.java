@@ -1,16 +1,17 @@
 package com.revaturelabs.ask.question;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.revaturelabs.ask.tags.Tag;
-import com.revaturelabs.ask.tags.TagService;
 
 public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
@@ -42,10 +43,24 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
       if ((Integer) root.userId != null) {
         question.setQuestionerId(root.userId);
-      }
+      } else 
+        question.setQuestionerId(1);
       
-      if(root.associatedTags != null) {
+
+      if (root.associatedTags != null) {
         question.setAssociatedTags(root.associatedTags);
+      }
+
+      if (root.creation_date != null) {
+        try {
+          Date currentDate = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").parse(root.creation_date);
+          question.setCreationDate(currentDate);
+        } catch (ParseException e) {
+
+        }
+      } else {
+        Date currentDate = new Date();
+        question.setCreationDate(currentDate);
       }
     }
 
@@ -60,7 +75,7 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
     @JsonProperty("tagList")
     public List<String> tagList;
-    
+
     @JsonProperty("creation_date")
     public String creation_date;
 
@@ -71,8 +86,8 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
     public String body;
 
     @JsonProperty("userId")
-    public int userId;
-    
+    public Integer userId;
+
     @JsonProperty("associatedTags")
     public Set<Tag> associatedTags;
   }

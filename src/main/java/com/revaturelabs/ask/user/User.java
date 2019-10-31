@@ -1,10 +1,15 @@
 package com.revaturelabs.ask.user;
 
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import com.revaturelabs.ask.tags.Tag;
 
 @Entity
 @Table(name = "users")
@@ -15,15 +20,20 @@ public class User {
   @GeneratedValue
   private int id;
 
-  @Column
+  @Column(name = "username")
   private String username;
 
-  @Column
+  @Column(name = "password")
   private String password;
-  
+
   @Column(name = "expert")
   private boolean isExpert;
-  
+
+  @ManyToMany
+  @JoinTable(name = "experts_tags", joinColumns = @JoinColumn(name = "expert_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  private Set<Tag> associatedExpertTags;
+
   public User() {
     super();
   }

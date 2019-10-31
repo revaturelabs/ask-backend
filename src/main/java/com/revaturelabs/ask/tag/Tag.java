@@ -1,4 +1,4 @@
-package com.revaturelabs.ask.tags;
+package com.revaturelabs.ask.tag;
 
 import java.io.Serializable;
 import java.util.Set;

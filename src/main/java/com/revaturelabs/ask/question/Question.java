@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.revaturelabs.ask.tags.Tag;
+import com.revaturelabs.ask.tag.Tag;
 
 /**
  * Question class to represent a question. It holds the id of the user who submitted the question,

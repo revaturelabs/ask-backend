@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * Service class for managing responses. It contains methods for finding all responses, finding a
  * response by id, creating a response, and updating.
  * 
- * @author Bryan_Ritter
+ * @author Bryan_Ritter, Chris Allen
  *
  */
 @Service
@@ -117,6 +117,25 @@ public class ResponseServiceImpl implements ResponseService {
     }
 
     this.responseRepository.deleteById(Integer.valueOf(id));
+  }
+
+
+  /**
+   * Takes in an id of a question and returns a list of responses associated with
+   * that question (if any)
+   * 
+   * @param id the id of the target question
+   * @author Chris Allen
+   */
+  @Override
+  public List<Response> getAllByQuestionId(int id) {
+    Optional<List<Response>> responses = responseRepository.findByQuestionId(id);
+    
+    if(!responses.isPresent()) {
+      throw new ResponseNotFoundException("Responses not found");
+    }
+    
+    return responses.get();
   }
 
 }

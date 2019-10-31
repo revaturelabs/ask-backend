@@ -32,6 +32,7 @@ CREATE TABLE questions (
 CREATE TABLE responses (
 	id SERIAL PRIMARY KEY,
 	responder_Id Integer, 
+	question_Id Integer,
 	title varchar(140),
 	body varchar(1000),
 	creation_date Date NOT null

@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
  * responses, a response by id, and add response to database and update a response. Responses are in
  * JSON format.
  * 
- * @author Bryan Ritter
+ * @author Bryan Ritter, Chris Allen
  *
  */
 @RestController
@@ -120,6 +120,24 @@ public class ResponseController {
       this.responseService.delete(id);
     } catch (ResponseNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
+    }
+  }
+  
+  /**
+   * 
+   * Accepts HTTP GET requests. Takes in a question id, and retrieves a list of all responses with that
+   * question id.
+   * 
+   * @param id
+   */
+  
+  @GetMapping("/forQuestion/{id}")
+  public List<Response> getResponsesByQuestionId(@PathVariable int id){
+    
+    try {
+      return this.responseService.getAllByQuestionId(id);
+    } catch (ResponseNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Responses not found", e);
     }
   }
 }

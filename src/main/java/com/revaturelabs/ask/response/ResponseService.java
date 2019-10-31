@@ -16,4 +16,6 @@ public interface ResponseService {
 
   void delete(int id);
 
+  List<Response> getAllByQuestionId(int id);
+
 }

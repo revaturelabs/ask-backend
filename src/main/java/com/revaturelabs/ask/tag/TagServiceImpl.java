@@ -1,4 +1,4 @@
-package com.revaturelabs.ask.tags;
+package com.revaturelabs.ask.tag;
 
 import java.util.HashSet;
 import java.util.List;
@@ -7,8 +7,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionRepository;
-import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionService;
 
 /**
  * Service class for managing tags. It has the methods for obtaining a list of tags and getting an
@@ -20,7 +18,6 @@ public class TagServiceImpl implements TagService {
 
   @Autowired
   TagRepository tagRepository;
-  QuestionTagsJunctionService questionTagJunctionService;
 
   /**
    * Returns a list of tags in a database.

@@ -1,4 +1,4 @@
-package com.revaturelabs.ask.tags;
+package com.revaturelabs.ask.tag;
 
 import java.util.List;
 import java.util.Set;

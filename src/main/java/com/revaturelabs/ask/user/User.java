@@ -32,7 +32,7 @@ public class User {
   @ManyToMany
   @JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  private Set<Tag> subjects;
+  private Set<Tag> userTags;
   
   public User() {
     super();
@@ -76,17 +76,18 @@ public class User {
     this.isExpert = isExpert;
   }
 
-  public Set<Tag> getSubjects() {
-    return subjects;
+  public Set<Tag> getUserTags() {
+    return userTags;
   }
 
-  public void setSubjects(Set<Tag> subjects) {
-    this.subjects = subjects;
+  public void setUserTags(Set<Tag> userTags) {
+    this.userTags = userTags;
   }
 
   @Override
   public String toString() {
-    return "User [id=" + id + ", username=" + username + ", password=" + password + "]";
+    return "User [id=" + id + ", username=" + username 
+        + ", password=" + password + ", subjects=" + userTags + "]";
   }
 
 

@@ -32,8 +32,8 @@ public class Tag implements Serializable {
   @ManyToMany(mappedBy = "associatedTags")
   Set<Question> taggedQuestions;
   
-  @ManyToMany(mappedBy = "subjects")
-  Set<User> expertTags;
+  @ManyToMany(mappedBy = "userTags")
+  Set<User> userTagSet;
 
   /**
    * Auto generated getter method for Tag Id.

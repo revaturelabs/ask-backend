@@ -13,6 +13,17 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
 
   @Override
+  /**
+   * Overridden deserialize method.
+   * 
+   * Currently, the deserializer does not explicitly require any fields be passed in to be
+   * recognized as a valid JSON, so any arbitrary JSON passed in will be treated as a response JSON.
+   * 
+   * This is beneficial in the event that a front-end application wants to send a response object
+   * without knowing all necessary details (e.g. the automatically generated ID of the response).
+   * 
+   * @author Chris Allen
+   */
   public Response deserialize(JsonParser p, DeserializationContext ctxt)
       throws IOException, JsonProcessingException {
     Response response = new Response();
@@ -52,7 +63,14 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
     return response;
   }
 
-
+  /**
+   * 
+   * Utility class for ResponseJsonDeserializer. Acts as the representation of the JSON that is
+   * passed in to the application.
+   * 
+   * @author Chris Allen
+   *
+   */
   private static class Root {
 
     @JsonProperty("id")
@@ -63,6 +81,7 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
     
     @JsonProperty("questionId")
     public Integer questionId;
+
 
     @JsonProperty("body")
     public String body;

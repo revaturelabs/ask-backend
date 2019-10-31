@@ -17,10 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * The ResponseController is responsible for handling responses to questions. Can return a list of
- * responses, a response by id, and add response to database and update a response. Responses are in
+ * responses, a response by id, and add response to database and update a response. It may also return
+ * responses based on categories such as the question ID associated with the response. Responses are in
  * JSON format.
  * 
- * @author Bryan Ritter
+ * @author Bryan Ritter, Chris Allen
  *
  */
 @RestController
@@ -122,6 +123,8 @@ public class ResponseController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
     }
   }
+
+
 }
 
 

@@ -101,7 +101,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   public List<Question> getByUserId(int id) {
-    Optional<List<Question>> questionList = questionRepository.findByUserId(id);
+    Optional<List<Question>> questionList = questionRepository.findByQuestionerId(id);
 
     if (!questionList.isPresent()) {
       throw new UserNotFoundException("No questions found for that user");

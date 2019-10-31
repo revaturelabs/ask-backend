@@ -7,17 +7,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.revaturelabs.ask.question.QuestionJsonDeserializer;
 
 /**
  * Holds the information about a response to a question. It holds the id of the responder, it's
  * title and body, as well as it's creation date.
  * 
- * @author Bryan Ritter
+ * @author Bryan Ritter, Chris Allen
  *
  */
 
 @Entity
 @Table(name = "responses")
+@JsonDeserialize(using = ResponseJSonDeserializer.class)
 public class Response {
 
   @Id
@@ -28,14 +31,13 @@ public class Response {
   @Column(name = "responder_id")
   private Integer responderId;
 
-  @Column(name = "title")
-  private String title;
+  @Column(name = "question_id")
+  private Integer questionId;
 
   @Column(name = "body")
   private String body;
 
   @Column(name = "creation_date", updatable = false)
-  @CreatedDate
   private Date creationDate;
 
   public Response() {
@@ -60,26 +62,26 @@ public class Response {
     this.id = id;
   }
 
-  /**
-   * Auto-generated setter for title.
+  /** * Auto-generated getter for the question id.
    * 
-   * @return id A String that holds the title of the response
+   * @return the corresponding question's id
    */
-  public String getTitle() {
-    return this.title;
+  public Integer getQuestionId() {
+    return questionId;
   }
 
   /**
-   * Auto-generated setter for title.
+   * Auto-generated setter for the question id.
    * 
-   * @param id String that holds the title of the response
+   * @param questionId the id of a question this is a response to
    */
-  public void setTitle(String title) {
-    this.title = title;
+  public void setQuestionId(Integer questionId) {
+    this.questionId = questionId;
   }
+  
 
   /**
-   * Auto-generated getter for the responder's id
+   * Auto-generated getter for the responder's id.
    * 
    * @return the responderId
    */
@@ -88,7 +90,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated setter for the responder's id
+   * Auto-generated setter for the responder's id.
    * 
    * @param responderId the responderId to set
    */
@@ -97,7 +99,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated getter for the body's text
+   * Auto-generated getter for the body's text.
    * 
    * @return the body
    */
@@ -106,7 +108,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated setter for the body's text
+   * Auto-generated setter for the body's text.
    * 
    * @param body the body to set
    */
@@ -115,7 +117,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated getter for the creation date
+   * Auto-generated getter for the creation date.
    * 
    * @return the creationDate
    */
@@ -124,7 +126,7 @@ public class Response {
   }
 
   /**
-   * Auto-generated setter for the creation date
+   * Auto-generated setter for the creation date.
    * 
    * @param creationDate the creationDate to set
    */
@@ -132,11 +134,18 @@ public class Response {
     this.creationDate = creationDate;
   }
 
+  /**
+   * Auto-generated toString method
+   * 
+   * @return String representation of Response
+   */
   @Override
   public String toString() {
-    return "Response [id=" + id + ", responderId=" + this.responderId + ", title=" + this.title
-        + ", body=" + this.body + ", creationDate=" + this.creationDate + "]";
+    return "Response [id=" + id + ", responderId=" + responderId + ", questionId=" + questionId
+        + ", body=" + body + ", creationDate=" + creationDate + "]";
   }
+
+
 
 }
 

@@ -44,7 +44,7 @@ public class TagServiceImpl implements TagService {
     Tag tag = null;
     List<Tag> list = (List<Tag>) tagRepository.findAll();
     for (Tag t : list) {
-      if (t.getTagName().contentEquals(name)) {
+      if (t.getName().contentEquals(name)) {
         tag = t;
       }
     }
@@ -144,8 +144,12 @@ public class TagServiceImpl implements TagService {
   public Set<Tag> getValidTags(Set<Tag> associatedTags) {
     
     Set<Tag> validTags = new HashSet<Tag>();
+    
+    if(associatedTags == null) {
+      return validTags;
+    }
     for(Tag t : associatedTags) {
-      validTags.add(getTagByName(t.getTagName()));
+      validTags.add(getTagByName(t.getName()));
     }
     
     return validTags;

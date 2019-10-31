@@ -43,6 +43,8 @@ public class Response {
   }
 
   /**
+   * Auto-generated getter for id.
+   *
    * @return the id
    */
   public int getId() {
@@ -50,13 +52,36 @@ public class Response {
   }
 
   /**
+   * Auto-generated setter for id.
+   * 
    * @param id the id to set
    */
   public void setId(int id) {
     this.id = id;
   }
+  
+  /** 
+   * Auto-generated getter for the question id.
+   * 
+   * @return the corresponding question's id
+   */
+  public Integer getQuestionId() {
+    return questionId;
+  }
 
   /**
+   * Auto-generated setter for the question id.
+   * 
+   * @param questionId the id of a question this is a response to
+   */
+  public void setQuestionId(Integer questionId) {
+    this.questionId = questionId;
+  }
+
+
+  /**
+   * Auto-generated getter for the responder's id.
+   * 
    * @return the responderId
    */
   public Integer getResponderId() {
@@ -64,6 +89,8 @@ public class Response {
   }
 
   /**
+   * Auto-generated setter for the responder's id.
+   * 
    * @param responderId the responderId to set
    */
   public void setResponderId(Integer responderId) {
@@ -71,6 +98,8 @@ public class Response {
   }
 
   /**
+   * Auto-generated getter for the body's text.
+   * 
    * @return the body
    */
   public String getBody() {
@@ -78,6 +107,8 @@ public class Response {
   }
 
   /**
+   * Auto-generated setter for the body's text.
+   * 
    * @param body the body to set
    */
   public void setBody(String body) {
@@ -85,6 +116,8 @@ public class Response {
   }
 
   /**
+   * Auto-generated getter for the creation date.
+   * 
    * @return the creationDate
    */
   public Date getCreationDate() {
@@ -106,12 +139,19 @@ public class Response {
   }
 
   /**
+   * Auto-generated setter for the creation date.
+   * 
    * @param questionId the questionId to set
    */
   public void setQuestionId(Integer questionId) {
     this.questionId = questionId;
   }
 
+  /**
+   * Auto-generated toString method
+   * 
+   * @return String representation of Response
+   */
   @Override
   public String toString() {
     return "Response [id=" + this.id + ", responderId=" + this.responderId + ", body=" + this.body

@@ -7,11 +7,12 @@ import org.springframework.stereotype.Repository;
 /**
  * A JPA repository for Questions. It has the default methods of a JpaRepository.
  * 
- * @author Bryan Ritter
+ * @author Bryan Ritter, Chris Allen
  *
  */
 @Repository
 public interface ResponseRepository extends CrudRepository<Response, Integer> {
+
 
 }
 

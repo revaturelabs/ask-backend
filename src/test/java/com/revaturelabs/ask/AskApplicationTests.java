@@ -19,6 +19,7 @@ public class AskApplicationTests {
   @Test
   public void contextLoads() {}
 
+
   @MockBean
   ResponseService responseServiceMock;
 
@@ -33,6 +34,4 @@ public class AskApplicationTests {
 
     assertEquals(exampleResponse, responseControllerImpl.getResponseById(1));
   }
-
-
 }

@@ -1,6 +1,6 @@
-package com.revaturelabs.ask;
+package com.revaturelabs.ask.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +14,8 @@ import com.revaturelabs.ask.response.ResponseService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AskApplicationTests {
+public class ResponseControllerMockSpringContextTest {
 
-  @Test
-  public void contextLoads() {}
 
   @MockBean
   ResponseService responseServiceMock;
@@ -33,6 +31,4 @@ public class AskApplicationTests {
 
     assertEquals(exampleResponse, responseControllerImpl.getResponseById(1));
   }
-
-
 }

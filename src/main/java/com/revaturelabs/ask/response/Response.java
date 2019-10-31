@@ -74,27 +74,8 @@ public class Response {
     this.id = id;
   }
   
-  /** 
-   * Auto-generated getter for the question id.
-   * 
-   * @return the corresponding question's id
-   */
-  public Integer getQuestionId() {
-    return questionId;
-  }
 
   /**
-   * Auto-generated setter for the question id.
-   * 
-   * @param questionId the id of a question this is a response to
-   */
-  public void setQuestionId(Integer questionId) {
-    this.questionId = questionId;
-  }
-
-
-  /**
-<<<<<<< HEAD
    * Auto-generated getter for responder id.
    * 
    * @return an integer that is the responder id

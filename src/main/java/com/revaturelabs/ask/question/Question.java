@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.response.Response;
-import com.revaturelabs.ask.tags.Tag;
 import com.revaturelabs.ask.tag.Tag;
 
 /**

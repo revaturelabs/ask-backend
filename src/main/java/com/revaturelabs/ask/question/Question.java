@@ -1,12 +1,20 @@
 package com.revaturelabs.ask.question;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.revaturelabs.ask.tags.Tag;
 
 /**
  * Question class to represent a question. It holds the id of the user who submitted the question,
@@ -17,6 +25,7 @@ import org.springframework.data.annotation.CreatedDate;
  */
 @Entity
 @Table(name = "questions")
+@JsonDeserialize(using = QuestionJsonDeserializer.class)
 public class Question {
 
   @Id
@@ -24,8 +33,11 @@ public class Question {
   @GeneratedValue
   private Integer id;
 
-  @Column(name = "user_id")
-  private Integer userId;
+  @Column(name = "questioner_id")
+  private Integer questionerId;
+
+  @Column(name = "highlighted_response_id")
+  private Integer highlightedResponseId;
 
   @Column(name = "head")
   private String head;
@@ -34,8 +46,12 @@ public class Question {
   private String body;
 
   @Column(name = "creation_date")
-  @CreatedDate
   private Date creationDate;
+
+  @ManyToMany
+  @JoinTable(name = "questions_tags", joinColumns = @JoinColumn(name = "question_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  private Set<Tag> associatedTags;
 
   /**
    * Auto-generated setter for id.
@@ -55,22 +71,48 @@ public class Question {
     this.id = id;
   }
 
-  /**
-   * Auto-generated getter for userId.
-   * 
-   * @return a Integer that holds the id of the user who submitted the question
-   */
-  public Integer getUserId() {
-    return userId;
+  public Set<Tag> getAssociatedTags() {
+    return associatedTags;
+  }
+
+  public void setAssociatedTags(Set<Tag> associatedTags) {
+    this.associatedTags = associatedTags;
   }
 
   /**
-   * Auto-generated setter for userId.
+   * Auto-generated getter for questionerId.
    * 
-   * @param userId an integer that holds the id of the user who submitted the question
+   * @return a Integer that holds the id of the user who submitted the question
    */
-  public void setUserId(Integer userId) {
-    this.userId = userId;
+  public Integer getQuestionerId() {
+    return questionerId;
+  }
+
+  /**
+   * Auto-generated setter for questionerId.
+   * 
+   * @param questionerId an integer that holds the id of the user who submitted the question
+   */
+  public void setQuestionerId(Integer questionerId) {
+    this.questionerId = questionerId;
+  }
+
+  /**
+   * Auto-generated getter for highlightedResponseId.
+   * 
+   * @return the id of the response highlighted as correct by the questioner
+   */
+  public Integer getHighlightedResponseId() {
+    return highlightedResponseId;
+  }
+
+  /**
+   * Auto-generated setter for highlightedResponseId.
+   * 
+   * @param highlightedResponseId the id of a response to highlight for this question
+   */
+  public void setHighlightedResponseId(Integer highlightedResponseId) {
+    this.highlightedResponseId = highlightedResponseId;
   }
 
   /**
@@ -127,65 +169,77 @@ public class Question {
     this.creationDate = creationDate;
   }
 
+  /**
+   * Add a tag to the associated tags set for this question and creates the set if necessary.
+   * 
+   * @param tag the tag to add
+   */
+  public void addTagToQuestion(Tag tag) {
+    if (this.associatedTags == null) {
+      this.associatedTags = new HashSet<Tag>();
+    }
+    associatedTags.add(tag);
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((associatedTags == null) ? 0 : associatedTags.hashCode());
     result = prime * result + ((body == null) ? 0 : body.hashCode());
     result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
     result = prime * result + ((head == null) ? 0 : head.hashCode());
+    result =
+        prime * result + ((highlightedResponseId == null) ? 0 : highlightedResponseId.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+    result = prime * result + ((questionerId == null) ? 0 : questionerId.hashCode());
     return result;
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj) {
+    if (this == obj)
       return true;
-    }
-    if (obj == null) {
+    if (obj == null)
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass())
       return false;
-    }
     Question other = (Question) obj;
+    if (associatedTags == null) {
+      if (other.associatedTags != null)
+        return false;
+    } else if (!associatedTags.equals(other.associatedTags))
+      return false;
     if (body == null) {
-      if (other.body != null) {
+      if (other.body != null)
         return false;
-      }
-    } else if (!body.equals(other.body)) {
+    } else if (!body.equals(other.body))
       return false;
-    }
     if (creationDate == null) {
-      if (other.creationDate != null) {
+      if (other.creationDate != null)
         return false;
-      }
-    } else if (!creationDate.equals(other.creationDate)) {
+    } else if (!creationDate.equals(other.creationDate))
       return false;
-    }
     if (head == null) {
-      if (other.head != null) {
+      if (other.head != null)
         return false;
-      }
-    } else if (!head.equals(other.head)) {
+    } else if (!head.equals(other.head))
       return false;
-    }
+    if (highlightedResponseId == null) {
+      if (other.highlightedResponseId != null)
+        return false;
+    } else if (!highlightedResponseId.equals(other.highlightedResponseId))
+      return false;
     if (id == null) {
-      if (other.id != null) {
+      if (other.id != null)
         return false;
-      }
-    } else if (!id.equals(other.id)) {
+    } else if (!id.equals(other.id))
       return false;
-    }
-    if (userId == null) {
-      if (other.userId != null) {
+    if (questionerId == null) {
+      if (other.questionerId != null)
         return false;
-      }
-    } else if (!userId.equals(other.userId)) {
+    } else if (!questionerId.equals(other.questionerId))
       return false;
-    }
     return true;
   }
 
@@ -196,8 +250,8 @@ public class Question {
    */
   @Override
   public String toString() {
-    return "Question [id=" + id + ", userId=" + userId + ", head=" + head + ", body=" + body
-        + ", creationDate=" + creationDate + "]";
+    return "Question [id=" + id + ", questionerId=" + questionerId + ", head=" + head + ", body="
+        + body + ", creationDate=" + creationDate + "]";
   }
 
 

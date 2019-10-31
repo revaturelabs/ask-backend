@@ -1,10 +1,14 @@
 package com.revaturelabs.ask.tags;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionRepository;
+import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionService;
 
 /**
  * Service class for managing tags. It has the methods for obtaining a list of tags and getting an
@@ -16,6 +20,7 @@ public class TagServiceImpl implements TagService {
 
   @Autowired
   TagRepository tagRepository;
+  QuestionTagsJunctionService questionTagJunctionService;
 
   /**
    * Returns a list of tags in a database.
@@ -39,7 +44,7 @@ public class TagServiceImpl implements TagService {
     Tag tag = null;
     List<Tag> list = (List<Tag>) tagRepository.findAll();
     for (Tag t : list) {
-      if (t.getTagName().contentEquals(name)) {
+      if (t.getName().contentEquals(name)) {
         tag = t;
       }
     }
@@ -127,5 +132,28 @@ public class TagServiceImpl implements TagService {
     }
     tagRepository.deleteById(id);
   }
+
+  /**
+   * Given a set of tag objects that don't exist in the database,
+   * retrieves a set of corresponding tags that are in the database.
+   * 
+   * @param associatedTags -A set of tag objects to be converted to existing objects
+   * in the database.
+   */
+  @Override
+  public Set<Tag> getValidTags(Set<Tag> associatedTags) {
+    
+    Set<Tag> validTags = new HashSet<Tag>();
+    
+    if(associatedTags == null) {
+      return validTags;
+    }
+    for(Tag t : associatedTags) {
+      validTags.add(getTagByName(t.getName()));
+    }
+    
+    return validTags;
+  }
+
 
 }

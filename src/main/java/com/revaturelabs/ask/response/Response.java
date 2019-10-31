@@ -73,8 +73,28 @@ public class Response {
   public void setId(int id) {
     this.id = id;
   }
+  
+  /** 
+   * Auto-generated getter for the question id.
+   * 
+   * @return the corresponding question's id
+   */
+  public Integer getQuestionId() {
+    return questionId;
+  }
 
   /**
+   * Auto-generated setter for the question id.
+   * 
+   * @param questionId the id of a question this is a response to
+   */
+  public void setQuestionId(Integer questionId) {
+    this.questionId = questionId;
+  }
+
+
+  /**
+<<<<<<< HEAD
    * Auto-generated getter for responder id.
    * 
    * @return an integer that is the responder id
@@ -229,6 +249,11 @@ public class Response {
     return true;
   }
 
+  /**
+   * Auto-generated toString method
+   * 
+   * @return String representation of Response
+   */
   @Override
   public String toString() {
     return "Response [id=" + id + ", responderId=" + responderId + ", body=" + body

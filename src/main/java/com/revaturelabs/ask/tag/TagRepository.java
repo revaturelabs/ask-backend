@@ -1,4 +1,4 @@
-package com.revaturelabs.ask.tags;
+package com.revaturelabs.ask.tag;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

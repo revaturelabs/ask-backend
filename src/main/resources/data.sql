@@ -1,25 +1,47 @@
-INSERT INTO questions VALUES 
-  (DEFAULT, 9, 'what ever header', 'what ever post', '2015-12-17'),
-  (DEFAULT, 8, 'what ever ', 'what ever ', '2015-12-17'),
-  (DEFAULT, 7, 'what ever boy', 'what ever bsfga', '2015-12-17'),
-  (DEFAULT, 6, 'what ever asfgaa', 'what ever grgsgg', '2015-12-17');
-  
-INSERT INTO tags VALUES
-	(1, 'JavaScript'),
-	(2, 'SQL'),
-	(3, 'Java'),
-	(4, 'HTML'),
-	(5, 'Angular'),
-	(6, 'Bootstrap');
-  
---INSERT INTO questions VALUES 
---  (1, 9, 'what ever header', 'what ever post', '2015-12-17'),
---  (2, 8, 'what ever ', 'what ever ', '2015-12-17'),
---  (3, 7, 'what ever boy', 'what ever bsfga', '2015-12-17'),
---  (4, 6, 'what ever asfgaa', 'what ever grgsgg', '2015-12-17');
+-- Mock data added 103019 by @author Efrain VIla
 
+--data for the users table
+INSERT INTO users VALUES
+    (default,'novice','1234',false), -- user login
+    (default,'newbie','1234',false), -- user login 2
+    (default,'expert','4321',true), -- expert login
+    (default,'smartguy','4321',true);  -- expert login 2
+
+-- data for tags table
+INSERT INTO tags VALUES
+    (DEFAULT, 'JavaScript'),
+    (DEFAULT, 'SQL'),
+    (DEFAULT, 'Java'),
+    (DEFAULT, 'HTML'),
+    (DEFAULT, 'Angular'),
+    (DEFAULT, 'Bootstrap');
+
+-- data for questions
+INSERT INTO questions VALUES 
+  (DEFAULT, 1, null, 'Question head 1', 'Question body 1', '2015-12-17'), -- 3rd parameter is highlighted_response_id (null)
+  (DEFAULT, 2, null, 'Question head 2', 'Question body 2', '2015-12-17'),
+  (DEFAULT, 1, null, 'Question head 3', 'Question body 3', '2015-12-17'),
+  (DEFAULT, 2, null, 'Question head 4', 'Question body 4', '2015-12-17');
+
+-- data for responses
 INSERT INTO responses VALUES 
-  (1, 9, 'what ever title 1', 'what ever body 11', '2019-10-31'),
-  (2, 8, 'what ever title 2', 'what ever body 22', '2019-10-31'),
-  (3, 7, 'what ever title 3', 'what ever body 33', '2019-10-31'),
-  (4, 6, 'what ever title 4', 'what ever body 44', '2019-10-31');
+  (DEFAULT, 1, 3,'Response body 1', '2019-10-31'),
+  (DEFAULT, 2, 4,'Response body 2', '2019-10-31'),
+  (DEFAULT, 2, 3,'Response body 3', '2019-10-31'),
+  (DEFAULT, 1, 4,'Response body 4', '2019-10-31');
+
+-- data for questions_tags
+-- this is a junction table for questions and tags
+INSERT INTO questions_tags VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3);
+ --   (DEFAULT, DEFAULT); -- if needed
+ 
+-- data for user_tags
+-- this a junction table for users and tags
+ INSERT INTO users_tags VALUES
+    (3, 1),
+    (4, 2),
+    (3, 3);
+ --   (DEFAULT, DEFAULT); -- if needed

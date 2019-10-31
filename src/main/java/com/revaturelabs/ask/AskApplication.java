@@ -3,6 +3,9 @@ package com.revaturelabs.ask;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -17,12 +20,27 @@ public class AskApplication {
   }
 
   /**
-  * Produces the Swagger 2 Docket Bean for the apis in com.revaturelabs.ask
-  */
+   * Produces the Swagger 2 Docket Bean for the apis in com.revaturelabs.ask
+   */
   @Bean
-  public Docket productAPI() {
+  public Docket productApi() {
     return new Docket(DocumentationType.SWAGGER_2).select()
         .apis(RequestHandlerSelectors.basePackage("com.revaturelabs.ask")).build();
 
+  }
+
+  /**
+   * Provides Cors filtering for the local Spring Boot profile
+   */
+  @Bean
+  @Profile("local")
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedMethods("GET", "OPTIONS", "PUT", "POST", "PATCH",
+            "DELETE");
+      }
+    };
   }
 }

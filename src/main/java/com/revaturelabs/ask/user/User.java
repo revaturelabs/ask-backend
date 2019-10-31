@@ -9,7 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import com.revaturelabs.ask.tags.Tag;
+import com.revaturelabs.ask.tag.Tag;
+
 
 @Entity
 @Table(name = "users")
@@ -28,11 +29,11 @@ public class User {
 
   @Column(name = "expert")
   private boolean isExpert;
-
+  
   @ManyToMany
-  @JoinTable(name = "experts_tags", joinColumns = @JoinColumn(name = "expert_id"),
+  @JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  private Set<Tag> associatedExpertTags;
+  private Set<Tag> subjects;
 
   public User() {
     super();
@@ -74,6 +75,14 @@ public class User {
 
   public void setExpert(boolean isExpert) {
     this.isExpert = isExpert;
+  }
+
+  public Set<Tag> getSubjects() {
+    return subjects;
+  }
+
+  public void setSubjects(Set<Tag> subjects) {
+    this.subjects = subjects;
   }
 
   @Override

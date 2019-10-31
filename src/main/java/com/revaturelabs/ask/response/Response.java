@@ -8,12 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.question.Question;
 
@@ -28,7 +23,6 @@ import com.revaturelabs.ask.question.Question;
 @Entity
 @Table(name = "responses")
 @JsonDeserialize(using = ResponseJSonDeserializer.class)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Response {
 
   @Id
@@ -48,7 +42,7 @@ public class Response {
   @Column(name = "question_id", insertable = false, updatable = false)
   private Integer questionId;
   
-
+  @JsonIgnoreProperties({"responses"})
   @ManyToOne(cascade = CascadeType.REFRESH)
   private Question question;
 

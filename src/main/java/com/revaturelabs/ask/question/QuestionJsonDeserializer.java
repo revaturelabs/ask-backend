@@ -41,10 +41,9 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
       }
       question.setId(0);
 
-      if ((Integer) root.userId != null) {
+      if (root.userId != null) {
         question.setQuestionerId(root.userId);
-      } else 
-        question.setQuestionerId(1);
+      }
       
 
       if (root.associatedTags != null) {
@@ -56,7 +55,6 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
           Date currentDate = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").parse(root.creation_date);
           question.setCreationDate(currentDate);
         } catch (ParseException e) {
-
         }
       } else {
         Date currentDate = new Date();

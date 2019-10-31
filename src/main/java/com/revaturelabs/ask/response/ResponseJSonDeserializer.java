@@ -19,23 +19,19 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
     Root root = p.readValueAs(Root.class);
 
     if (root != null) {
-      if ((Integer) root.id != null) {
+      if (root.id != null) {
         response.setId(root.id);
       } else {
         response.setId(0);
       }
       if ((Integer) root.responderId != null) {
         response.setResponderId(root.responderId);
-      } else {
-        response.setResponderId(1);
       }
       if (root.body != null) {
         response.setBody(root.body);
       }
       if (root.questionId != null) {
         response.setQuestionId(root.questionId);
-      } else {
-        response.setQuestionId(1);
       }
       if (root.creationDate != null) {
         try {

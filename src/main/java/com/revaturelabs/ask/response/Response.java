@@ -160,10 +160,13 @@ public class Response {
     this.question = question;
   }
 
+ 
   /**
    * 
-   * Auto-Generated hashcode function
-   * 
+   * Hashing function for response. Does NOT include question attribute in hashing
+   * to avoid potential infinite recursion problems (e.g., when attempting to serialize
+   * the responses within a set, it will attempt to serialize the question. If the question
+   * hash attempts to serialize its set of responses, an infinite loop will occur). 
    */
   @Override
   public int hashCode() {
@@ -171,19 +174,15 @@ public class Response {
     int result = 1;
     result = prime * result + ((body == null) ? 0 : body.hashCode());
     result = prime * result + ((creationDate == null) ? 0 : creationDate.hashCode());
-    result = prime * result + id;
-    result = prime * result + ((question == null) ? 0 : question.hashCode());
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((questionId == null) ? 0 : questionId.hashCode());
     result = prime * result + ((responderId == null) ? 0 : responderId.hashCode());
     return result;
   }
 
+  
   /**
-   * 
-   * Auto-generated equals function.
-   * 
-   * @param obj The object to be compared to the current object
-   * 
+   * Automatically generated equality function.
    */
   @Override
   public boolean equals(Object obj) {
@@ -204,12 +203,10 @@ public class Response {
         return false;
     } else if (!creationDate.equals(other.creationDate))
       return false;
-    if (id != other.id)
-      return false;
-    if (question == null) {
-      if (other.question != null)
+    if (id == null) {
+      if (other.id != null)
         return false;
-    } else if (!question.equals(other.question))
+    } else if (!id.equals(other.id))
       return false;
     if (questionId == null) {
       if (other.questionId != null)

@@ -2,7 +2,6 @@ package com.revaturelabs.ask.question;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -58,7 +57,7 @@ public class Question {
 
   @JsonIgnoreProperties({"question"})
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-  private List<Response> responses;
+  private Set<Response> responses;
   
   
   /**
@@ -189,19 +188,26 @@ public class Question {
     associatedTags.add(tag);
   }
 
-  public List<Response> getResponses() {
+  public Set<Response> getResponses() {
     return responses;
   }
 
-  public void setResponses(List<Response> responses) {
+  public void setResponses(Set<Response> responses) {
     this.responses = responses;
   }
 
+
+  
   /**
    * 
-   * Auto-Generated hashcode function
+   * Automatically generated hashing function for question.
+   * 
+   * Note that, if used in conjunction with responses, if the response hash function
+   * includes questions, there may be an infinite recursion problem. This currently assumes
+   * that Response does NOT use its question attribute in its hashing function.
    * 
    */
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -220,9 +226,7 @@ public class Question {
 
   /**
    * 
-   * Auto-generated equals function.
-   * 
-   * @param obj The object to be compared to the current object
+   * Automatically generated equals function
    * 
    */
   @Override

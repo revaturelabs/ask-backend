@@ -1,22 +1,64 @@
 package com.revaturelabs.ask.tags;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionRepository;
+import com.revaturelabs.ask.questionTagsJunction.QuestionTagsJunctionService;
 
+/**
+ * Service class for managing tags. It has the methods for obtaining a list of tags and getting an
+ * individual tag as well as methods for creating, updating and deleting tags.
+ *
+ */
 @Service
 public class TagServiceImpl implements TagService {
 
   @Autowired
   TagRepository tagRepository;
+  QuestionTagsJunctionService questionTagJunctionService;
 
+  /**
+   * Returns a list of tags in a database.
+   * 
+   * @return a List<Tag> of tags
+   */
   @Override
   public List<Tag> getAll() {
     return (List<Tag>) tagRepository.findAll();
   }
 
+  /**
+   * Takes in a string and returns the Tab matching that string.
+   * 
+   * @param String name -The tag name of the tag being searched for
+   * @return Tag tag - Returns the tag matching the string.
+   * 
+   */
+  @Override
+  public Tag getTagByName(String name) {
+    Tag tag = null;
+    List<Tag> list = (List<Tag>) tagRepository.findAll();
+    for (Tag t : list) {
+      if (t.getName().contentEquals(name)) {
+        tag = t;
+      }
+    }
+    if (tag.equals(null)) {
+      throw new TagNotFoundException("Tag Not Found");
+    }
+    return tag;
+  }
+
+  /**
+   * Returns an individual tag in a database.
+   * 
+   * @return Tag for a specific id.
+   */
   @Override
   public Tag getById(int id) throws TagNotFoundException {
     Optional<Tag> tag = tagRepository.findById(id);
@@ -26,11 +68,23 @@ public class TagServiceImpl implements TagService {
     return tag.get();
   }
 
+  /**
+   * Adds a new tag to the database.
+   * 
+   * @param tag - new tag to be created.
+   * @return tag
+   */
   @Override
   public Tag create(Tag tag) {
     return tagRepository.save(tag);
   }
 
+  /**
+   * Takes a Tag and updates the tag in a database if that tag id exists.
+   * 
+   * @param tag
+   * @return tag
+   */
   @Override
   public Tag update(Tag tag) {
     Optional<Tag> existingTag = tagRepository.findById(tag.getId());
@@ -48,6 +102,12 @@ public class TagServiceImpl implements TagService {
     return updatedTag;
   }
 
+  /**
+   * Takes in a tag creates or updates it if it exists in the database.
+   * 
+   * @param tag - New tag to be created.
+   * @return tag - created/updated tag or throws an exception.
+   */
   @Override
   public Tag createOrUpdate(Tag tag) {
     Tag updatedTag = null;
@@ -59,14 +119,41 @@ public class TagServiceImpl implements TagService {
     return updatedTag;
   }
 
+  /**
+   * Deletes a tag with a specific id.
+   * 
+   * @param id -Id of tag to be deleted.
+   */
   @Override
   public void delete(int id) {
-    boolean TagExists = tagRepository.existsById(id);
-
-    if (!TagExists) {
+    boolean tagExists = tagRepository.existsById(id);
+    if (!tagExists) {
       throw new TagNotFoundException("Unable to find Tag to delete");
     }
     tagRepository.deleteById(id);
   }
+
+  /**
+   * Given a set of tag objects that don't exist in the database,
+   * retrieves a set of corresponding tags that are in the database.
+   * 
+   * @param associatedTags -A set of tag objects to be converted to existing objects
+   * in the database.
+   */
+  @Override
+  public Set<Tag> getValidTags(Set<Tag> associatedTags) {
+    
+    Set<Tag> validTags = new HashSet<Tag>();
+    
+    if(associatedTags == null) {
+      return validTags;
+    }
+    for(Tag t : associatedTags) {
+      validTags.add(getTagByName(t.getName()));
+    }
+    
+    return validTags;
+  }
+
 
 }

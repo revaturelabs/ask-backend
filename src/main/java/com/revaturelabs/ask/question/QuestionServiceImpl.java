@@ -1,10 +1,12 @@
 package com.revaturelabs.ask.question;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * Service class for managing questions. It contains methods for finding all questions, finding a
@@ -22,7 +24,7 @@ public class QuestionServiceImpl implements QuestionService {
   /**
    * Returns a list of all questions on the database
    * 
-   * @return a List<Question> that contains all questions on the database.
+   * @return a List of Question that contains all questions on the database.
    */
   @Override
   public List<Question> getAll() {
@@ -46,23 +48,27 @@ public class QuestionServiceImpl implements QuestionService {
 
     return question.get();
   }
-/**
- * Adds to the database an instance of Question, before adding to database the instance id
- * is set to zero to allow the database to auto-generate the id of the new added instance.
- * 
- * @param question
- */
+
+  /**
+   * Adds to the database an instance of Question, before adding to database the instance id is set
+   * to zero to allow the database to auto-generate the id of the new added instance.
+   * 
+   * @param question receives a question object
+   */
   @Override
   public Question create(Question question) {
+    Date date = new Date();
     question.setId(0);
+    question.setCreationDate(date);
     return questionRepository.save(question);
   }
-/**
- * Takes a Question object and updates any matching entity in the database
- * if no entities match the question will be created
- * 
- * @param question
- */
+
+  /**
+   * Takes a Question object and updates any matching entity in the database if no entities match
+   * the question will be created.
+   * 
+   * @param question receives a question object
+   */
   @Override
   public Question update(Question question)
       throws QuestionConflictException, QuestionNotFoundException {
@@ -91,6 +97,17 @@ public class QuestionServiceImpl implements QuestionService {
       throw new QuestionConflictException("Question already exists");
     }
     return updateQuestion;
+  }
+
+  @Override
+  public List<Question> getByUserId(int id) {
+    Optional<List<Question>> questionList = questionRepository.findByQuestionerId(id);
+
+    if (!questionList.isPresent()) {
+      throw new UserNotFoundException("No questions found for that user");
+    }
+
+    return questionList.get();
   }
 
 }

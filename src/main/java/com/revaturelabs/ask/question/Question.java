@@ -3,6 +3,7 @@ package com.revaturelabs.ask.question;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,10 +11,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tags.Tag;
 
 /**
@@ -26,6 +37,7 @@ import com.revaturelabs.ask.tags.Tag;
 @Entity
 @Table(name = "questions")
 @JsonDeserialize(using = QuestionJsonDeserializer.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Question {
 
   @Id
@@ -53,6 +65,11 @@ public class Question {
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> associatedTags;
 
+  @JsonIdentityReference
+  @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+  private Set<Response> responses;
+  
+  
   /**
    * Auto-generated setter for id.
    * 
@@ -181,6 +198,19 @@ public class Question {
     associatedTags.add(tag);
   }
 
+  public Set<Response> getResponses() {
+    return responses;
+  }
+
+  public void setResponses(Set<Response> responses) {
+    this.responses = responses;
+  }
+
+  /**
+   * 
+   * Auto-Generated hashcode function
+   * 
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -193,9 +223,17 @@ public class Question {
         prime * result + ((highlightedResponseId == null) ? 0 : highlightedResponseId.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
     result = prime * result + ((questionerId == null) ? 0 : questionerId.hashCode());
+    result = prime * result + ((responses == null) ? 0 : responses.hashCode());
     return result;
   }
 
+  /**
+   * 
+   * Auto-generated equals function.
+   * 
+   * @param obj The object to be compared to the current object
+   * 
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -240,19 +278,26 @@ public class Question {
         return false;
     } else if (!questionerId.equals(other.questionerId))
       return false;
+    if (responses == null) {
+      if (other.responses != null)
+        return false;
+    } else if (!responses.equals(other.responses))
+      return false;
     return true;
   }
 
   /**
-   * Auto-generated ToString for question class.
    * 
-   * @return A string to represent the question class
+   * Auto-generated toString method.
+   * 
    */
   @Override
   public String toString() {
-    return "Question [id=" + id + ", questionerId=" + questionerId + ", head=" + head + ", body="
-        + body + ", creationDate=" + creationDate + "]";
+    return "Question [id=" + id + ", questionerId=" + questionerId + ", highlightedResponseId="
+        + highlightedResponseId + ", head=" + head + ", body=" + body + ", creationDate="
+        + creationDate + ", associatedTags=" + associatedTags + ", responses=" + responses + "]";
   }
+
 
 
 }

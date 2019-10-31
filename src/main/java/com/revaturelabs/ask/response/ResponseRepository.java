@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ResponseRepository extends CrudRepository<Response, Integer> {
 
-  Optional<List<Response>> findByQuestionId(Integer id);
 
 }
 

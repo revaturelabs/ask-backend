@@ -25,10 +25,10 @@ INSERT INTO questions VALUES
 
 -- data for responses
 INSERT INTO responses VALUES 
-  (DEFAULT, 1, 3, 1, 'Response body 1', '2019-10-31'),
-  (DEFAULT, 2, 4, 1, 'Response body 2', '2019-10-31'),
-  (DEFAULT, 2, 3, 2, 'Response body 3', '2019-10-31'),
-  (DEFAULT, 1, 4, 2, 'Response body 4', '2019-10-31');
+  (DEFAULT, 1, 3,'Response body 1', '2019-10-31'),
+  (DEFAULT, 2, 4,'Response body 2', '2019-10-31'),
+  (DEFAULT, 2, 3,'Response body 3', '2019-10-31'),
+  (DEFAULT, 1, 4,'Response body 4', '2019-10-31');
 
 -- data for questions_tags
 -- this is a junction table for questions and tags

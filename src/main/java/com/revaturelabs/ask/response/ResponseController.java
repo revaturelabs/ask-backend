@@ -122,24 +122,8 @@ public class ResponseController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
     }
   }
-  
-  /**
-   * 
-   * Accepts HTTP GET requests. Takes in a question id, and retrieves a list of all responses with that
-   * question id.
-   * 
-   * @param id
-   */
-  
-  @GetMapping("/forQuestion/{id}")
-  public List<Response> getResponsesByQuestionId(@PathVariable int id){
-    
-    try {
-      return this.responseService.getAllByQuestionId(id);
-    } catch (ResponseNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Responses not found", e);
-    }
-  }
+
+
 }
 
 

@@ -1,6 +1,9 @@
-DROP TABLE IF EXISTS responses;
+DROP TABLE IF EXISTS questions_tags;
+DROP TABLE IF EXISTS users_tags;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS responses;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -53,4 +56,3 @@ CREATE TABLE users_tags (
   FOREIGN KEY (user_id) REFERENCES users (id),
   FOREIGN KEY (tag_id) REFERENCES tags (id)
 );
-

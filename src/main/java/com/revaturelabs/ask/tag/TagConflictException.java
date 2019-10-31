@@ -1,4 +1,4 @@
-package com.revaturelabs.ask.tags;
+package com.revaturelabs.ask.tag;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

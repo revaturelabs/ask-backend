@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import com.revaturelabs.ask.tags.Tag;
+import com.revaturelabs.ask.tag.Tag;
 
 @Entity
 @Table(name = "users")

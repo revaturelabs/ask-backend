@@ -9,6 +9,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.question.QuestionNotFoundException;
+import com.revaturelabs.ask.question.QuestionServiceImpl;
 
 public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
 
@@ -35,7 +38,7 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
       } else {
         response.setId(0);
       }
-      if ((Integer) root.responderId != null) {
+      if (root.responderId != null) {
         response.setResponderId(root.responderId);
       }
       if (root.body != null) {

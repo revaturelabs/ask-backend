@@ -7,7 +7,7 @@ public interface QuestionService {
 
   List<Question> getAll();
 
-  Question getById(int id) throws QuestionNotFoundException;
+  Question getById(Integer id) throws QuestionNotFoundException;
 
   Question create(Question question);
 

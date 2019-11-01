@@ -51,23 +51,6 @@ public class QuestionController {
    * @return a question entity which has the same id as the given id.
    */
 
-  /**
-   * Accepts HTTP Get request Returns a list of Question instances as a JSON entity based on the
-   * given user id.
-   * 
-   * @param id receives the id of a user.
-   * @return a list of questions which have the same user id as the given id.
-   */
-
-  @GetMapping("/fromUser/{id}")
-  public List<Question> getQuestionByUserId(@PathVariable int id) {
-    try {
-      return questionService.getByUserId(id);
-    } catch (UserNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
-    }
-  }
-
   @GetMapping("/{id}")
   public Question getQuestionById(@PathVariable int id) {
     try {

@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.question.Question;
@@ -43,7 +42,7 @@ public class Response {
 
   @Column(name = "question_id", nullable = false)
   private Integer questionId;
-  
+
   @JsonIgnoreProperties({"responses"})
   @ManyToOne(cascade = CascadeType.REFRESH)
   @JoinColumn(name = "question_id", insertable = false, updatable = false)
@@ -70,7 +69,7 @@ public class Response {
   public void setId(int id) {
     this.id = id;
   }
-  
+
 
   /**
    * Auto-generated getter for responder id.
@@ -89,7 +88,7 @@ public class Response {
   public void setResponderId(Integer responderId) {
     this.responderId = responderId;
   }
-  
+
   /**
    * Auto-generated getter for the response body.
    * 
@@ -107,7 +106,7 @@ public class Response {
   public void setBody(String body) {
     this.body = body;
   }
-  
+
   /**
    * Auto-generated getter for creation date
    * 
@@ -117,7 +116,7 @@ public class Response {
     return this.creationDate;
   }
 
-  
+
   /**
    * Auto-generated setter for creation date.
    * 
@@ -126,7 +125,7 @@ public class Response {
   public void setCreationDate(Date creationDate) {
     this.creationDate = creationDate;
   }
-  
+
   /**
    * Auto-generated getter for question id
    * 
@@ -135,7 +134,7 @@ public class Response {
   public Integer getQuestionId() {
     return this.questionId;
   }
-  
+
   /**
    * Auto-generated setter for question id.
    * 
@@ -144,7 +143,7 @@ public class Response {
   public void setQuestionId(Integer questionId) {
     this.questionId = questionId;
   }
-  
+
   /**
    * Auto-generated getter for the Question.
    * 
@@ -163,13 +162,13 @@ public class Response {
     this.question = question;
   }
 
- 
+
   /**
    * 
-   * Hashing function for response. Does NOT include question attribute in hashing
-   * to avoid potential infinite recursion problems (e.g., when attempting to serialize
-   * the responses within a set, it will attempt to serialize the question. If the question
-   * hash attempts to serialize its set of responses, an infinite loop will occur). 
+   * Hashing function for response. Does NOT include question attribute in hashing to avoid
+   * potential infinite recursion problems (e.g., when attempting to serialize the responses within
+   * a set, it will attempt to serialize the question. If the question hash attempts to serialize
+   * its set of responses, an infinite loop will occur).
    */
   @Override
   public int hashCode() {
@@ -183,7 +182,7 @@ public class Response {
     return result;
   }
 
-  
+
   /**
    * Automatically generated equality function.
    */
@@ -236,7 +235,7 @@ public class Response {
         + "]";
   }
 
-  
+
 
 }
 

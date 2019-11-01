@@ -15,5 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuestionRepository extends CrudRepository<Question, Integer> {
 
+  Optional<List<Question>> findByQuestionerId(Integer id);
+
 
 }

@@ -1,8 +1,10 @@
 package com.revaturelabs.ask.question;
 
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.TagService;
-import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * The QuestionController is responsible for handling request about Questions. QuestionController
@@ -113,6 +115,23 @@ public class QuestionController {
     } catch (QuestionConflictException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT,
           "Error during update/creation of question", e);
+    }
+  }
+
+  /***
+   * Accepts HTTP GET requests. Takes in an id from the url and returns the responses to that
+   * question.
+   * 
+   * @param id the ID of the target question
+   */
+  @GetMapping("/{id}/responses")
+  public ResponseEntity<Set<Response>> getResponses(@PathVariable int id) {
+
+    try {
+      return ResponseEntity.ok(questionService.getById(id).getResponses());
+    } catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "There were no responses found for this question", e);
     }
   }
 }

@@ -9,9 +9,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.revaturelabs.ask.question.Question;
-import com.revaturelabs.ask.question.QuestionNotFoundException;
-import com.revaturelabs.ask.question.QuestionServiceImpl;
 
 public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
 

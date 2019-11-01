@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * Service class for managing questions. It contains methods for finding all questions, finding a
@@ -95,14 +94,4 @@ public class QuestionServiceImpl implements QuestionService {
     return updateQuestion;
   }
 
-  @Override
-  public List<Question> getByUserId(Integer id) {
-    Optional<List<Question>> questionList = questionRepository.findByQuestionerId(id);
-
-    if (!questionList.isPresent()) {
-      throw new UserNotFoundException("No questions found for that user");
-    }
-
-    return questionList.get();
-  }
 }

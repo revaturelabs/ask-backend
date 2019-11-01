@@ -120,9 +120,9 @@ public class User {
 
   /**
    * 
-   * Hashing function for response. DOES include questions attribute in hashing function.
-   * If the questions hashing function is changed to include its User, there may be an infinite
-   * recursion error if a corresponding change is not made on the User object. 
+   * Hashing function for response. DOES include questions attribute in hashing function. If the
+   * questions hashing function is changed to include its User, there may be an infinite recursion
+   * error if a corresponding change is not made on the User object.
    */
   @Override
   public int hashCode() {
@@ -179,7 +179,7 @@ public class User {
       return false;
     return true;
   }
-  
+
   /**
    * 
    * Automatically generated toString method.

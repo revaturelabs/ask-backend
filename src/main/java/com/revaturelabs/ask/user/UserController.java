@@ -83,11 +83,10 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
   }
-  
+
   /**
    * 
-   * Takes HTTP GET requests and returns the set of questions associated with the specified
-   * user
+   * Takes HTTP GET requests and returns the set of questions associated with the specified user
    * 
    * @param id
    * @return The set of questions associated with the user
@@ -96,8 +95,7 @@ public class UserController {
   public ResponseEntity<Set<Question>> getQuestions(@PathVariable int id) {
     try {
       return ResponseEntity.ok(userService.findById(id).getQuestions());
-    }
-    catch (UserNotFoundException e) {
+    } catch (UserNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
   }

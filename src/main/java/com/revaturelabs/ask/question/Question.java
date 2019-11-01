@@ -11,18 +11,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.Tag;
+import com.revaturelabs.ask.user.User;
 
 /**
  * Question class to represent a question. It holds the id of the user who submitted the question,
  * body, head, creation date.
  * 
- * @author Roy L. Brow De Jesús
+ * @author Roy L. Brow De Jesús, Chris Allen
  *
  */
 @Entity
@@ -58,8 +60,13 @@ public class Question {
   @JsonIgnoreProperties({"question"})
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
   private Set<Response> responses;
-  
-  
+
+  @JoinColumn(name = "questioner_id", insertable = false, updatable = false)
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  @JsonIgnoreProperties({"questions"})
+  private User user;
+
+
   /**
    * Auto-generated setter for id.
    * 
@@ -176,6 +183,25 @@ public class Question {
     this.creationDate = creationDate;
   }
 
+
+  /**
+   * Auto-generated getter for user.
+   * 
+   * @return a User object that is the question's user
+   */
+  public User getUser() {
+    return user;
+  }
+
+  /**
+   * Auto-generated setter for user.
+   * 
+   * @param the user to be treated as the question's user
+   */
+  public void setUser(User user) {
+    this.user = user;
+  }
+
   /**
    * Add a tag to the associated tags set for this question and creates the set if necessary.
    * 
@@ -188,23 +214,34 @@ public class Question {
     associatedTags.add(tag);
   }
 
+  /**
+   * Auto-generated getter for responses
+   * 
+   * @return a set of responses for the question
+   */
   public Set<Response> getResponses() {
     return responses;
   }
 
+  /**
+   * Auto-generated setter for responses
+   * 
+   * @param The set of responses to be used
+   */
   public void setResponses(Set<Response> responses) {
     this.responses = responses;
   }
 
 
-  
+
   /**
    * 
    * Automatically generated hashing function for question.
    * 
-   * Note that, if used in conjunction with responses, if the response hash function
-   * includes questions, there may be an infinite recursion problem. This currently assumes
-   * that Response does NOT use its question attribute in its hashing function.
+   * Note that, if used in conjunction with responses or users, if the response or user hash
+   * function includes questions, there may be an infinite recursion problem. This currently assumes
+   * that Response does NOT use its question attribute in its hashing function and that user DOES
+   * use its question attribute in hashing.
    * 
    */
 
@@ -223,6 +260,7 @@ public class Question {
     result = prime * result + ((responses == null) ? 0 : responses.hashCode());
     return result;
   }
+
 
   /**
    * 
@@ -286,11 +324,13 @@ public class Question {
    * Auto-generated toString method.
    * 
    */
+
   @Override
   public String toString() {
     return "Question [id=" + id + ", questionerId=" + questionerId + ", highlightedResponseId="
         + highlightedResponseId + ", head=" + head + ", body=" + body + ", creationDate="
-        + creationDate + ", associatedTags=" + associatedTags + ", responses=" + responses + "]";
+        + creationDate + ", associatedTags=" + associatedTags + ", responses=" + responses
+        + ", user=" + user + "]";
   }
 
 

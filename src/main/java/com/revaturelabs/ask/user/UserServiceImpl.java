@@ -1,11 +1,14 @@
 package com.revaturelabs.ask.user;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import com.revaturelabs.ask.tag.Tag;
+import com.revaturelabs.ask.tag.TagService;
 import com.revaturelabs.ask.user.UserRepository;
 
 @Service
@@ -13,25 +16,15 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserRepository userRepo;
+  
+  @Autowired
+  private TagService tagService;
 
-  /**
-   * "findAll" basically gets all
-   * the users from the H2 database.
-   * 
-   * @return List of all users in database.
-   */
   @Override
   public List<User> findAll() {
     return (List<User>) userRepo.findAll();
   }
 
-  /**
-   * "findById" finds the user by their ID.
-   * 
-   * @param id
-   * @return
-   * @throws UserNotFoundException
-   */
   @Override
   public User findById(int id) throws UserNotFoundException {
     Optional<User> user = userRepo.findById(id);
@@ -43,38 +36,21 @@ public class UserServiceImpl implements UserService {
     return user.get();
   }
 
-  /**
-   * "create" gets the user object and
-   * creates a new row for it in the database.
-   * 
-   * @param user
-   * @return
-   */
   @Override
   public User create(User user) {
     return userRepo.save(user);
   }
 
-  /**
-   * "update" checks if the user exists beforehand.
-   * If so, it saves changes into the specified row
-   * of the database, given it doesn't overwrite the ID.
-   * 
-   * If not, it throws the exception.
-   * 
-   * @param user
-   * @return
-   * @throws UserNotFoundException
-   * @throws UserConflictException
-   */
   @Override
   public User update(User user) throws UserNotFoundException, UserConflictException {
     Optional<User> existingUser = userRepo.findById(user.getId());
 
-    User updatedUser = null;
+    User updatedUser = existingUser.get();
     if (existingUser.isPresent()) {
       try {
-        updatedUser = userRepo.save(user);
+        if (!(user.getUsername().equals(updatedUser.getUsername()) ||
+            user.getPassword().equals(updatedUser.getPassword())))
+          updatedUser = userRepo.save(user);
       } catch (DataIntegrityViolationException e) {
         throw new UserConflictException();
       }
@@ -85,20 +61,14 @@ public class UserServiceImpl implements UserService {
     return updatedUser;
   }
 
-  /**
-   * "createOrUpdate" does the same function as
-   * "update" except it also creates the user
-   * if the user in question doesn't exist.
-   * 
-   * @param user
-   * @return
-   * @throws UserConflictException
-   */
   @Override
   public User createOrUpdate(User user) throws UserConflictException {
-    User updatedUser = null;
+    User updatedUser = userRepo.findById(user.getId()).get();
+    //User presentUser
     try {
-      updatedUser = userRepo.save(user);
+      if (!(user.getUsername().equals(updatedUser.getUsername()) ||
+          user.getPassword().equals(updatedUser.getPassword())))
+        updatedUser = userRepo.save(user);
     } catch (DataIntegrityViolationException e) {
       throw new UserConflictException();
     }
@@ -106,14 +76,6 @@ public class UserServiceImpl implements UserService {
     return updatedUser;
   }
 
-  /**
-   * "delete" basically looks for the ID of the 
-   * user and deletes the specified user with 
-   * that ID.
-   * 
-   * @param id
-   * @throws UserNotFoundException
-   */
   @Override
   public void delete(int id) throws UserNotFoundException {
     boolean userExists = userRepo.existsById(id);
@@ -124,5 +86,27 @@ public class UserServiceImpl implements UserService {
 
     userRepo.deleteById(id);
   }
-}
 
+  @Override
+  public User addUserTags(User user, Tag[] tags) throws UserNotFoundException, UserConflictException {
+    Optional<User> existingUser = userRepo.findById(user.getId());
+    Set<Tag> tagsReq = new HashSet<Tag>();
+    
+    User updatedUser = null;
+    if (existingUser.isPresent() && tags != null && user.isExpert()) {
+      try {
+        for (Tag tag : tags) {
+          tagsReq.add(tag);
+        }
+        user.setUserTags(tagsReq);
+        updatedUser = userRepo.save(user);
+      } catch (DataIntegrityViolationException e) {
+        throw new UserConflictException();
+      }
+    } else {
+      throw new UserNotFoundException("to update");
+    }
+
+    return updatedUser;
+  }
+}

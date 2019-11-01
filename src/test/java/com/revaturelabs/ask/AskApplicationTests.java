@@ -10,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.question.QuestionConflictException;
+import com.revaturelabs.ask.question.QuestionController;
+import com.revaturelabs.ask.question.QuestionNotFoundException;
+import com.revaturelabs.ask.question.QuestionService;
 import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.response.ResponseController;
 import com.revaturelabs.ask.response.ResponseService;
@@ -31,11 +36,18 @@ public class AskApplicationTests {
   @MockBean
   TagService tagServiceMock;
 
+  @MockBean
+  QuestionService questionServiceMock;
+
+
   @Autowired
   ResponseController responseControllerImpl;
 
   @Autowired
   TagController tagControllerImpl;
+
+  @Autowired
+  QuestionController questionControllerImpl;
 
   @Test
   public void testGetResponseById() {
@@ -46,12 +58,16 @@ public class AskApplicationTests {
     assertEquals(exampleResponse, responseControllerImpl.getResponseById(1));
   }
 
+  /**
+   * Tests for tags.
+   */
   @Test
   public void testGetTagById() {
     Tag exampleTag = new Tag();
     when((tagServiceMock.getById(1))).thenReturn(exampleTag);
     assertEquals(exampleTag, tagControllerImpl.getTagById(1));
   }
+
 
   @Test
   public void testGetAllTags() {
@@ -67,7 +83,7 @@ public class AskApplicationTests {
   }
 
   @Test
-  public void testCreate() {
+  public void testCreateTag() {
     Tag exampleTag = new Tag();
     exampleTag.setName("JavaScript");
     when((tagServiceMock.create(exampleTag))).thenReturn(exampleTag);
@@ -75,20 +91,18 @@ public class AskApplicationTests {
   }
 
   @Test
-  public void testUpdate() {
+  public void testUpdateTag() {
     Tag exampleTag = new Tag();
     exampleTag.setId(1);
     exampleTag.setName("JavaScript");
-
-    Tag exampleTag2 = new Tag();
-    exampleTag2.setName("JScript");
 
     when((tagServiceMock.update(exampleTag))).thenReturn(exampleTag);
     assertEquals(exampleTag, tagControllerImpl.updateTag(exampleTag, 1));
   }
 
+
   @Test
-  public void testCreateUpdate() {
+  public void testCreateUpdateTag() {
     Tag exampleTag = new Tag();
     exampleTag.setName("JavaScript");
     when((tagServiceMock.createOrUpdate(exampleTag))).thenReturn(exampleTag);
@@ -96,4 +110,63 @@ public class AskApplicationTests {
   }
 
 
+  /**
+   * Tests related to Questions
+   */
+  @Test
+  public void testGetQuestionById() {
+    Question exampleQuestion = new Question();
+    try {
+      when((questionServiceMock.getById(1))).thenReturn(exampleQuestion);
+    } catch (Exception e) {
+    }
+    assertEquals(exampleQuestion, questionControllerImpl.getQuestionById(1));
+  }
+
+  @Test
+  public void testGetAllQuestions() {
+    Question javaScriptQuestion = new Question();
+    javaScriptQuestion.setHead("A JavaScript Question");
+    javaScriptQuestion.setBody("A JavaScript Question Body");
+
+    Question htmlQuestion = new Question();
+    htmlQuestion.setHead("An HTML Question");
+    htmlQuestion.setBody("An HTML Question Body");
+
+    List<Question> questionList = new ArrayList();
+    questionList.add(javaScriptQuestion);
+    questionList.add(htmlQuestion);
+
+    when((questionServiceMock.getAll())).thenReturn(questionList);
+    assertEquals(questionList, questionControllerImpl.getAllQuestions());
+  }
+
+  @Test
+  public void testCreateQuestion() {
+    Question exampleQuestion = new Question();
+    exampleQuestion.setHead("JavaScript Question Head");
+    exampleQuestion.setBody("JavaScript Question Body");
+    when((questionServiceMock.create(exampleQuestion))).thenReturn(exampleQuestion);
+    assertEquals(exampleQuestion, questionControllerImpl.createQuestion(exampleQuestion));
+  }
+
+  @Test
+  public void testCreateUpdateQuestion() throws QuestionConflictException {
+    Question exampleQuestion = new Question();
+    exampleQuestion.setHead("JavaScript Question Head");
+    exampleQuestion.setBody("JavaScript Question Body");
+
+    when((questionServiceMock.createOrUpdate(exampleQuestion))).thenReturn(exampleQuestion);
+    assertEquals(exampleQuestion, questionControllerImpl.createOrUpdate(exampleQuestion, 1));
+  }
+
+  @Test
+  public void testUpdateQuestion() throws QuestionConflictException, QuestionNotFoundException {
+    Question exampleQuestion = new Question();
+    exampleQuestion.setId(1);
+    exampleQuestion.setHead("JavaScript Question Head");
+    exampleQuestion.setBody("JavaScript Question Body");
+    when((questionServiceMock.update(exampleQuestion))).thenReturn(exampleQuestion);
+    assertEquals(exampleQuestion, questionControllerImpl.updateQuestion(exampleQuestion, 1));
+  }
 }

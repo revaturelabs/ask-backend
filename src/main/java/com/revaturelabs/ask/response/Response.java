@@ -6,9 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.data.annotation.CreatedDate;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.revaturelabs.ask.question.QuestionJsonDeserializer;
 
 /**
  * Holds the information about a response to a question. It holds the id of the responder, it's
@@ -62,12 +60,13 @@ public class Response {
     this.id = id;
   }
 
-  /** * Auto-generated getter for the question id.
+  /**
+   * * Auto-generated getter for the question id.
    * 
    * @return the corresponding question's id
    */
   public Integer getQuestionId() {
-    return questionId;
+    return this.questionId;
   }
 
   /**
@@ -78,7 +77,7 @@ public class Response {
   public void setQuestionId(Integer questionId) {
     this.questionId = questionId;
   }
-  
+
 
   /**
    * Auto-generated getter for the responder's id.
@@ -141,8 +140,8 @@ public class Response {
    */
   @Override
   public String toString() {
-    return "Response [id=" + id + ", responderId=" + responderId + ", questionId=" + questionId
-        + ", body=" + body + ", creationDate=" + creationDate + "]";
+    return "Response [id=" + this.id + ", responderId=" + this.responderId + ", questionId="
+        + this.questionId + ", body=" + this.body + ", creationDate=" + this.creationDate + "]";
   }
 
 

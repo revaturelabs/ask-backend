@@ -3,6 +3,7 @@ package com.revaturelabs.ask.response;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,8 +38,8 @@ public class ResponseController {
    * @return a List of Responses that contain all responses on the database
    */
   @GetMapping
-  public List<Response> getAllResponses() {
-    return this.responseService.getAll();
+  public ResponseEntity<List<Response>> getAllResponses() {
+    return ResponseEntity.ok(this.responseService.getAll());
   }
 
   /**
@@ -48,9 +49,9 @@ public class ResponseController {
    * @return response entity which has the same id as the given id.
    */
   @GetMapping("/{id}")
-  public Response getResponseById(@PathVariable int id) {
+  public ResponseEntity<Response> getResponseById(@PathVariable int id) {
     try {
-      return this.responseService.getById(id);
+      return ResponseEntity.ok(this.responseService.getById(id));
     } catch (ResponseNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
     }

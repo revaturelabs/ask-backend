@@ -3,6 +3,7 @@ package com.revaturelabs.ask.question;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,8 +41,8 @@ public class QuestionController {
    * @return a List of Question that contain all questions on the database
    */
   @GetMapping
-  public List<Question> getAllQuestions() {
-    return questionService.getAll();
+  public ResponseEntity<List<Question>> getAllQuestions() {
+    return ResponseEntity.ok(questionService.getAll());
   }
 
   /**
@@ -52,9 +53,9 @@ public class QuestionController {
    */
 
   @GetMapping("/{id}")
-  public Question getQuestionById(@PathVariable int id) {
+  public ResponseEntity<Question> getQuestionById(@PathVariable int id) {
     try {
-      return questionService.getById(id);
+      return ResponseEntity.ok(questionService.getById(id));
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
     }

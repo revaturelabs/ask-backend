@@ -1,11 +1,15 @@
 package com.revaturelabs.ask.question;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import com.revaturelabs.ask.user.UserNotFoundException;
+import com.revaturelabs.ask.tag.Tag;
+import com.revaturelabs.ask.tag.TagNotFoundException;
+import com.revaturelabs.ask.tag.TagService;
 
 /**
  * Service class for managing questions. It contains methods for finding all questions, finding a
@@ -19,6 +23,9 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Autowired
   QuestionRepository questionRepository;
+
+  @Autowired
+  TagService tagService;
 
   /**
    * Returns a list of all questions on the database
@@ -95,14 +102,38 @@ public class QuestionServiceImpl implements QuestionService {
     return updateQuestion;
   }
 
+  /**
+   * 
+   * A method to search for questions by specified tags. Will allow for the results to return either
+   * questions that have all of the specified tags or for questions that have at least one of the
+   * specified tags.
+   * 
+   * @author Chris Allen
+   * @param requireAll A boolean that specified whether all tags must be included or at least one
+   *        tag is included in the results
+   * @param tagNames A list of tag names to be searched for
+   */
   @Override
-  public List<Question> getByUserId(Integer id) {
-    Optional<List<Question>> questionList = questionRepository.findByQuestionerId(id);
+  public Set<Question> findAllByTagNames(boolean requireAll, List<String> tagNames) {
 
-    if (!questionList.isPresent()) {
-      throw new UserNotFoundException("No questions found for that user");
+    Set<Tag> tagsToSearchWith = new HashSet<Tag>();
+    Set<Question> filteredQuestions = new HashSet<Question>();
+
+    for (String tagName : tagNames) {
+      try {
+        tagsToSearchWith.add(tagService.getTagByName(tagName));
+      } catch (TagNotFoundException e) {
+        throw new TagNotFoundException("A specified tag was not found!");
+      }
     }
 
-    return questionList.get();
+    if (requireAll) {
+      filteredQuestions.addAll(questionRepository
+          .findAllContainingAllTags(tagsToSearchWith, tagsToSearchWith.size()).get());
+    } else {
+      filteredQuestions.addAll(questionRepository.findAllContainingAtLeastOneTag(tagsToSearchWith).get());
+    }
+
+    return filteredQuestions;
   }
 }

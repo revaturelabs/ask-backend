@@ -48,6 +48,7 @@ public class ResponseController {
    */
   @GetMapping("/{id}")
   public Response getResponseById(@PathVariable int id) {
+    // System.out.println("in getResponseById of ResponseController " + id); // testing
     try {
       return this.responseService.getById(id);
     } catch (ResponseNotFoundException e) {

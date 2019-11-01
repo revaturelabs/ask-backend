@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.question.Question;
 import com.revaturelabs.ask.tag.Tag;
 
@@ -24,6 +25,7 @@ import com.revaturelabs.ask.tag.Tag;
  */
 @Entity
 @Table(name = "users")
+@JsonDeserialize(using = UserJsonDeserializer.class)
 public class User {
 
   @Id
@@ -118,6 +120,15 @@ public class User {
     this.questions = questions;
   }
 
+  /**
+   * 
+   * Method for adding tags to the set of user tags.
+   * 
+   * @param tag The tag to be added to the set.
+   */
+  public void addTagToUser(Tag tag) {
+    this.expertTags.add(tag);
+  }
 
   /**
    * 

@@ -1,7 +1,7 @@
 package com.revaturelabs.ask.user;
 
 import java.util.List;
-
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import com.revaturelabs.ask.question.Question;
 
 @RestController
 @RequestMapping(path = "/users")
+
+/**
+ * 
+ * @author Carlos Santos, Chris Allen
+ *
+ */
 public class UserController {
 
   @Autowired
@@ -73,6 +80,24 @@ public class UserController {
     try {
       userService.delete(id);
     } catch (UserNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+    }
+  }
+  
+  /**
+   * 
+   * Takes HTTP GET requests and returns the set of questions associated with the specified
+   * user
+   * 
+   * @param id
+   * @return The set of questions associated with the user
+   */
+  @GetMapping("/{id}/questions")
+  public ResponseEntity<Set<Question>> getQuestions(@PathVariable int id) {
+    try {
+      return ResponseEntity.ok(userService.findById(id).getQuestions());
+    }
+    catch (UserNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
   }

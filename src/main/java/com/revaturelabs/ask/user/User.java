@@ -1,6 +1,7 @@
 package com.revaturelabs.ask.user;
 
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,10 +9,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.revaturelabs.ask.question.Question;
 import com.revaturelabs.ask.tag.Tag;
 
 
+/**
+ * 
+ * @author Carlos Santos, Chris Allen
+ *
+ */
 @Entity
 @Table(name = "users")
 public class User {
@@ -29,11 +38,16 @@ public class User {
 
   @Column(name = "expert")
   private boolean isExpert;
-  
+
   @ManyToMany
   @JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  private Set<Tag> subjects;
+  private Set<Tag> expertTags;
+
+
+  @JsonIgnoreProperties({"user", "responses"})
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<Question> questions;
 
   public User() {
     super();
@@ -77,17 +91,107 @@ public class User {
     this.isExpert = isExpert;
   }
 
-  public Set<Tag> getSubjects() {
-    return subjects;
+  public Set<Tag> getExpertTags() {
+    return expertTags;
   }
 
-  public void setSubjects(Set<Tag> subjects) {
-    this.subjects = subjects;
+  public void setExpertTags(Set<Tag> expertTags) {
+    this.expertTags = expertTags;
   }
+
+  /**
+   * Auto-generated getter for questions.
+   * 
+   * @return Returns a set of questions
+   */
+  public Set<Question> getQuestions() {
+    return questions;
+  }
+
+  /**
+   * Auto-generated setter for questions.
+   * 
+   * @param questions A set of questions to be set for the questions attribute
+   */
+  public void setQuestions(Set<Question> questions) {
+    this.questions = questions;
+  }
+
+
+  /**
+   * 
+   * Hashing function for response. DOES include questions attribute in hashing function.
+   * If the questions hashing function is changed to include its User, there may be an infinite
+   * recursion error if a corresponding change is not made on the User object. 
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((expertTags == null) ? 0 : expertTags.hashCode());
+    result = prime * result + id;
+    result = prime * result + (isExpert ? 1231 : 1237);
+    result = prime * result + ((password == null) ? 0 : password.hashCode());
+    result = prime * result + ((questions == null) ? 0 : questions.hashCode());
+    result = prime * result + ((username == null) ? 0 : username.hashCode());
+    return result;
+  }
+
+  /**
+   * 
+   * Auto-generated equals function
+   * 
+   * @param obj The object to be compared
+   * 
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    User other = (User) obj;
+    if (expertTags == null) {
+      if (other.expertTags != null)
+        return false;
+    } else if (!expertTags.equals(other.expertTags))
+      return false;
+    if (id != other.id)
+      return false;
+    if (isExpert != other.isExpert)
+      return false;
+    if (password == null) {
+      if (other.password != null)
+        return false;
+    } else if (!password.equals(other.password))
+      return false;
+    if (questions == null) {
+      if (other.questions != null)
+        return false;
+    } else if (!questions.equals(other.questions))
+      return false;
+    if (username == null) {
+      if (other.username != null)
+        return false;
+    } else if (!username.equals(other.username))
+      return false;
+    return true;
+  }
+  
+  /**
+   * 
+   * Automatically generated toString method.
+   * 
+   * @return A string representation of the User object
+   * 
+   */
 
   @Override
   public String toString() {
-    return "User [id=" + id + ", username=" + username + ", password=" + password + "]";
+    return "User [id=" + id + ", username=" + username + ", password=" + password + ", isExpert="
+        + isExpert + ", expertTags=" + expertTags + ", questions=" + questions + "]";
   }
 
 

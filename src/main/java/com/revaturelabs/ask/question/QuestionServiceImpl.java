@@ -38,7 +38,7 @@ public class QuestionServiceImpl implements QuestionService {
    * @return all questions that match the given id. empty if no question match
    */
   @Override
-  public Question getById(int id) throws QuestionNotFoundException {
+  public Question getById(Integer id) throws QuestionNotFoundException {
     Optional<Question> question = questionRepository.findById(id);
 
     if (!question.isPresent()) {
@@ -96,7 +96,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public List<Question> getByUserId(int id) {
+  public List<Question> getByUserId(Integer id) {
     Optional<List<Question>> questionList = questionRepository.findByQuestionerId(id);
 
     if (!questionList.isPresent()) {

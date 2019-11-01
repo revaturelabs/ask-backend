@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -39,11 +40,12 @@ public class Response {
   @Column(name = "creation_date", updatable = false)
   private Date creationDate;
 
-  @Column(name = "question_id", insertable = false, updatable = false)
+  @Column(name = "question_id", nullable = false)
   private Integer questionId;
 
   @JsonIgnoreProperties({"responses"})
   @ManyToOne(cascade = CascadeType.REFRESH)
+  @JoinColumn(name = "question_id", insertable = false, updatable = false)
   private Question question;
 
   public Response() {

@@ -6,7 +6,7 @@ public interface QuestionService {
 
   List<Question> getAll();
 
-  Question getById(int id) throws QuestionNotFoundException;
+  Question getById(Integer id) throws QuestionNotFoundException;
 
   Question create(Question question);
 
@@ -14,5 +14,6 @@ public interface QuestionService {
 
   Question createOrUpdate(Question question) throws QuestionConflictException;
 
+  List<Question> getByUserId(Integer id);
 
 }

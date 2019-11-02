@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.response.Response;
+import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
 
 /**
@@ -118,7 +120,7 @@ public class QuestionController {
     }
   }
 
-  /***
+  /**
    * Accepts HTTP GET requests. Takes in an id from the url and returns the responses to that
    * question.
    * 
@@ -132,6 +134,29 @@ public class QuestionController {
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,
           "There were no responses found for this question", e);
+    }
+  }
+
+  /**
+   * Accepts HTTP GET requests. Takes a boolean and a list of tag names to be searched for and
+   * returns a set of questions that either contain all of the tags or contain at least one of the
+   * tags (denoted by the boolean)
+   * 
+   * @author Chris Allen
+   * @param requireAll A boolean that specifies whether to return questions with all the tags or at
+   *        least one of the tags
+   * @param tag The list of tag names to be searched for
+   * @return Either a set of questions that match the specified criteria or a bad request exception
+   */
+  @GetMapping("/search")
+  public ResponseEntity<Set<Question>> filterByTags(
+      @RequestParam(required = true) boolean requireAll,
+      @RequestParam(required = false) List<String> tag) {
+
+    try {
+      return ResponseEntity.ok(questionService.findAllByTagNames(requireAll, tag));
+    } catch (TagNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A requested tag was not found!");
     }
   }
 }

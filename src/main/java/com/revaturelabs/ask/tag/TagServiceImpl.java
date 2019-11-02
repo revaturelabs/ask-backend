@@ -45,7 +45,7 @@ public class TagServiceImpl implements TagService {
         tag = t;
       }
     }
-    if (tag.equals(null)) {
+    if (tag == null) {
       throw new TagNotFoundException("Tag Not Found");
     }
     return tag;

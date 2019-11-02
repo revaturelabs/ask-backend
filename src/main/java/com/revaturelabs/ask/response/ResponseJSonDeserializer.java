@@ -55,6 +55,10 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
         Date currentDate = new Date();
         response.setCreationDate(currentDate);
       }
+      
+      if(root.question != null) {
+        response.setQuestion(root.question);
+      }
     }
     return response;
   }
@@ -84,5 +88,8 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
 
     @JsonProperty("creationDate")
     public String creationDate;
+  
+    @JsonProperty("question")
+    public Question question;
   }
 }

@@ -35,7 +35,9 @@ INSERT INTO responses VALUES
 INSERT INTO questions_tags VALUES
     (1, 1),
     (2, 2),
-    (3, 3);
+    (3, 3),
+    (1, 3),
+    (2, 1);
  --   (DEFAULT, DEFAULT); -- if needed
  
 -- data for user_tags

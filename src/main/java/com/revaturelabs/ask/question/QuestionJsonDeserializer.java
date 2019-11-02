@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.revaturelabs.ask.tag.Tag;
+import com.revaturelabs.ask.user.User;
 
 /**
  * 
@@ -81,6 +82,13 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
         Date currentDate = new Date();
         question.setCreationDate(currentDate);
       }
+      
+      if(root.user != null) {
+        question.setUser(root.user);
+      }
+      if(root.highlightedResponseId != null) {
+        question.setHighlightedResponseId(root.highlightedResponseId);
+      }
     }
 
 
@@ -118,5 +126,11 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
     @JsonProperty("associatedTags")
     public Set<Tag> associatedTags;
+    
+    @JsonProperty("user")
+    public User user;
+    
+    @JsonProperty("highlightedResponseId")
+    public Integer highlightedResponseId;
   }
 }

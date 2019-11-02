@@ -1,6 +1,7 @@
 package com.revaturelabs.ask.question;
 
 import java.util.List;
+import java.util.Set;
 
 public interface QuestionService {
 
@@ -14,4 +15,5 @@ public interface QuestionService {
 
   Question createOrUpdate(Question question) throws QuestionConflictException;
 
+  Set<Question> findAllByTagNames(boolean requireAll, List<String> tags);
 }

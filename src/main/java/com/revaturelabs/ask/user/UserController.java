@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,8 +37,16 @@ public class UserController {
   TagService tagService;
 
   @GetMapping
-  public ResponseEntity<List<User>> findAll() {
-    return ResponseEntity.ok(userService.findAll());
+  public ResponseEntity<List<User>> findAll(@RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer size) {
+
+    if (page == null) {
+      page = 0;
+    }
+    if (size == null) {
+      size = 1000;
+    }
+    return ResponseEntity.ok(userService.findAll(page, size).getContent());
   }
 
   @GetMapping("/{id}")

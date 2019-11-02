@@ -1,9 +1,11 @@
 package com.revaturelabs.ask.question;
 
-import java.util.Optional;
 import java.util.Set;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.revaturelabs.ask.tag.Tag;
 
@@ -25,7 +27,7 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
    */
   @Query(
       value = "SELECT q FROM Question q join q.associatedTags t WHERE t in :tags GROUP BY q HAVING count(q) = :tagsSize")
-  Optional<Set<Question>> findAllContainingAllTags(Set<Tag> tags, long tagsSize);
+  Page<Question> findAllContainingAllTags(@Param("tags") Set<Tag> tags, long tagsSize, Pageable pageable);
 
   /**
    * Custom query that will return all questions provided that at least one of the specified tags
@@ -34,5 +36,5 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
    * @return An optional set of questions with at least one of the specified tags
    */
   @Query(value = "SELECT distinct q from Question q join q.associatedTags t where t in ?1")
-  Optional<Set<Question>> findAllContainingAtLeastOneTag(Set<Tag> tagSet);
+  Page<Question> findAllContainingAtLeastOneTag(Set<Tag> tagSet, Pageable pageable);
 }

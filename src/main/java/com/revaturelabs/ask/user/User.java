@@ -1,5 +1,6 @@
 package com.revaturelabs.ask.user;
 
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,9 +13,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.Tag;
 
 
@@ -36,6 +39,7 @@ public class User {
   @Column(name = "username")
   private String username;
 
+  @JsonIgnore
   @Column(name = "password")
   private String password;
 
@@ -51,6 +55,10 @@ public class User {
   @JsonIgnoreProperties({"user", "responses"})
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private Set<Question> questions;
+
+  @JsonIgnoreProperties({"user", "question"})
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<Response> responses;
 
   public User() {
     super();
@@ -127,15 +135,39 @@ public class User {
    * @param tag The tag to be added to the set.
    */
   public void addTagToUser(Tag tag) {
+    if(this.expertTags == null) {
+      this.expertTags = new HashSet<Tag>();
+    }
     this.expertTags.add(tag);
   }
 
   /**
+   * Auto-generated getter for responses.
    * 
-   * Hashing function for response. DOES include questions attribute in hashing function. If the
-   * questions hashing function is changed to include its User, there may be an infinite recursion
-   * error if a corresponding change is not made on the User object.
+   * @return Returns a set of responses
    */
+  public Set<Response> getResponses() {
+    return responses;
+  }
+
+  /**
+   * Auto-generated setter for responses.
+   * 
+   * @param questions A set of responses to be set for the responses attribute
+   */
+  public void setResponses(Set<Response> responses) {
+    this.responses = responses;
+  }
+
+  /**
+   * 
+   * Hashing function for response. DOES include questions and responses attributes in hashing
+   * function. If the questions or the responses hashing function is changed to include its User,
+   * there may be an infinite recursion error if a corresponding change is not made on the User
+   * object.
+   */
+
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -145,6 +177,7 @@ public class User {
     result = prime * result + (isExpert ? 1231 : 1237);
     result = prime * result + ((password == null) ? 0 : password.hashCode());
     result = prime * result + ((questions == null) ? 0 : questions.hashCode());
+    result = prime * result + ((responses == null) ? 0 : responses.hashCode());
     result = prime * result + ((username == null) ? 0 : username.hashCode());
     return result;
   }
@@ -156,6 +189,7 @@ public class User {
    * @param obj The object to be compared
    * 
    */
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -184,6 +218,11 @@ public class User {
         return false;
     } else if (!questions.equals(other.questions))
       return false;
+    if (responses == null) {
+      if (other.responses != null)
+        return false;
+    } else if (!responses.equals(other.responses))
+      return false;
     if (username == null) {
       if (other.username != null)
         return false;
@@ -203,7 +242,8 @@ public class User {
   @Override
   public String toString() {
     return "User [id=" + id + ", username=" + username + ", password=" + password + ", isExpert="
-        + isExpert + ", expertTags=" + expertTags + ", questions=" + questions + "]";
+        + isExpert + ", expertTags=" + expertTags + ", questions=" + questions + ", responses="
+        + responses + "]";
   }
 
 

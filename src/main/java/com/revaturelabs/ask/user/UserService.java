@@ -66,4 +66,11 @@ public interface UserService {
    */
   void delete(int id) throws UserNotFoundException;
 
+  /**
+   * "updateTags" specialized function to update an existing user's tags
+   * @param user a user object with the set of tags to be updated
+   * @return The updated user object
+   */
+  User updateTags(User user);
+
 }

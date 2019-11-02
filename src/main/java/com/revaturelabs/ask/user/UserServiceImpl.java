@@ -72,6 +72,7 @@ public class UserServiceImpl implements UserService {
     Optional<User> existingUser = userRepo.findById(user.getId());
 
     User updatedUser = null;
+   
     if (existingUser.isPresent()) {
       try {
         updatedUser = userRepo.save(user);
@@ -123,6 +124,34 @@ public class UserServiceImpl implements UserService {
     }
 
     userRepo.deleteById(id);
+  }
+
+  /**
+   * Specialized function to update the tags of an existing user.
+   * 
+   * @param user the User object with a set of tags to use for updating
+   * @return updatedUser The user after being updated in the repository
+   */
+  
+  @Override
+  public User updateTags(User user) {
+    Optional<User> existingUser = userRepo.findById(user.getId());
+
+    User updatedUser = null;
+   
+    if (existingUser.isPresent()) {
+      try {
+        updatedUser = existingUser.get();
+        updatedUser.setExpertTags(user.getExpertTags());
+        updatedUser = userRepo.save(updatedUser);
+      } catch (DataIntegrityViolationException e) {
+        throw new UserConflictException();
+      }
+    } else {
+      throw new UserNotFoundException("to update");
+    }
+
+    return updatedUser;
   }
 }
 

@@ -82,7 +82,7 @@ public class QuestionServiceImpl implements QuestionService {
       try {
         updateQuestion = questionRepository.save(question);
       } catch (DataIntegrityViolationException e) {
-        throw new QuestionConflictException("Question already exist");
+        throw new QuestionConflictException("Question already exists");
       }
     } else {
       throw new QuestionNotFoundException("Unable to find question to update.");

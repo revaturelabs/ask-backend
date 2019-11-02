@@ -139,6 +139,25 @@ public class QuestionController {
   }
 
   /**
+   * 
+   * Takes HTTP PUT requests and returns the updated question after setting the tags to be updated
+   * @param question The question object with tags to be changed
+   * @return A Question JSON after updating
+   */
+  @PutMapping("/{id}/tags")
+  public ResponseEntity<Question> setTags(@RequestBody Question question, @PathVariable int id){
+    try {
+      question.setId(id);
+      question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
+      return ResponseEntity.ok(questionService.updateTags(question));
+    } catch (TagNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A specified tag was not found!");
+    } catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such question!");
+    }
+    
+  }
+  /**
    * Accepts HTTP GET requests. Takes a boolean and a list of tag names to be searched for and
    * returns a set of questions that either contain all of the tags or contain at least one of the
    * tags (denoted by the boolean)

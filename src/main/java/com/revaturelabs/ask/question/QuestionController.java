@@ -91,6 +91,7 @@ public class QuestionController {
   public Question updateQuestion(@RequestBody Question question, @PathVariable int id) {
     question.setId(id);
 
+    question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
     try {
       return questionService.update(question);
     } catch (QuestionConflictException e) {

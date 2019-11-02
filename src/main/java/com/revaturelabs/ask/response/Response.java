@@ -24,7 +24,7 @@ import com.revaturelabs.ask.question.Question;
 
 @Entity
 @Table(name = "responses")
-@JsonDeserialize(using = ResponseJSonDeserializer.class)
+@JsonDeserialize(using = ResponseJsonDeserializer.class)
 public class Response {
 
   @Id

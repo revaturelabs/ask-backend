@@ -16,5 +16,4 @@ public interface QuestionService {
   Question createOrUpdate(Question question) throws QuestionConflictException;
 
   Set<Question> findAllByTagNames(boolean requireAll, List<String> tags);
-
 }

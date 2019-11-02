@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
 
@@ -119,6 +120,22 @@ public class QuestionController {
     }
   }
 
+  /**
+   * Accepts HTTP GET requests. Takes in an id from the url and returns the responses to that
+   * question.
+   * 
+   * @param id the ID of the target question
+   */
+  @GetMapping("/{id}/responses")
+  public ResponseEntity<Set<Response>> getResponses(@PathVariable int id) {
+
+    try {
+      return ResponseEntity.ok(questionService.getById(id).getResponses());
+    } catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "There were no responses found for this question", e);
+    }
+  }
 
   /**
    * Accepts HTTP GET requests. Takes a boolean and a list of tag names to be searched for and

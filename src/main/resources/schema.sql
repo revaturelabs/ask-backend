@@ -40,7 +40,7 @@ CREATE TABLE responses (
 
 CREATE TABLE images (
   id SERIAL PRIMARY KEY,
-  image bytea
+  image bytea,
   question_id INTEGER,
   FOREIGN KEY (question_id) REFERENCES questions (id)
 );

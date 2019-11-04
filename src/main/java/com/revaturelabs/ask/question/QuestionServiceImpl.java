@@ -4,12 +4,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
+import com.revaturelabs.ask.user.User;
+import com.revaturelabs.ask.user.UserConflictException;
+import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * Service class for managing questions. It contains methods for finding all questions, finding a
@@ -33,8 +40,10 @@ public class QuestionServiceImpl implements QuestionService {
    * @return a List of Question that contains all questions on the database.
    */
   @Override
-  public List<Question> getAll() {
-    return (List<Question>) questionRepository.findAll();
+  public Page<Question> getAll(int page, int size) {
+
+    Pageable pageable = (Pageable) PageRequest.of(page, size);
+    return questionRepository.findAll(pageable);
   }
 
   /**
@@ -82,7 +91,7 @@ public class QuestionServiceImpl implements QuestionService {
       try {
         updateQuestion = questionRepository.save(question);
       } catch (DataIntegrityViolationException e) {
-        throw new QuestionConflictException("Question already exist");
+        throw new QuestionConflictException("Question already exists");
       }
     } else {
       throw new QuestionNotFoundException("Unable to find question to update.");
@@ -114,10 +123,11 @@ public class QuestionServiceImpl implements QuestionService {
    * @param tagNames A list of tag names to be searched for
    */
   @Override
-  public Set<Question> findAllByTagNames(boolean requireAll, List<String> tagNames) {
+  public Stream<Question> findAllByTagNames(boolean requireAll, List<String> tagNames, int page,
+      int size) {
 
+    Pageable pageable = (Pageable) PageRequest.of(page, size);
     Set<Tag> tagsToSearchWith = new HashSet<Tag>();
-    Set<Question> filteredQuestions = new HashSet<Question>();
 
     for (String tagName : tagNames) {
       try {
@@ -128,12 +138,60 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     if (requireAll) {
-      filteredQuestions.addAll(questionRepository
-          .findAllContainingAllTags(tagsToSearchWith, tagsToSearchWith.size()).get());
+      return (questionRepository
+          .findAllContainingAllTags(tagsToSearchWith, tagsToSearchWith.size(), pageable).get());
     } else {
-      filteredQuestions.addAll(questionRepository.findAllContainingAtLeastOneTag(tagsToSearchWith).get());
-    }
 
-    return filteredQuestions;
+      return (questionRepository.findAllContainingAtLeastOneTag(tagsToSearchWith, pageable).get());
+    }
+  }
+
+
+  /**
+   * Specialized function to update the tags of an existing question.
+   * 
+   * @param question the Question object with a set of tags to use for updating
+   * @return updatedQuestion The question after being updated in the repository
+   * @throws QuestionNotFoundException 
+   */
+
+  @Override
+  public Question updateTags(Question question) throws QuestionNotFoundException {
+    Optional<Question> existingQuestion = questionRepository.findById(question.getId());
+
+    Question updatedQuestion = null;
+
+    if (existingQuestion.isPresent()) {
+        updatedQuestion = existingQuestion.get();
+        updatedQuestion.setAssociatedTags(question.getAssociatedTags());
+        updatedQuestion = questionRepository.save(updatedQuestion);
+      } else {
+        throw new QuestionNotFoundException("No such question found!");
+      }
+
+  return updatedQuestion;
+}}
+  /**
+   * 
+   * Takes a question ID and a response ID and specifies the given response ID as the
+   * highlighted response ID.
+   * 
+   * @param questionId the ID of the question to be updated
+   * @param highlightedResponseId the ID of the response that should be updated
+   * @return question the Question to be returned
+   * @throws QuestionNotFoundException
+   * 
+   */
+  @Override
+  public Question highlightResponse(int questionId, int highlightedResponseId)
+      throws QuestionNotFoundException {
+    Question question = null;
+    try {
+      question = getById(questionId);
+      question.setHighlightedResponseId(highlightedResponseId);
+      return questionRepository.save(question);
+    } catch (QuestionNotFoundException e) {
+      throw new QuestionNotFoundException("The specified question was not found!");
+    }
   }
 }

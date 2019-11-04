@@ -5,6 +5,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.user.User;
 
 /**
  * Holds the information about a response to a question. It holds the id of the responder, it's
@@ -23,18 +25,18 @@ import com.revaturelabs.ask.question.Question;
 
 @Entity
 @Table(name = "responses")
-@JsonDeserialize(using = ResponseJSonDeserializer.class)
+@JsonDeserialize(using = ResponseJsonDeserializer.class)
 public class Response {
 
   @Id
   @Column(name = "id")
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "responder_id")
+  @Column(name = "responder_id", nullable = false)
   private Integer responderId;
 
-  @Column(name = "body")
+  @Column(name = "body", nullable = false)
   private String body;
 
   @Column(name = "creation_date", updatable = false)
@@ -43,10 +45,15 @@ public class Response {
   @Column(name = "question_id", nullable = false)
   private Integer questionId;
 
-  @JsonIgnoreProperties({"responses"})
+  @JsonIgnoreProperties({"responses", "user"})
   @ManyToOne(cascade = CascadeType.REFRESH)
   @JoinColumn(name = "question_id", insertable = false, updatable = false)
   private Question question;
+
+  @JsonIgnoreProperties({"responses", "questions"})
+  @JoinColumn(name = "responder_id", insertable = false, updatable = false)
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private User user;
 
   public Response() {
 
@@ -66,7 +73,7 @@ public class Response {
    * 
    * @param id the integer value to be set for the id
    */
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -162,14 +169,32 @@ public class Response {
     this.question = question;
   }
 
+  /**
+   * Auto-generated getter for the user.
+   * 
+   * @return a User object that is the response's user
+   */
+  public User getUser() {
+    return user;
+  }
+
+  /**
+   * Auto-generated setter for question
+   * 
+   * @param body a User object that is the response's root user.
+   */
+  public void setUser(User user) {
+    this.user = user;
+  }
 
   /**
    * 
-   * Hashing function for response. Does NOT include question attribute in hashing to avoid
+   * Hashing function for response. Does NOT include question OR user attribute in hashing to avoid
    * potential infinite recursion problems (e.g., when attempting to serialize the responses within
-   * a set, it will attempt to serialize the question. If the question hash attempts to serialize
-   * its set of responses, an infinite loop will occur).
+   * a set, it will attempt to serialize the question or user. If the question or user hash attempts
+   * to serialize its set of responses, an infinite loop will occur).
    */
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -181,7 +206,6 @@ public class Response {
     result = prime * result + ((responderId == null) ? 0 : responderId.hashCode());
     return result;
   }
-
 
   /**
    * Automatically generated equality function.
@@ -223,16 +247,18 @@ public class Response {
     return true;
   }
 
+
   /**
    * Auto-generated toString method
    * 
    * @return String representation of Response
    */
+
   @Override
   public String toString() {
     return "Response [id=" + id + ", responderId=" + responderId + ", body=" + body
         + ", creationDate=" + creationDate + ", questionId=" + questionId + ", question=" + question
-        + "]";
+        + ", user=" + user + "]";
   }
 
 

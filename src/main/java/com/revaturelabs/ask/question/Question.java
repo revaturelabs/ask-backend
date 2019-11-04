@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -34,22 +35,22 @@ public class Question {
 
   @Id
   @Column(name = "id")
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "questioner_id")
+  @Column(name = "questioner_id", nullable = false)
   private Integer questionerId;
 
   @Column(name = "highlighted_response_id")
   private Integer highlightedResponseId;
 
-  @Column(name = "head")
+  @Column(name = "head", nullable = false)
   private String head;
 
-  @Column(name = "body")
+  @Column(name = "body", nullable = false)
   private String body;
 
-  @Column(name = "creation_date")
+  @Column(name = "creation_date", nullable = false)
   private Date creationDate;
 
   @ManyToMany
@@ -57,15 +58,14 @@ public class Question {
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> associatedTags;
 
-  @JsonIgnoreProperties({"question"})
+  @JsonIgnoreProperties({"question", "user"})
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
   private Set<Response> responses;
 
   @JoinColumn(name = "questioner_id", insertable = false, updatable = false)
   @ManyToOne(cascade = CascadeType.REFRESH)
-  @JsonIgnoreProperties({"questions"})
+  @JsonIgnoreProperties({"questions", "responses"})
   private User user;
-
 
   /**
    * Auto-generated setter for id.

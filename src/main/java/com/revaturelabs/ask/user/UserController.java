@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.tag.TagService;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -30,10 +32,21 @@ public class UserController {
 
   @Autowired
   UserService userService;
+  
+  @Autowired
+  TagService tagService;
 
   @GetMapping
-  public ResponseEntity<List<User>> findAll() {
-    return ResponseEntity.ok(userService.findAll());
+  public ResponseEntity<List<User>> findAll(@RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer size) {
+
+    if (page == null) {
+      page = 0;
+    }
+    if (size == null) {
+      size = 1000;
+    }
+    return ResponseEntity.ok(userService.findAll(page, size).getContent());
   }
 
   @GetMapping("/{id}")
@@ -60,6 +73,8 @@ public class UserController {
   @PatchMapping("/{id}")
   public User updateUser(@RequestBody User user, @PathVariable int id) {
     user.setId(id);
+    
+    user.setExpertTags(tagService.getValidTags(user.getExpertTags()));
     try {
       return userService.update(user);
     } catch (UserConflictException e) {
@@ -95,6 +110,23 @@ public class UserController {
   public ResponseEntity<Set<Question>> getQuestions(@PathVariable int id) {
     try {
       return ResponseEntity.ok(userService.findById(id).getQuestions());
+    } catch (UserNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+    }
+  }
+  
+  /**
+   * 
+   * Takes HTTP PUT requests and returns the updated user after setting the tags to be updated
+   * @param user The user object with tags to be changed
+   * @return A User JSON after updating
+   */
+  @PutMapping("/{id}/tags")
+  public ResponseEntity<User> updateUserTags(@RequestBody User user, @PathVariable int id){
+    user.setExpertTags(tagService.getValidTags(user.getExpertTags()));
+    user.setId(id);
+    try {
+      return ResponseEntity.ok(userService.updateTags(user));
     } catch (UserNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }

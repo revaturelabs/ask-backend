@@ -10,10 +10,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.revaturelabs.ask.question.Question;
-import com.revaturelabs.ask.question.QuestionNotFoundException;
-import com.revaturelabs.ask.question.QuestionServiceImpl;
 
-public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
+public class ResponseJsonDeserializer extends JsonDeserializer<Response> {
 
   @Override
   /**
@@ -58,6 +56,10 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
         Date currentDate = new Date();
         response.setCreationDate(currentDate);
       }
+      
+      if(root.question != null) {
+        response.setQuestion(root.question);
+      }
     }
     return response;
   }
@@ -87,5 +89,8 @@ public class ResponseJSonDeserializer extends JsonDeserializer<Response> {
 
     @JsonProperty("creationDate")
     public String creationDate;
+  
+    @JsonProperty("question")
+    public Question question;
   }
 }

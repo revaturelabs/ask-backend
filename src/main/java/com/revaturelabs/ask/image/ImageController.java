@@ -19,16 +19,16 @@ public class ImageController {
   @Autowired
   ImageService imageService;
 
-  @PostMapping
-  public ResponseEntity<Image> addImage(MultipartHttpServletRequest request)
-      throws IOException, ImageConflictException {
-    try {
-      return ResponseEntity.ok(imageService.addImage(request));
-    } catch (ImageConflictException e) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "There was an issue adding an image!",
-          e);
-    }
-  }
+//  @PostMapping
+//  public ResponseEntity<Image> addImage(MultipartHttpServletRequest request)
+//      throws IOException, ImageConflictException {
+//    try {
+//      return ResponseEntity.ok(imageService.addImage(null, request));
+//    } catch (ImageConflictException e) {
+//      throw new ResponseStatusException(HttpStatus.CONFLICT, "There was an issue adding an image!",
+//          e);
+//    }
+//  }
 
   @GetMapping("/{id}")
   public ResponseEntity<Image> getImage(@PathVariable int id) throws ImageNotFoundException {

@@ -34,10 +34,11 @@ public class Image {
     super();
   }
 
-  public Image(int id, byte[] image) {
+  public Image(int id, byte[] image, Question question) {
     super();
     this.id = id;
     this.image = image;
+    this.question = question;
   }
 
   public int getId() {

@@ -69,7 +69,7 @@ public class Question {
   private User user;
 
   @OneToMany(mappedBy = "question")
-  @JsonIgnoreProperties({"question"})
+  @JsonIgnoreProperties({"question", "image"})
   private Set<Image> images;
 
   /**

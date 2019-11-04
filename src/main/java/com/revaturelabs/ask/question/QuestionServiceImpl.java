@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import com.revaturelabs.ask.image.Image;
 import com.revaturelabs.ask.image.ImageConflictException;
 import com.revaturelabs.ask.image.ImageService;
 import com.revaturelabs.ask.tag.Tag;
@@ -211,10 +212,14 @@ public class QuestionServiceImpl implements QuestionService {
   @Override
   public Question addImageToQuestion(int id, MultipartHttpServletRequest request)
       throws QuestionNotFoundException, ImageConflictException, IOException {
-    Question question = null;
+    Question question = new Question();
+    Image image = new Image();
     try {
       question = getById(id);
-      question.addImageToImages(imageService.addImage(request));
+      image.setQuestion(question);
+      image = imageService.addImage(question, request);
+      question.addImageToImages(image);
+//      image = imageService.update(image);
       return questionRepository.save(question);
     }
     catch(QuestionNotFoundException e) {

@@ -10,30 +10,33 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/image")
+@RequestMapping(path = "/images")
 public class ImageController {
 
   @Autowired
   ImageService imageService;
 
-  @PostMapping("/add")
-  public ResponseEntity<Boolean> addImage(MultipartHttpServletRequest request) throws IOException, ImageConflictException {
-    Boolean b = imageService.addImage(request);
-    if (b == true)
-      return ResponseEntity.status(HttpStatus.OK).body(b);
-    else
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(b);
+  @PostMapping
+  public ResponseEntity<Image> addImage(MultipartHttpServletRequest request)
+      throws IOException, ImageConflictException {
+    try {
+      return ResponseEntity.ok(imageService.addImage(request));
+    } catch (ImageConflictException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "There was an issue adding an image!",
+          e);
+    }
   }
 
-  @GetMapping("/getImage/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<Image> getImage(@PathVariable int id) throws ImageNotFoundException {
 
-    Image p = imageService.getImage(id);
-    if (p == null)
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(p);
-    else
-      return ResponseEntity.status(HttpStatus.OK).body(p);
+    try {
+      return ResponseEntity.ok(imageService.getImage(id));
+    } catch (ImageNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found!", e);
+    }
   }
 }

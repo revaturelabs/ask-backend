@@ -14,7 +14,7 @@ public class ImageServiceImpl implements ImageService {
   ImageRepository imageRepository;
 
   @Override
-  public Boolean addImage(MultipartHttpServletRequest request)
+  public Image addImage(MultipartHttpServletRequest request)
       throws IOException, ImageConflictException {
     MultipartFile mPF = request.getFile("image");
     byte[] bytes = mPF.getBytes();
@@ -22,8 +22,7 @@ public class ImageServiceImpl implements ImageService {
       throw new ImageConflictException("Invalid image");
     } else {
       Image image = new Image(0, bytes);
-      imageRepository.save(image);
-      return true;
+      return imageRepository.save(image);
     }
   }
 

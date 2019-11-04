@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS responses;
-DROP TABLE IF EXISTS image;
+DROP TABLE IF EXISTS images;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -38,6 +38,13 @@ CREATE TABLE responses (
   FOREIGN KEY (question_id) REFERENCES questions (id)
 );
 
+CREATE TABLE images (
+  id SERIAL PRIMARY KEY,
+  image bytea
+  question_id INTEGER,
+  FOREIGN KEY (question_id) REFERENCES questions (id)
+);
+
 ALTER TABLE questions
 ADD CONSTRAINT highlight_response_fk
 FOREIGN KEY (highlighted_response_id) REFERENCES responses (id);
@@ -56,9 +63,4 @@ CREATE TABLE users_tags (
   CONSTRAINT user_no_null_or_duplicate_tags PRIMARY KEY (user_id, tag_id),
   FOREIGN KEY (user_id) REFERENCES users (id),
   FOREIGN KEY (tag_id) REFERENCES tags (id)
-);
-
-CREATE TABLE image (
-  id SERIAL PRIMARY KEY,
-  image bytea
 );

@@ -189,14 +189,16 @@ public class QuestionServiceImpl implements QuestionService {
    */
   @Override
   public Question highlightResponse(int questionId, int highlightedResponseId)
-      throws QuestionNotFoundException {
+      throws QuestionNotFoundException, QuestionConflictException {
     Question question = null;
     try {
       question = getById(questionId);
       question.setHighlightedResponseId(highlightedResponseId);
-      return questionRepository.save(question);
+      return update(question);
     } catch (QuestionNotFoundException e) {
       throw new QuestionNotFoundException("The specified question was not found!");
+    } catch (QuestionConflictException e) {
+      throw new QuestionConflictException("There was an issue updating the question!");
     }
   }
 

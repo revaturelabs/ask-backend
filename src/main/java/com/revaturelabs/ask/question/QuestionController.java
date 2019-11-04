@@ -140,6 +140,8 @@ public class QuestionController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
     } catch (DataIntegrityViolationException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
+    } catch (QuestionConflictException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Error updating question!", e);
     }
   }
 

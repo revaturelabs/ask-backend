@@ -38,6 +38,10 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
   @Query(value = "SELECT distinct q from Question q join q.associatedTags t where t in ?1")
   Page<Question> findAllContainingAtLeastOneTag(Set<Tag> tagSet, Pageable pageable);
   
+  /**
+   * Overwritten findAll query that will return all questions ordered from the largest ID to the smallest
+   * 
+   */
   @Query(value = "SELECT q FROM Question q ORDER BY q.id desc")
   Page<Question> findAll(Pageable pageable);
 }

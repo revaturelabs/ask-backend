@@ -3,6 +3,7 @@ package com.revaturelabs.ask.question;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
+import com.revaturelabs.ask.user.UserService;
 
 /**
  * The QuestionController is responsible for handling request about Questions. QuestionController
@@ -36,6 +38,9 @@ public class QuestionController {
 
   @Autowired
   TagService tagService;
+  
+  @Autowired
+  UserService userService;
 
 
   /**
@@ -71,10 +76,11 @@ public class QuestionController {
    * @param a JSON
    * @return question object with correct wiring from JSON to Question object
    */
-  @PostMapping("/create")
+  @PostMapping
   public Question createQuestion(@RequestBody Question question) {
 
     question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
+    question.setUser(userService.findById(question.getQuestionerId()));
 
     return questionService.create(question);
   }
@@ -88,12 +94,12 @@ public class QuestionController {
    * @param id receives an id of a question for update.
    */
   @PatchMapping("/{id}")
-  public Question updateQuestion(@RequestBody Question question, @PathVariable int id) {
+  public ResponseEntity<Question> updateQuestion(@RequestBody Question question, @PathVariable int id) {
     question.setId(id);
 
     question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
     try {
-      return questionService.update(question);
+      return ResponseEntity.ok(questionService.update(question));
     } catch (QuestionConflictException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Question already exists", e);
     } catch (QuestionNotFoundException e) {
@@ -101,6 +107,28 @@ public class QuestionController {
     }
   }
 
+  /**
+   * 
+   * Accepts HTTP Patch Requests. Takes the specified highlighted response ID from the body of the request
+   * and assigns that value to the question specified by the URL.
+   * @param questionId
+   * @param highlightedResponseId
+   */
+  @PatchMapping("/{id}/highlightedResponseId")
+  public ResponseEntity<Question> highlightResponse(@PathVariable int id, @RequestBody int highlightedResponseId) {
+    
+    
+    try{
+      return ResponseEntity.ok(questionService.highlightResponse(id, highlightedResponseId));
+    }
+    catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
+    }
+    catch (DataIntegrityViolationException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
+    }
+  }
+  
   /**
    * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
    * database. If no question on the database has a matching id, then the given question is added to

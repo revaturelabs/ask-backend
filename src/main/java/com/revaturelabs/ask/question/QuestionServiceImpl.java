@@ -166,3 +166,27 @@ public class QuestionServiceImpl implements QuestionService {
 
   return updatedQuestion;
 }}
+  /**
+   * 
+   * Takes a question ID and a response ID and specifies the given response ID as the
+   * highlighted response ID.
+   * 
+   * @param questionId the ID of the question to be updated
+   * @param highlightedResponseId the ID of the response that should be updated
+   * @return question the Question to be returned
+   * @throws QuestionNotFoundException
+   * 
+   */
+  @Override
+  public Question highlightResponse(int questionId, int highlightedResponseId)
+      throws QuestionNotFoundException {
+    Question question = null;
+    try {
+      question = getById(questionId);
+      question.setHighlightedResponseId(highlightedResponseId);
+      return questionRepository.save(question);
+    } catch (QuestionNotFoundException e) {
+      throw new QuestionNotFoundException("The specified question was not found!");
+    }
+  }
+}

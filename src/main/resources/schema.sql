@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS responses;
+DROP TABLE IF EXISTS image;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -55,4 +56,9 @@ CREATE TABLE users_tags (
   CONSTRAINT user_no_null_or_duplicate_tags PRIMARY KEY (user_id, tag_id),
   FOREIGN KEY (user_id) REFERENCES users (id),
   FOREIGN KEY (tag_id) REFERENCES tags (id)
+);
+
+CREATE TABLE image (
+  id SERIAL PRIMARY KEY,
+  image bytea
 );

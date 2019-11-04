@@ -52,7 +52,7 @@ public class User {
   private Set<Tag> expertTags;
 
 
-  @JsonIgnoreProperties({"user", "responses"})
+  @JsonIgnoreProperties({"user", "responses", "associatedTags", "images"})
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private Set<Question> questions;
 

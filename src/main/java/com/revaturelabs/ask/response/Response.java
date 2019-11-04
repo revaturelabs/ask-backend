@@ -45,7 +45,7 @@ public class Response {
   @Column(name = "question_id", nullable = false)
   private Integer questionId;
 
-  @JsonIgnoreProperties({"responses", "user"})
+  @JsonIgnoreProperties({"responses", "user", "associatedTags", "images"})
   @ManyToOne(cascade = CascadeType.REFRESH)
   @JoinColumn(name = "question_id", insertable = false, updatable = false)
   private Question question;

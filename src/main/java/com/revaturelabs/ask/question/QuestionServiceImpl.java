@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
+import com.revaturelabs.ask.user.User;
+import com.revaturelabs.ask.user.UserConflictException;
+import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * Service class for managing questions. It contains methods for finding all questions, finding a
@@ -138,7 +141,57 @@ public class QuestionServiceImpl implements QuestionService {
       return (questionRepository
           .findAllContainingAllTags(tagsToSearchWith, tagsToSearchWith.size(), pageable).get());
     } else {
+
       return (questionRepository.findAllContainingAtLeastOneTag(tagsToSearchWith, pageable).get());
+    }
+  }
+
+
+  /**
+   * Specialized function to update the tags of an existing question.
+   * 
+   * @param question the Question object with a set of tags to use for updating
+   * @return updatedQuestion The question after being updated in the repository
+   * @throws QuestionNotFoundException 
+   */
+
+  @Override
+  public Question updateTags(Question question) throws QuestionNotFoundException {
+    Optional<Question> existingQuestion = questionRepository.findById(question.getId());
+
+    Question updatedQuestion = null;
+
+    if (existingQuestion.isPresent()) {
+        updatedQuestion = existingQuestion.get();
+        updatedQuestion.setAssociatedTags(question.getAssociatedTags());
+        updatedQuestion = questionRepository.save(updatedQuestion);
+      } else {
+        throw new QuestionNotFoundException("No such question found!");
+      }
+
+  return updatedQuestion;
+}}
+  /**
+   * 
+   * Takes a question ID and a response ID and specifies the given response ID as the
+   * highlighted response ID.
+   * 
+   * @param questionId the ID of the question to be updated
+   * @param highlightedResponseId the ID of the response that should be updated
+   * @return question the Question to be returned
+   * @throws QuestionNotFoundException
+   * 
+   */
+  @Override
+  public Question highlightResponse(int questionId, int highlightedResponseId)
+      throws QuestionNotFoundException {
+    Question question = null;
+    try {
+      question = getById(questionId);
+      question.setHighlightedResponseId(highlightedResponseId);
+      return questionRepository.save(question);
+    } catch (QuestionNotFoundException e) {
+      throw new QuestionNotFoundException("The specified question was not found!");
     }
   }
 }

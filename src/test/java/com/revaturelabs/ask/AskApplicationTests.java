@@ -1,9 +1,7 @@
 package com.revaturelabs.ask;
 
 import static org.junit.Assert.assertEquals;
-
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -26,7 +24,7 @@ import com.revaturelabs.ask.tags.TagController;
 import com.revaturelabs.ask.tags.TagService;
 
 /**
- * @author Bryan Ritter
+ * @author Bryan Ritter, David Blitz, Efrain Vila
  *
  */
 
@@ -59,6 +57,10 @@ public class AskApplicationTests {
 
   @Test
   public void testGetResponseById() {
+
+    /**
+     * This test getById method
+     */
 
     Response exampleResponse = new Response();
     // exampleResponse.setId(005);
@@ -100,10 +102,16 @@ public class AskApplicationTests {
     exampleResponse2.setBody("I'm here 2");
     exampleResponse2.setId(-22);
 
+    org.mockito.Mockito.when(this.responseServiceMock.update(exampleResponse1))
+        .thenReturn(exampleResponse1);
+    assertEquals(exampleResponse1,
+        this.responseControllerImpl.updateResponse(exampleResponse1, -11));
+
     org.mockito.Mockito.when(this.responseServiceMock.update(exampleResponse2))
         .thenReturn(exampleResponse2);
     assertEquals(exampleResponse2,
-        this.responseControllerImpl.updateResponse(exampleResponse2, -11));
+        this.responseControllerImpl.updateResponse(exampleResponse2, -22));
+
     System.out.println("exampleResponse1: " + exampleResponse1);
     System.out.println("exampleResponse2: " + exampleResponse2); // Should match number above
   }
@@ -113,7 +121,8 @@ public class AskApplicationTests {
    * 
    * @throws ResponseNotFoundException
    */
-  @Test
+
+  @Test // (expected = ResponseStatusException.class)
   public void testUpdateNonexistingResponse() throws ResponseNotFoundException {
 
     Response exampleResponse3 = new Response();
@@ -142,6 +151,10 @@ public class AskApplicationTests {
     System.out.println("exampleResponse4: " + exampleResponse4);
   }
 
+  /**
+   * This tests getting all Rresponses
+   */
+
   @Test
   public void testGetAllResponses() {
     Response exampleResponse5 = new Response();
@@ -169,14 +182,13 @@ public class AskApplicationTests {
     assertEquals(exampleTag, tagControllerImpl.getTagById(1));
   }
 
-
   @Test
   public void testGetAllTags() {
     Tag javaScriptTag = new Tag();
     javaScriptTag.setName("JavaScript");
     Tag javaTag = new Tag();
     javaTag.setName("Java");
-    List<Tag> exampleTags = new ArrayList();
+    List<Tag> exampleTags = new ArrayList<Tag>();
     exampleTags.add(javaScriptTag);
     exampleTags.add(javaTag);
     when((tagServiceMock.getAll())).thenReturn(exampleTags);
@@ -213,6 +225,8 @@ public class AskApplicationTests {
 
   /**
    * Tests related to Questions
+   * 
+   * This will test getting question by Id : qc 79
    */
   @Test
   public void testGetQuestionById() {
@@ -224,6 +238,26 @@ public class AskApplicationTests {
     assertEquals(exampleQuestion, questionControllerImpl.getQuestionById(1));
   }
 
+  /**
+   * This will test getting question by userId : qc 70
+   */
+
+  @Test
+  public void testGetQuestionByUserId() {
+    Question javaScriptQuestion = new Question();
+    javaScriptQuestion.setHead("A JavaScript Question");
+
+    List<Question> exampleQuestion5 = new ArrayList<Question>();
+    exampleQuestion5.add(javaScriptQuestion);
+
+    when((questionServiceMock.getByUserId(10))).thenReturn(exampleQuestion5);
+    assertEquals(exampleQuestion5, questionControllerImpl.getQuestionByUserId(10));
+  }
+
+  /**
+   * This test getting all the questions qc 50
+   */
+
   @Test
   public void testGetAllQuestions() {
     Question javaScriptQuestion = new Question();
@@ -234,13 +268,17 @@ public class AskApplicationTests {
     htmlQuestion.setHead("An HTML Question");
     htmlQuestion.setBody("An HTML Question Body");
 
-    List<Question> questionList = new ArrayList();
+    List<Question> questionList = new ArrayList<Question>();
     questionList.add(javaScriptQuestion);
     questionList.add(htmlQuestion);
 
     when((questionServiceMock.getAll())).thenReturn(questionList);
     assertEquals(questionList, questionControllerImpl.getAllQuestions());
   }
+
+  /**
+   * This tests creating a question qc 94
+   */
 
   @Test
   public void testCreateQuestion() {
@@ -251,15 +289,26 @@ public class AskApplicationTests {
     assertEquals(exampleQuestion, questionControllerImpl.createQuestion(exampleQuestion));
   }
 
+  /**
+   * This test creating or updating a question qc 131
+   */
+
   @Test
   public void testCreateUpdateQuestion() throws QuestionConflictException {
     Question exampleQuestion = new Question();
     exampleQuestion.setHead("JavaScript Question Head");
     exampleQuestion.setBody("JavaScript Question Body");
 
-    when((questionServiceMock.createOrUpdate(exampleQuestion))).thenReturn(exampleQuestion);
-    assertEquals(exampleQuestion, questionControllerImpl.createOrUpdate(exampleQuestion, 1));
+    when((questionServiceMock.createOrUpdate(exampleQuestion))).thenReturn(null);
+    assertEquals(null, questionControllerImpl.createOrUpdate(exampleQuestion, 1));
   }
+
+  /**
+   * This test updating a question qc 110
+   * 
+   * @throws QuestionConflictException
+   * @throws QuestionNotFoundException
+   */
 
   @Test
   public void testUpdateQuestion() throws QuestionConflictException, QuestionNotFoundException {
@@ -267,8 +316,8 @@ public class AskApplicationTests {
     exampleQuestion.setId(1);
     exampleQuestion.setHead("JavaScript Question Head");
     exampleQuestion.setBody("JavaScript Question Body");
-    when((questionServiceMock.update(exampleQuestion))).thenReturn(exampleQuestion);
-    assertEquals(exampleQuestion, questionControllerImpl.updateQuestion(exampleQuestion, 1));
+    when((questionServiceMock.update(exampleQuestion))).thenReturn(null);
+    assertEquals(null, questionControllerImpl.updateQuestion(exampleQuestion, 1));
   }
 }
 

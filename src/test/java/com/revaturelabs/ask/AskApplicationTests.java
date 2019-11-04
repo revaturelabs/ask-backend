@@ -45,7 +45,6 @@ public class AskApplicationTests {
   @MockBean
   QuestionService questionServiceMock;
 
-
   @Autowired
   ResponseController responseControllerImpl;
 
@@ -58,22 +57,8 @@ public class AskApplicationTests {
   @Test
   public void testGetResponseById() {
 
-    /**
-     * This test getById method
-     */
-
     Response exampleResponse = new Response();
-    // exampleResponse.setId(005);
-    // exampleResponse.setBody("Hello Testing World");
-    // System.out.println(exampleResponse);
-    // System.out.println(this.responseControllerImpl.getResponseById(-999));
     org.mockito.Mockito.when((this.responseServiceMock.getById(-999))).thenReturn(exampleResponse);
-    // exampleResponse.setId(-3);
-    // exampleResponse.setBody("Hey, I'm new");
-    // exampleResponse.setQuestionId(-202);
-    // System.out.println(exampleResponse);
-    // System.out.println(this.responseControllerImpl.getResponseById(-999));
-    // These two point to the same object, Is this what we want to test?
     assertEquals(exampleResponse, this.responseControllerImpl.getResponseById(-999));
   }
 
@@ -102,16 +87,10 @@ public class AskApplicationTests {
     exampleResponse2.setBody("I'm here 2");
     exampleResponse2.setId(-22);
 
-    org.mockito.Mockito.when(this.responseServiceMock.update(exampleResponse1))
-        .thenReturn(exampleResponse1);
-    assertEquals(exampleResponse1,
-        this.responseControllerImpl.updateResponse(exampleResponse1, -11));
-
     org.mockito.Mockito.when(this.responseServiceMock.update(exampleResponse2))
         .thenReturn(exampleResponse2);
     assertEquals(exampleResponse2,
-        this.responseControllerImpl.updateResponse(exampleResponse2, -22));
-
+        this.responseControllerImpl.updateResponse(exampleResponse2, -11));
     System.out.println("exampleResponse1: " + exampleResponse1);
     System.out.println("exampleResponse2: " + exampleResponse2); // Should match number above
   }
@@ -121,8 +100,7 @@ public class AskApplicationTests {
    * 
    * @throws ResponseNotFoundException
    */
-
-  @Test // (expected = ResponseStatusException.class)
+  @Test
   public void testUpdateNonexistingResponse() throws ResponseNotFoundException {
 
     Response exampleResponse3 = new Response();
@@ -134,6 +112,7 @@ public class AskApplicationTests {
     assertEquals(null, this.responseControllerImpl.updateResponse(exampleResponse3, -33));
     System.out.println("exampleResponse3: " + exampleResponse3);
   }
+
 
   /**
    * Tests if CreateOrUpdate results in a response being created or updated
@@ -150,10 +129,6 @@ public class AskApplicationTests {
         this.responseControllerImpl.createOrUpdate(exampleResponse4, -44));
     System.out.println("exampleResponse4: " + exampleResponse4);
   }
-
-  /**
-   * This tests getting all Rresponses
-   */
 
   @Test
   public void testGetAllResponses() {
@@ -175,6 +150,10 @@ public class AskApplicationTests {
   /**
    * Tests for tags.
    */
+
+  /**
+   * Test getTagById returns a tag from the service layer
+   */
   @Test
   public void testGetTagById() {
     Tag exampleTag = new Tag();
@@ -182,19 +161,26 @@ public class AskApplicationTests {
     assertEquals(exampleTag, tagControllerImpl.getTagById(1));
   }
 
+  /**
+   * Test that getAllTags in the controller returns a list of tags
+   */
+
   @Test
   public void testGetAllTags() {
     Tag javaScriptTag = new Tag();
     javaScriptTag.setName("JavaScript");
     Tag javaTag = new Tag();
     javaTag.setName("Java");
-    List<Tag> exampleTags = new ArrayList<Tag>();
+    List<Tag> exampleTags = new ArrayList();
     exampleTags.add(javaScriptTag);
     exampleTags.add(javaTag);
     when((tagServiceMock.getAll())).thenReturn(exampleTags);
     assertEquals(exampleTags, tagControllerImpl.getAllTags());
   }
 
+  /**
+   * That that the createTag method returns the new tag created
+   */
   @Test
   public void testCreateTag() {
     Tag exampleTag = new Tag();
@@ -203,6 +189,9 @@ public class AskApplicationTests {
     assertEquals(exampleTag, tagControllerImpl.createTag(exampleTag));
   }
 
+  /**
+   * Test that updateTag returns the updated tag
+   */
   @Test
   public void testUpdateTag() {
     Tag exampleTag = new Tag();
@@ -214,6 +203,26 @@ public class AskApplicationTests {
   }
 
 
+  /**
+   * Test deleting tag.
+   */
+  @Test
+  public void testDeleteTag() {
+    Tag exampleTag = new Tag();
+    exampleTag.setId(1);
+    exampleTag.setName("JavaScript");
+
+    when((tagServiceMock.create(exampleTag))).thenReturn(exampleTag);
+    tagServiceMock.create(exampleTag);
+    tagServiceMock.delete(1);
+    when((tagServiceMock.getById(exampleTag.getId()))).thenReturn(null);
+    assertEquals(null, tagControllerImpl.getTagById(1), null);
+
+  }
+
+  /**
+   * Test that createOrUpdate returns the tag to be created/updated
+   */
   @Test
   public void testCreateUpdateTag() {
     Tag exampleTag = new Tag();
@@ -222,6 +231,16 @@ public class AskApplicationTests {
     assertEquals(exampleTag, tagControllerImpl.createOrUpdate(exampleTag, 1));
   }
 
+  @Test
+  public void testUpdateTagFails() {
+    Tag exampleTag = new Tag();
+    exampleTag.setName("JavaScript");
+    exampleTag.setId(1);
+    Tag exampleTag2 = new Tag();
+    exampleTag2.setName("Java");
+    when(this.tagServiceMock.update(exampleTag)).thenReturn(null);
+    assertEquals(null, tagControllerImpl.updateTag(exampleTag, 5));
+  }
 
   /**
    * Tests related to Questions
@@ -320,4 +339,3 @@ public class AskApplicationTests {
     assertEquals(null, questionControllerImpl.updateQuestion(exampleQuestion, 1));
   }
 }
-

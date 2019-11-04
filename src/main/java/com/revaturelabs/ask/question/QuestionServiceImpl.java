@@ -1,5 +1,6 @@
 package com.revaturelabs.ask.question;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import com.revaturelabs.ask.image.ImageConflictException;
+import com.revaturelabs.ask.image.ImageService;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
@@ -30,6 +34,9 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Autowired
   TagService tagService;
+  
+  @Autowired
+  ImageService imageService;
 
   /**
    * Returns a list of all questions on the database
@@ -190,6 +197,32 @@ public class QuestionServiceImpl implements QuestionService {
       return questionRepository.save(question);
     } catch (QuestionNotFoundException e) {
       throw new QuestionNotFoundException("The specified question was not found!");
+    }
+  }
+
+  /**
+   * Takes an id and a Multipart Http request and returns a modified question, which has had
+   * an image added to its set of images.
+   * 
+   * @param id The id of the question to be modified
+   * @param request The Multipart HttpRequest containing the image
+   * @author Chris Allen
+   */
+  @Override
+  public Question addImageToQuestion(int id, MultipartHttpServletRequest request)
+      throws QuestionNotFoundException, ImageConflictException, IOException {
+    Question question = null;
+    try {
+      question = getById(id);
+      question.addImageToImages(imageService.addImage(request));
+      return questionRepository.save(question);
+    }
+    catch(QuestionNotFoundException e) {
+      throw new QuestionNotFoundException("The specified question was not found!");
+    } catch (IOException e) {
+      throw new IOException("There was an I/O Exception!");
+    } catch (ImageConflictException e) {
+       throw new ImageConflictException("There was an issue when uploading the image!");
     }
   }
 }

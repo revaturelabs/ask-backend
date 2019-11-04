@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.revaturelabs.ask.image.Image;
 import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.user.User;
@@ -66,6 +67,10 @@ public class Question {
   @ManyToOne(cascade = CascadeType.REFRESH)
   @JsonIgnoreProperties({"questions", "responses"})
   private User user;
+
+  @OneToMany(mappedBy = "question")
+  @JsonIgnoreProperties({"question"})
+  private Set<Image> images;
 
   /**
    * Auto-generated setter for id.
@@ -232,16 +237,44 @@ public class Question {
     this.responses = responses;
   }
 
+  /**
+   * Auto-generated getter for images
+   * 
+   * @return a set of images for the question
+   */
+  public Set<Image> getImages() {
+    return images;
+  }
 
+  /**
+   * Auto-generated setter for images
+   * 
+   * @param The set of images to be used
+   */
+  public void setImages(Set<Image> images) {
+    this.images = images;
+  }
 
+  /**
+   * Add an image to the images set for this question and creates the set if necessary.
+   * 
+   * @param image the image to add
+   */
+  public void addImageToImages(Image image) {
+    if(this.images == null) {
+      this.images = new HashSet<Image>();
+    }
+    this.images.add(image);
+  }
+  
   /**
    * 
    * Automatically generated hashing function for question.
    * 
-   * Note that, if used in conjunction with responses or users, if the response or user hash
-   * function includes questions, there may be an infinite recursion problem. This currently assumes
-   * that Response does NOT use its question attribute in its hashing function and that user DOES
-   * use its question attribute in hashing.
+   * Note that, if used in conjunction with responses, images or users, if the response, image or
+   * user hash function includes questions, there may be an infinite recursion problem. This
+   * currently assumes that Response and Image do NOT use their question attribute in their hashing
+   * function and that user DOES use its question attribute in hashing.
    * 
    */
 
@@ -256,11 +289,11 @@ public class Question {
     result =
         prime * result + ((highlightedResponseId == null) ? 0 : highlightedResponseId.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((images == null) ? 0 : images.hashCode());
     result = prime * result + ((questionerId == null) ? 0 : questionerId.hashCode());
     result = prime * result + ((responses == null) ? 0 : responses.hashCode());
     return result;
   }
-
 
   /**
    * 
@@ -306,6 +339,11 @@ public class Question {
         return false;
     } else if (!id.equals(other.id))
       return false;
+    if (images == null) {
+      if (other.images != null)
+        return false;
+    } else if (!images.equals(other.images))
+      return false;
     if (questionerId == null) {
       if (other.questionerId != null)
         return false;
@@ -324,13 +362,12 @@ public class Question {
    * Auto-generated toString method.
    * 
    */
-
   @Override
   public String toString() {
     return "Question [id=" + id + ", questionerId=" + questionerId + ", highlightedResponseId="
         + highlightedResponseId + ", head=" + head + ", body=" + body + ", creationDate="
         + creationDate + ", associatedTags=" + associatedTags + ", responses=" + responses
-        + ", user=" + user + "]";
+        + ", user=" + user + ", images=" + images + "]";
   }
 
 

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.revaturelabs.ask.image.Image;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.user.User;
 
@@ -66,7 +67,7 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
       if (root.questionerId != null) {
         question.setQuestionerId(root.questionerId);
       }
-     
+
 
       if (root.associatedTags != null) {
         question.setAssociatedTags(root.associatedTags);
@@ -82,12 +83,15 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
         Date currentDate = new Date();
         question.setCreationDate(currentDate);
       }
-      
-      if(root.user != null) {
+
+      if (root.user != null) {
         question.setUser(root.user);
       }
-      if(root.highlightedResponseId != null) {
+      if (root.highlightedResponseId != null) {
         question.setHighlightedResponseId(root.highlightedResponseId);
+      }
+      if (root.images != null) {
+        question.setImages(root.images);
       }
     }
 
@@ -126,11 +130,14 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
 
     @JsonProperty("associatedTags")
     public Set<Tag> associatedTags;
-    
+
     @JsonProperty("user")
     public User user;
-    
+
     @JsonProperty("highlightedResponseId")
     public Integer highlightedResponseId;
+
+    @JsonProperty("images")
+    public Set<Image> images;
   }
 }

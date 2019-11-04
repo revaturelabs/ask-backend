@@ -1,5 +1,6 @@
 package com.revaturelabs.ask.question;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
+import com.revaturelabs.ask.image.Image;
+import com.revaturelabs.ask.image.ImageConflictException;
 import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
@@ -39,7 +43,7 @@ public class QuestionController {
 
   @Autowired
   TagService tagService;
-  
+
   @Autowired
   UserService userService;
 
@@ -50,8 +54,8 @@ public class QuestionController {
    * @return a List of Question that contain all questions on the database
    */
   @GetMapping
-  public ResponseEntity<List<Question>> getAllQuestions(@RequestParam(required = false) Integer page,
-      @RequestParam(required = false) Integer size) {
+  public ResponseEntity<List<Question>> getAllQuestions(
+      @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
 
     if (page == null) {
       page = 0;
@@ -103,7 +107,8 @@ public class QuestionController {
    * @param id receives an id of a question for update.
    */
   @PatchMapping("/{id}")
-  public ResponseEntity<Question> updateQuestion(@RequestBody Question question, @PathVariable int id) {
+  public ResponseEntity<Question> updateQuestion(@RequestBody Question question,
+      @PathVariable int id) {
     question.setId(id);
 
     question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
@@ -118,26 +123,26 @@ public class QuestionController {
 
   /**
    * 
-   * Accepts HTTP Patch Requests. Takes the specified highlighted response ID from the body of the request
-   * and assigns that value to the question specified by the URL.
+   * Accepts HTTP Patch Requests. Takes the specified highlighted response ID from the body of the
+   * request and assigns that value to the question specified by the URL.
+   * 
    * @param questionId
    * @param highlightedResponseId
    */
   @PatchMapping("/{id}/highlightedResponseId")
-  public ResponseEntity<Question> highlightResponse(@PathVariable int id, @RequestBody int highlightedResponseId) {
-    
-    
-    try{
+  public ResponseEntity<Question> highlightResponse(@PathVariable int id,
+      @RequestBody int highlightedResponseId) {
+
+
+    try {
       return ResponseEntity.ok(questionService.highlightResponse(id, highlightedResponseId));
-    }
-    catch (QuestionNotFoundException e) {
+    } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
-    }
-    catch (DataIntegrityViolationException e) {
+    } catch (DataIntegrityViolationException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
     }
   }
-  
+
   /**
    * Accepts HTTP PUT requests. Takes in a question and updates any matching question in the
    * database. If no question on the database has a matching id, then the given question is added to
@@ -178,22 +183,63 @@ public class QuestionController {
   /**
    * 
    * Takes HTTP PUT requests and returns the updated question after setting the tags to be updated
+   * 
    * @param question The question object with tags to be changed
    * @return A Question JSON after updating
    */
   @PutMapping("/{id}/tags")
-  public ResponseEntity<Question> setTags(@RequestBody Question question, @PathVariable int id){
+  public ResponseEntity<Question> setTags(@RequestBody Question question, @PathVariable int id) {
     try {
       question.setId(id);
       question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
       return ResponseEntity.ok(questionService.updateTags(question));
     } catch (TagNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A specified tag was not found!");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A specified tag was not found!");
     } catch (QuestionNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No such question!");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such question!");
+    }
+
+  }
+
+  /**
+   * Takes HTTP Get requests. Will return the set of images associated with the question.
+   * 
+   * @param id The id of the question to retrieve images from
+   * @return A ResponseEntity of the set of images associated with the question
+   * @author Chris Allen
+   */
+  @GetMapping("/{id}/images")
+  public ResponseEntity<Set<Image>> getImages(@PathVariable int id) {
+    try {
+      return ResponseEntity.ok(questionService.getById(id).getImages());
+    } catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found!", e);
+    } }
+
+  /**
+   * Takes HTTP Put requests. Will add an image to the set of images associated with the question.
+   * 
+   * @param id The id of the image to be modified
+   * @param request The Multipart Request that contains the image
+   * @return A ResponseEntity of the question
+   * @author Chris Allen
+   */
+  @PutMapping("/{id}/images")
+  public ResponseEntity<Question> addImage(@PathVariable int id, MultipartHttpServletRequest request){
+    try {
+      return ResponseEntity.ok(questionService.addImageToQuestion(id, request));
+    }
+    catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found!", e);
+    }
+    catch( ImageConflictException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "There was an issue uploading the image!", e);
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was an I/O error!", e);
     }
     
   }
+
   /**
    * Accepts HTTP GET requests. Takes a boolean and a list of tag names to be searched for and
    * returns a set of questions that either contain all of the tags or contain at least one of the
@@ -225,7 +271,7 @@ public class QuestionController {
       }
       return ResponseEntity.ok(questionService.findAllByTagNames(requireAll, tag, page, size));
     } catch (TagNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A requested tag was not found!");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A requested tag was not found!");
     }
   }
 }

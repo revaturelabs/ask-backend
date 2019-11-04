@@ -1,16 +1,21 @@
 package com.revaturelabs.ask.image;
 
 import java.util.Arrays;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.revaturelabs.ask.question.Question;
 
 @Entity
 @Table(name = "images")
 public class Image {
-  
+
   @Id
   @GeneratedValue
   @Column(name = "id")
@@ -18,6 +23,12 @@ public class Image {
 
   @Column(name = "image")
   private byte[] image;
+
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  @JoinColumn(name = "question_id")
+  @JsonIgnoreProperties({"images", "responses", "user", "associatedTags"})
+  private Question question;
+
 
   public Image() {
     super();
@@ -43,6 +54,14 @@ public class Image {
 
   public void setImage(byte[] image) {
     this.image = image;
+  }
+
+  public Question getQuestion() {
+    return question;
+  }
+
+  public void setQuestion(Question question) {
+    this.question = question;
   }
 
   @Override
@@ -72,8 +91,6 @@ public class Image {
 
   @Override
   public String toString() {
-    return "Image [id=" + id + ", image=" + Arrays.toString(image) + "]";
+    return "Image [id=" + id + ", image=" + Arrays.toString(image) + ", question=" + question + "]";
   }
-
-
 }

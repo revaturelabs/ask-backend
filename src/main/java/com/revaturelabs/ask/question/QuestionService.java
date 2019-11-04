@@ -1,8 +1,11 @@
 package com.revaturelabs.ask.question;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import com.revaturelabs.ask.image.ImageConflictException;
 
 public interface QuestionService {
 
@@ -21,5 +24,7 @@ public interface QuestionService {
   Question updateTags(Question question) throws QuestionNotFoundException;
 
   Question highlightResponse(int questionId, int highlightedResponseId) throws QuestionNotFoundException;
+
+  Question addImageToQuestion(int id, MultipartHttpServletRequest request) throws QuestionNotFoundException, ImageConflictException, IOException;
 
 }

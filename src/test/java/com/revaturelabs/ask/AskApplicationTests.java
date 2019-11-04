@@ -32,6 +32,6 @@ public class AskApplicationTests {
     Response exampleResponse = new Response();
     when((responseServiceMock.getById(1))).thenReturn(exampleResponse);
 
-    assertEquals(exampleResponse, responseControllerImpl.getResponseById(1));
+    assertEquals(exampleResponse, responseControllerImpl.getResponseById(1).getBody());
   }
 }

@@ -67,7 +67,6 @@ public class Question {
   @JsonIgnoreProperties({"questions", "responses"})
   private User user;
 
-
   /**
    * Auto-generated setter for id.
    * 

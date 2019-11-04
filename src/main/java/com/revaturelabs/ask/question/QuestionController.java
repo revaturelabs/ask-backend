@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
+import com.revaturelabs.ask.user.UserService;
 
 /**
  * The QuestionController is responsible for handling request about Questions. QuestionController
@@ -36,6 +37,9 @@ public class QuestionController {
 
   @Autowired
   TagService tagService;
+  
+  @Autowired
+  UserService userService;
 
 
   /**
@@ -71,10 +75,11 @@ public class QuestionController {
    * @param a JSON
    * @return question object with correct wiring from JSON to Question object
    */
-  @PostMapping("/create")
+  @PostMapping
   public Question createQuestion(@RequestBody Question question) {
 
     question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
+    question.setUser(userService.findById(question.getQuestionerId()));
 
     return questionService.create(question);
   }

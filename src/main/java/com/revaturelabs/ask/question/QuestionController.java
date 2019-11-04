@@ -70,9 +70,9 @@ public class QuestionController {
    */
 
   @GetMapping("/{id}")
-  public Question getQuestionById(@PathVariable int id) {
+  public ResponseEntity<Question> getQuestionById(@PathVariable int id) {
     try {
-      return questionService.getById(id);
+      return ResponseEntity.ok(questionService.getById(id));
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
     }

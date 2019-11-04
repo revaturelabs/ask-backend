@@ -14,9 +14,6 @@ import org.springframework.stereotype.Service;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
-import com.revaturelabs.ask.user.User;
-import com.revaturelabs.ask.user.UserConflictException;
-import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * Service class for managing questions. It contains methods for finding all questions, finding a
@@ -152,7 +149,7 @@ public class QuestionServiceImpl implements QuestionService {
    * 
    * @param question the Question object with a set of tags to use for updating
    * @return updatedQuestion The question after being updated in the repository
-   * @throws QuestionNotFoundException 
+   * @throws QuestionNotFoundException
    */
 
   @Override
@@ -162,19 +159,20 @@ public class QuestionServiceImpl implements QuestionService {
     Question updatedQuestion = null;
 
     if (existingQuestion.isPresent()) {
-        updatedQuestion = existingQuestion.get();
-        updatedQuestion.setAssociatedTags(question.getAssociatedTags());
-        updatedQuestion = questionRepository.save(updatedQuestion);
-      } else {
-        throw new QuestionNotFoundException("No such question found!");
-      }
+      updatedQuestion = existingQuestion.get();
+      updatedQuestion.setAssociatedTags(question.getAssociatedTags());
+      updatedQuestion = questionRepository.save(updatedQuestion);
+    } else {
+      throw new QuestionNotFoundException("No such question found!");
+    }
 
-  return updatedQuestion;
-}}
+    return updatedQuestion;
+  }
+
   /**
    * 
-   * Takes a question ID and a response ID and specifies the given response ID as the
-   * highlighted response ID.
+   * Takes a question ID and a response ID and specifies the given response ID as the highlighted
+   * response ID.
    * 
    * @param questionId the ID of the question to be updated
    * @param highlightedResponseId the ID of the response that should be updated

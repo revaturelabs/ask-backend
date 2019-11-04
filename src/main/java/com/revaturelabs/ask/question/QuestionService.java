@@ -18,8 +18,6 @@ public interface QuestionService {
 
   Stream<Question> findAllByTagNames(boolean requireAll, List<String> tags, int page, int size);
 
-  Set<Question> findAllByTagNames(boolean requireAll, List<String> tags);
-
   Question updateTags(Question question) throws QuestionNotFoundException;
 
   Question highlightResponse(int questionId, int highlightedResponseId) throws QuestionNotFoundException;

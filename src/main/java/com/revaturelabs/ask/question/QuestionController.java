@@ -2,6 +2,7 @@ package com.revaturelabs.ask.question;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -49,8 +50,16 @@ public class QuestionController {
    * @return a List of Question that contain all questions on the database
    */
   @GetMapping
-  public List<Question> getAllQuestions() {
-    return questionService.getAll();
+  public ResponseEntity<List<Question>> getAllQuestions(@RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer size) {
+
+    if (page == null) {
+      page = 0;
+    }
+    if (size == null) {
+      size = 1000;
+    }
+    return ResponseEntity.ok(questionService.getAll(page, size).getContent());
   }
 
   /**
@@ -188,21 +197,33 @@ public class QuestionController {
   /**
    * Accepts HTTP GET requests. Takes a boolean and a list of tag names to be searched for and
    * returns a set of questions that either contain all of the tags or contain at least one of the
-   * tags (denoted by the boolean)
+   * tags (denoted by the boolean). Can also specify page number and page size.
    * 
    * @author Chris Allen
    * @param requireAll A boolean that specifies whether to return questions with all the tags or at
    *        least one of the tags
    * @param tag The list of tag names to be searched for
+   * @param page The current page to look at
+   * @param size The size of the returning resultset
    * @return Either a set of questions that match the specified criteria or a bad request exception
    */
   @GetMapping("/search")
-  public ResponseEntity<Set<Question>> filterByTags(
-      @RequestParam(required = true) boolean requireAll,
+  public ResponseEntity<Stream<Question>> filterByTags(@RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer size,
+      @RequestParam(required = false) Boolean requireAll,
       @RequestParam(required = false) List<String> tag) {
 
     try {
-      return ResponseEntity.ok(questionService.findAllByTagNames(requireAll, tag));
+      if (page == null) {
+        page = 0;
+      }
+      if (size == null) {
+        size = 20;
+      }
+      if (requireAll == null) {
+        requireAll = false;
+      }
+      return ResponseEntity.ok(questionService.findAllByTagNames(requireAll, tag, page, size));
     } catch (TagNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A requested tag was not found!");
     }

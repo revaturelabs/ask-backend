@@ -1,11 +1,12 @@
 package com.revaturelabs.ask.question;
 
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Stream;
+import org.springframework.data.domain.Page;
 
 public interface QuestionService {
 
-  List<Question> getAll();
+  Page<Question> getAll(int page, int size);
 
   Question getById(Integer id) throws QuestionNotFoundException;
 
@@ -14,6 +15,8 @@ public interface QuestionService {
   Question update(Question question) throws QuestionConflictException, QuestionNotFoundException;
 
   Question createOrUpdate(Question question) throws QuestionConflictException;
+
+  Stream<Question> findAllByTagNames(boolean requireAll, List<String> tags, int page, int size);
 
   Set<Question> findAllByTagNames(boolean requireAll, List<String> tags);
 

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.revaturelabs.ask.tag.Tag;
-import com.revaturelabs.ask.tag.TagService;
 import com.revaturelabs.ask.user.UserRepository;
 
 @Service
@@ -16,9 +15,6 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserRepository userRepo;
-  
-  @Autowired
-  private TagService tagService;
 
   @Override
   public List<User> findAll() {

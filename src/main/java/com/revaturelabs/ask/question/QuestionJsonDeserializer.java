@@ -3,14 +3,12 @@ package com.revaturelabs.ask.question;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.revaturelabs.ask.tag.Tag;
-import com.revaturelabs.ask.tag.TagService;
 
 /**
  * 

@@ -1,7 +1,7 @@
 package com.revaturelabs.ask.user;
 
 import java.util.List;
-
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,21 +13,41 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import com.revaturelabs.ask.tag.Tag;
+import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.tag.TagService;
 
 @RestController
 @RequestMapping(path = "/users")
+
+/**
+ * 
+ * @author Carlos Santos, Chris Allen
+ *
+ */
 public class UserController {
 
   @Autowired
   UserService userService;
+  
+  @Autowired
+  TagService tagService;
 
   @GetMapping
   public List<User> findAll() {
-    return userService.findAll();
+  public ResponseEntity<List<User>> findAll(@RequestParam(required = false) Integer page,
+      @RequestParam(required = false) Integer size) {
+
+    if (page == null) {
+      page = 0;
+    }
+    if (size == null) {
+      size = 20;
+    }
+    return ResponseEntity.ok(userService.findAll(page, size).getContent());
   }
 
   /**
@@ -61,6 +81,8 @@ public class UserController {
   @PatchMapping("/{id}")
   public User updateUser(@RequestBody User user, @PathVariable int id) {
     user.setId(id);
+    
+    user.setExpertTags(tagService.getValidTags(user.getExpertTags()));
     try {
       return userService.update(user);
     } catch (UserConflictException e) {
@@ -118,23 +140,35 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
   }
+    
+  /**
+   * 
+   * Takes HTTP GET requests and returns the set of questions associated with the specified user
+   * 
+   * @param id
+   * @return The set of questions associated with the user
+   */
+  @GetMapping("/{id}/questions")
+  public ResponseEntity<Set<Question>> getQuestions(@PathVariable int id) {
+    try {
+      return ResponseEntity.ok(userService.findById(id).getQuestions());
+    } catch (UserNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+    }
+  }
   
   /**
-   * "addUserTags"
    * 
-   * 
-   * @param user
-   * @param id
-   * @param tags
-   * @return
+   * Takes HTTP PUT requests and returns the updated user after setting the tags to be updated
+   * @param user The user object with tags to be changed
+   * @return A User JSON after updating
    */
-  @PatchMapping("/{id}/tags")
-  public User addUserTags(@RequestBody User user, @PathVariable int id, @PathVariable Tag[] tags) {
+  @PutMapping("/{id}/tags")
+  public ResponseEntity<User> updateUserTags(@RequestBody User user, @PathVariable int id){
+    user.setExpertTags(tagService.getValidTags(user.getExpertTags()));
     user.setId(id);
     try {
-      return userService.addUserTags(user, tags);
-    } catch (UserConflictException e) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "User is not an expert", e);
+      return ResponseEntity.ok(userService.updateTags(user));
     } catch (UserNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }

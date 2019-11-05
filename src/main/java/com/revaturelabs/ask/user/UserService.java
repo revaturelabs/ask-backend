@@ -1,18 +1,23 @@
 package com.revaturelabs.ask.user;
 
-import java.util.List;
-import com.revaturelabs.ask.tag.Tag;
+import org.springframework.data.domain.Page;
 
 
+/**
+ * The user service interface for Ask-An-Expert
+ * 
+ * @author Carlos Santos, Chris Allen
+ *
+ */
 public interface UserService {
 
   /**
    * "findAll" basically gets all
-   * the users from the H2 database.
+   * the users from the H2 database based on the size.
    * 
-   * @return List of all users in database.
+   * @return Page of all users in database.
    */
-  List<User> findAll();
+  Page<User> findAll(int page, int size);
 
   /**
    * "findById" finds the user by their ID.
@@ -75,5 +80,12 @@ public interface UserService {
    * @throws UserNotFoundException
    */
   User addUserTags(User user, Tag[] tags) throws UserNotFoundException, UserConflictException;
+
+  /**
+   * "updateTags" specialized function to update an existing user's tags
+   * @param user a user object with the set of tags to be updated
+   * @return The updated user object
+   */
+  User updateTags(User user);
 
 }

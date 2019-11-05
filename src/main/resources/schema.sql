@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS responses;
+DROP TABLE IF EXISTS images;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -34,6 +35,13 @@ CREATE TABLE responses (
   body VARCHAR,
   creation_date DATE NOT NULL,
   FOREIGN KEY (responder_id) REFERENCES users (id),
+  FOREIGN KEY (question_id) REFERENCES questions (id)
+);
+
+CREATE TABLE images (
+  id SERIAL PRIMARY KEY,
+  image bytea,
+  question_id INTEGER,
   FOREIGN KEY (question_id) REFERENCES questions (id)
 );
 

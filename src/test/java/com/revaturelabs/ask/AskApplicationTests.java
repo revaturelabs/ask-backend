@@ -26,6 +26,10 @@ import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.tag.TagController;
 import com.revaturelabs.ask.tag.TagService;
 import com.revaturelabs.ask.user.User;
+import com.revaturelabs.ask.user.UserConflictException;
+import com.revaturelabs.ask.user.UserController;
+import com.revaturelabs.ask.user.UserNotFoundException;
+import com.revaturelabs.ask.user.UserService;
 
 /**
  * @author Bryan Ritter, David Blitz, Efrain Vila
@@ -41,6 +45,9 @@ public class AskApplicationTests {
 
 
   @MockBean
+  UserService userServiceMock;
+
+  @MockBean
   ResponseService responseServiceMock;
 
   @MockBean
@@ -48,6 +55,9 @@ public class AskApplicationTests {
 
   @MockBean
   QuestionService questionServiceMock;
+
+  @Autowired
+  UserController userControllerImpl;
 
   @Autowired
   ResponseController responseControllerImpl;
@@ -264,43 +274,6 @@ public class AskApplicationTests {
     assertEquals(ResponseEntity.ok(exampleQuestion), questionControllerImpl.getQuestionById(1));
   }
 
-  /**
-   * This will test getting question by userId : qc 70
-   */
-
-  // @Test
-  // public void testGetQuestionByUserId() {
-  // Question javaScriptQuestion = new Question();
-  // javaScriptQuestion.setHead("A JavaScript Question");
-  //
-  // List<Question> exampleQuestion5 = new ArrayList<Question>();
-  // exampleQuestion5.add(javaScriptQuestion);
-  //
-  // when((questionServiceMock.getByUserId(10))).thenReturn(exampleQuestion5);
-  // assertEquals(exampleQuestion5, questionControllerImpl.getQuestionByUserId(10));
-  // }
-
-  /**
-   * This test getting all the questions qc 50
-   */
-
-  // @Test
-  // public void testGetAllQuestions() {
-  // Question javaScriptQuestion = new Question();
-  // javaScriptQuestion.setHead("A JavaScript Question");
-  // javaScriptQuestion.setBody("A JavaScript Question Body");
-  //
-  // Question htmlQuestion = new Question();
-  // htmlQuestion.setHead("An HTML Question");
-  // htmlQuestion.setBody("An HTML Question Body");
-  //
-  // List<Question> questionList = new ArrayList<Question>();
-  // questionList.add(javaScriptQuestion);
-  // questionList.add(htmlQuestion);
-  //
-  // when((questionServiceMock.getAll(1, 1))).thenReturn((Page<Question>) questionList);
-  // assertEquals(questionList, questionControllerImpl.getAllQuestions(1, 1));
-  // }
 
   /**
    * This tests creating a question qc 94
@@ -353,4 +326,179 @@ public class AskApplicationTests {
     assertEquals(ResponseEntity.ok(null),
         questionControllerImpl.updateQuestion(exampleQuestion, 1));
   }
+
+  @Test
+  public void testGettingUserById() {
+    int index = 4;
+    User exampleUser = new User();
+    
+    when((userServiceMock.findById(index))).thenReturn(exampleUser);
+    
+    assertEquals(ResponseEntity.ok(exampleUser), userControllerImpl.findById(index));
+  }
+
+  /**
+   * testUpdatingUser checks against submitting the same data. 
+   */
+  @Test(expected = UserConflictException.class)
+  public void testUpdatingUser() {
+    int index = 1; // the last object in the database so far.
+    User exampleUser = new User();
+    
+    exampleUser.setId(index);
+    exampleUser.setUsername("retweet");
+    exampleUser.setPassword("weguiawej");
+    exampleUser.setExpert(false);
+    userServiceMock.create(exampleUser);
+    
+    when((userServiceMock.findById(index))).thenReturn(exampleUser);
+    
+    exampleUser.setId(index);
+    exampleUser.setUsername("retweet");
+    exampleUser.setPassword("weguiawej");
+    exampleUser.setExpert(false);
+    
+    when((userServiceMock.update(exampleUser))).thenThrow(UserConflictException.class);
+    
+    //actual update
+    System.out.println(exampleUser);
+    exampleUser.setUsername("blahblahblah");
+    exampleUser.setPassword("djfjgjofoo");
+    exampleUser.setExpert(true);
+    
+    when((userServiceMock.update(exampleUser))).thenReturn(exampleUser);
+    System.out.println(exampleUser);
+    
+    assertEquals(exampleUser, userControllerImpl.findById(index));
+  }
+//
+//  /**
+//   * testAddingUserTags checks for adding tag sets.
+//   */
+//  @Test
+//  public void testAddingUserTags() {
+//    
+//    int index = 1; // the last object in the database so far.
+//    User exampleUser = new User();
+//    Tag[] sampleTags = new Tag[2];
+//    
+//    for (int a = 0; a < sampleTags.length; ++a) {
+//      sampleTags[a] = new Tag();
+//    }
+//    
+//    sampleTags[0].setId(index);
+//    sampleTags[0].setName("JS");
+//    
+//    sampleTags[1].setId(index+1);
+//    sampleTags[1].setName("Java");
+//    
+//    
+//    when((userServiceMock.findById(index))).thenReturn(exampleUser);
+//    System.out.println(exampleUser);
+//    exampleUser.setUsername("blahblahblah");
+//    exampleUser.setId(index);
+//    exampleUser.setExpert(true);
+//​
+//    Set<Tag> replaceTag = new HashSet<Tag>();
+//    for (int a = 0; a < sampleTags.length; ++a) {
+//      replaceTag.add(sampleTags[a]);
+//    }
+//    System.out.println(replaceTag);
+//    exampleUser.setExpertTags(replaceTag);
+//    
+//    when((userServiceMock.addTagsToUser(exampleUser,sampleTags))).thenReturn(exampleUser);
+//​
+//    System.out.println(exampleUser);
+//    
+//    assertEquals(exampleUser, userControllerImpl.addExpertTags(exampleUser,index,sampleTags));
+//  }
+
+  /**
+   * testAddingUser tests if adding user
+   * functions.
+   */
+  @Test
+  public void testAddingUser() {
+    int index = 1;
+    User exampleUser = new User();
+    exampleUser.setId(index);
+    exampleUser.setUsername("blah");
+    exampleUser.setPassword("dsafjawjf");
+    
+    when((userServiceMock.create(exampleUser))).thenReturn(exampleUser);
+    System.out.println(exampleUser);
+    
+    assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
+  }
+
+
+  /**
+   * testCreatingOrUpdatingUser_Create checks the creation functionality of createOrUpdate.
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void testCreatingOrUpdateUser_Create() {
+
+    // updating
+    int index = 1; // the last object in the database so far.
+    User exampleUser = new User();
+
+    exampleUser.setId(index);
+    exampleUser.setUsername("retweet");
+    exampleUser.setPassword("weguiawej");
+    exampleUser.setExpert(false);
+
+    when((userServiceMock.createOrUpdate(exampleUser))).thenThrow(UserNotFoundException.class);
+
+    when((userServiceMock.createOrUpdate(exampleUser))).thenReturn(exampleUser);
+    assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
+
+  }
+
+  /**
+   * testCreatingOrUpdatingUser_Update checks the updating functionality of createOrUpdate.
+   * 
+   * It checks against a duplicate new user if the user with the same data already exists.
+   */
+  @Test(expected = UserConflictException.class)
+  public void testCreatingOrUpdatingUser_Update() {
+    // updating
+    int index = 1; // the last object in the database so far.
+    User exampleUser = new User();
+
+    exampleUser.setId(index);
+    exampleUser.setUsername("retweet");
+    exampleUser.setPassword("weguiawej");
+    exampleUser.setExpert(false);
+
+    when((userServiceMock.createOrUpdate(exampleUser))).thenReturn(exampleUser);
+    assertEquals(exampleUser, userServiceMock.createOrUpdate(exampleUser));
+
+    System.out.println(exampleUser);
+    User anotherExampleUser = new User();
+
+    anotherExampleUser.setId(index);
+    anotherExampleUser.setUsername("retweet");
+    anotherExampleUser.setPassword("weguiawej");
+    anotherExampleUser.setExpert(false);
+
+    when((userServiceMock.createOrUpdate(anotherExampleUser)))
+        .thenThrow(UserConflictException.class);
+    assertEquals(anotherExampleUser, userServiceMock.createOrUpdate(anotherExampleUser));
+    System.out.println(anotherExampleUser);
+
+
+    when((userServiceMock.findById(index))).thenReturn(exampleUser);
+    // creating
+    exampleUser.setId(index);
+    exampleUser.setUsername("retweqwgwe");
+    exampleUser.setPassword("weguiawgwgwj");
+    exampleUser.setExpert(false);
+
+    when((userServiceMock.createOrUpdate(exampleUser))).thenReturn(exampleUser);
+    System.out.println(exampleUser);
+
+    assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
+
+  }
+
 }

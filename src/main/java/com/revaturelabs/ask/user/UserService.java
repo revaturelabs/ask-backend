@@ -1,28 +1,23 @@
 package com.revaturelabs.ask.user;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-import com.revaturelabs.ask.user.UserRepository;
 
-@Service
-public class UserService {
-
-  @Autowired
-  private UserRepository userRepo;
+/**
+ * The user service interface for Ask-An-Expert
+ * 
+ * @author Carlos Santos, Chris Allen
+ *
+ */
+public interface UserService {
 
   /**
    * "findAll" basically gets all
-   * the users from the H2 database.
+   * the users from the H2 database based on the size.
    * 
-   * @return List of all users in database.
+   * @return Page of all users in database.
    */
-  public List<User> findAll() {
-    return (List<User>) userRepo.findAll();
-  }
+  Page<User> findAll(int page, int size);
 
   /**
    * "findById" finds the user by their ID.
@@ -31,15 +26,7 @@ public class UserService {
    * @return
    * @throws UserNotFoundException
    */
-  public User findById(int id) throws UserNotFoundException {
-    Optional<User> user = userRepo.findById(id);
-
-    if (!user.isPresent()) {
-      throw new UserNotFoundException();
-    }
-
-    return user.get();
-  }
+  User findById(int id) throws UserNotFoundException;
 
   /**
    * "create" gets the user object and
@@ -48,9 +35,7 @@ public class UserService {
    * @param user
    * @return
    */
-  public User create(User user) {
-    return userRepo.save(user);
-  }
+  User create(User user);
 
   /**
    * "update" checks if the user exists beforehand.
@@ -64,22 +49,7 @@ public class UserService {
    * @throws UserNotFoundException
    * @throws UserConflictException
    */
-  public User update(User user) throws UserNotFoundException, UserConflictException {
-    Optional<User> existingUser = userRepo.findById(user.getId());
-
-    User updatedUser = null;
-    if (existingUser.isPresent()) {
-      try {
-        updatedUser = userRepo.save(user);
-      } catch (DataIntegrityViolationException e) {
-        throw new UserConflictException();
-      }
-    } else {
-      throw new UserNotFoundException("to update");
-    }
-
-    return updatedUser;
-  }
+  User update(User user) throws UserNotFoundException, UserConflictException;
 
   /**
    * "createOrUpdate" does the same function as
@@ -90,16 +60,7 @@ public class UserService {
    * @return
    * @throws UserConflictException
    */
-  public User createOrUpdate(User user) throws UserConflictException {
-    User updatedUser = null;
-    try {
-      updatedUser = userRepo.save(user);
-    } catch (DataIntegrityViolationException e) {
-      throw new UserConflictException();
-    }
-
-    return updatedUser;
-  }
+  User createOrUpdate(User user) throws UserConflictException;
 
   /**
    * "delete" basically looks for the ID of the 
@@ -109,14 +70,13 @@ public class UserService {
    * @param id
    * @throws UserNotFoundException
    */
-  public void delete(int id) throws UserNotFoundException {
-    boolean userExists = userRepo.existsById(id);
+  void delete(int id) throws UserNotFoundException;
 
-    if (!userExists) {
-      throw new UserNotFoundException("to delete");
-    }
+  /**
+   * "updateTags" specialized function to update an existing user's tags
+   * @param user a user object with the set of tags to be updated
+   * @return The updated user object
+   */
+  User updateTags(User user);
 
-    userRepo.deleteById(id);
-  }
 }
-

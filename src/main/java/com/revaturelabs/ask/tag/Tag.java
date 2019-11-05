@@ -1,14 +1,16 @@
-package com.revaturelabs.ask.tags;
+package com.revaturelabs.ask.tag;
 
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.user.User;
 
 /**
  * Tags class represent a tag. It holds an Integer id and TagName String.
@@ -22,7 +24,7 @@ public class Tag implements Serializable {
 
   @Id
   @Column(name = "id")
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @Column(name = "name")
@@ -30,6 +32,9 @@ public class Tag implements Serializable {
 
   @ManyToMany(mappedBy = "associatedTags")
   Set<Question> taggedQuestions;
+  
+  @ManyToMany(mappedBy = "expertTags")
+  Set<User> expertTags;
 
   /**
    * Auto generated getter method for Tag Id.

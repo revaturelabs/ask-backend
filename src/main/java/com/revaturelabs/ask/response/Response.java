@@ -77,7 +77,6 @@ public class Response {
     this.id = id;
   }
 
-
   /**
    * Auto-generated getter for responder id.
    * 
@@ -259,6 +258,7 @@ public class Response {
     return "Response [id=" + id + ", responderId=" + responderId + ", body=" + body
         + ", creationDate=" + creationDate + ", questionId=" + questionId + ", question=" + question
         + ", user=" + user + "]";
+
   }
 
 

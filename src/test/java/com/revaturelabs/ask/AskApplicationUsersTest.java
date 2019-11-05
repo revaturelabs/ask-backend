@@ -1,3 +1,7 @@
+/**
+ * @author Carlos Santos
+ */
+
 package com.revaturelabs.ask;
 
 import static org.junit.Assert.assertEquals;
@@ -57,6 +61,9 @@ public class AskApplicationUsersTest {
 
     assertEquals(exampleUsers, userControllerImpl.findAll());
   }
+  /**
+   * testUpdatingUser checks against submitting the same data. 
+   */
   @Test(expected = UserConflictException.class)
   public void testUpdatingUser() {
 
@@ -90,6 +97,10 @@ public class AskApplicationUsersTest {
     
     assertEquals(exampleUser, userControllerImpl.findById(index));
   }
+  
+  /**
+   * testAddingUserTags checks for adding tag sets.
+   */
   @Test
   public void testAddingUserTags() {
     
@@ -127,7 +138,10 @@ public class AskApplicationUsersTest {
     
     assertEquals(exampleUser, userControllerImpl.addUserTags(exampleUser,index,sampleTags));
   }
-  
+  /**
+   * testAddingUser tests if adding user
+   * functions.
+   */
   @Test
   public void testAddingUser() {
 
@@ -143,6 +157,9 @@ public class AskApplicationUsersTest {
     assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
   }
   
+  /**
+   * testDeletingUser tests if it returns null.
+   */
   @Test
   public void testDeletingUser() {
     User exampleUser = new User();
@@ -162,7 +179,10 @@ public class AskApplicationUsersTest {
     when((userServiceMock.findById(newUser.getId()))).thenReturn(null);
     assertEquals(null, userControllerImpl.findById(exampleUser.getId()));
   }
-  
+  /**
+   * testCreatingOrUpdatingUser_Create checks the creation
+   * functionality of createOrUpdate.
+   */
   @Test(expected = UserNotFoundException.class)
   public void testCreatingOrUpdateUser_Create() {
     
@@ -181,7 +201,13 @@ public class AskApplicationUsersTest {
     assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
     
   }
-  
+  /**
+   * testCreatingOrUpdatingUser_Update checks the updating
+   * functionality of createOrUpdate.
+   * 
+   * It checks against a duplicate new user if the user
+   * with the same data already exists.
+   */
   @Test(expected = UserConflictException.class)
   public void testCreatingOrUpdatingUser_Update() {
  // updating
@@ -222,11 +248,4 @@ public class AskApplicationUsersTest {
     assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
     
   }
-  
-  /*private Set<Tag> looper(Tag[] loop) {
-    for (int a = 0; a < loop.length; ++a) {
-      loop[a] = new Tag();
-    }
-    return loop;
-  }*/
 }

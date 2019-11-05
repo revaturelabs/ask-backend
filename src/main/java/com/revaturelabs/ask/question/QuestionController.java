@@ -61,7 +61,7 @@ public class QuestionController {
       page = 0;
     }
     if (size == null) {
-      size = 1000;
+      size = 20;
     }
     return ResponseEntity.ok(questionService.getAll(page, size).getContent());
   }

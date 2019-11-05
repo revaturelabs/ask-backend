@@ -44,7 +44,7 @@ public class UserController {
       page = 0;
     }
     if (size == null) {
-      size = 1000;
+      size = 20;
     }
     return ResponseEntity.ok(userService.findAll(page, size).getContent());
   }

@@ -352,5 +352,6 @@ public class AskApplicationTests {
     when((questionServiceMock.update(exampleQuestion))).thenReturn(null);
     assertEquals(ResponseEntity.ok(null),
         questionControllerImpl.updateQuestion(exampleQuestion, 1));
+    assertEquals(exampleResponse, responseControllerImpl.getResponseById(1).getBody());
   }
 }

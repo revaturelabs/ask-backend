@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,8 @@ public class AskApplicationUsersTest {
 
     int index = 4;
     User exampleUser = new User();
-    Mockito.
+    
     when((userServiceMock.findById(index))).thenReturn(exampleUser);
-    System.out.println(exampleUser);
     
     assertEquals(exampleUser, userControllerImpl.findById(index));
   }
@@ -101,10 +101,10 @@ public class AskApplicationUsersTest {
       sampleTags[a] = new Tag();
     }
     
-    sampleTags[0].setId(1);
+    sampleTags[0].setId(index);
     sampleTags[0].setName("JS");
     
-    sampleTags[1].setId(2);
+    sampleTags[1].setId(index+1);
     sampleTags[1].setName("Java");
     
     
@@ -131,8 +131,9 @@ public class AskApplicationUsersTest {
   @Test
   public void testAddingUser() {
 
+    int index = 1;
     User exampleUser = new User();
-    exampleUser.setId(1);
+    exampleUser.setId(index);
     exampleUser.setUsername("blah");
     exampleUser.setPassword("dsafjawjf");
     
@@ -146,7 +147,9 @@ public class AskApplicationUsersTest {
   public void testDeletingUser() {
     User exampleUser = new User();
     
-    exampleUser.setId(1);
+    
+    int index = 1;
+    exampleUser.setId(index);
     exampleUser.setUsername("retweet");
     exampleUser.setPassword("weguiawej");
     
@@ -161,13 +164,13 @@ public class AskApplicationUsersTest {
   }
   
   @Test(expected = UserNotFoundException.class)
-  public void testCreatingOrUpdateUser() {
+  public void testCreatingOrUpdateUser_Create() {
     
     // updating
     int index = 1; // the last object in the database so far.
     User exampleUser = new User();
     
-    exampleUser.setId(1);
+    exampleUser.setId(index);
     exampleUser.setUsername("retweet");
     exampleUser.setPassword("weguiawej");
     exampleUser.setExpert(false);
@@ -175,21 +178,40 @@ public class AskApplicationUsersTest {
     when((userServiceMock.createOrUpdate(exampleUser))).thenThrow(UserNotFoundException.class);
     
     when((userServiceMock.createOrUpdate(exampleUser))).thenReturn(exampleUser);
+    assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
+    
+  }
+  
+  @Test(expected = UserConflictException.class)
+  public void testCreatingOrUpdatingUser_Update() {
+ // updating
+    int index = 1; // the last object in the database so far.
+    User exampleUser = new User();
+    
+    exampleUser.setId(index);
+    exampleUser.setUsername("retweet");
+    exampleUser.setPassword("weguiawej");
+    exampleUser.setExpert(false);
+     
+    when((userServiceMock.createOrUpdate(exampleUser))).thenReturn(exampleUser);
+    assertEquals(exampleUser, userServiceMock.createOrUpdate(exampleUser));
+    
     System.out.println(exampleUser);
     User anotherExampleUser = new User();
     
-    anotherExampleUser.setId(1);
+    anotherExampleUser.setId(index);
     anotherExampleUser.setUsername("retweet");
     anotherExampleUser.setPassword("weguiawej");
     anotherExampleUser.setExpert(false);
     
     when((userServiceMock.createOrUpdate(anotherExampleUser))).thenThrow(UserConflictException.class);
-    System.out.println(exampleUser);
+    assertEquals(anotherExampleUser, userServiceMock.createOrUpdate(anotherExampleUser));
+    System.out.println(anotherExampleUser);
     
     
     when((userServiceMock.findById(index))).thenReturn(exampleUser);
     //creating
-    exampleUser.setId(1);
+    exampleUser.setId(index);
     exampleUser.setUsername("retweqwgwe");
     exampleUser.setPassword("weguiawgwgwj");
     exampleUser.setExpert(false);
@@ -198,6 +220,7 @@ public class AskApplicationUsersTest {
     System.out.println(exampleUser);
     
     assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
+    
   }
   
   /*private Set<Tag> looper(Tag[] loop) {

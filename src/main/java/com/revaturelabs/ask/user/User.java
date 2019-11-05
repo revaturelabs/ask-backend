@@ -102,10 +102,11 @@ public class User {
     this.isExpert = isExpert;
   }
 
-  public Set<Tag> getExpertTags() {
-    return expertTags;
-  }
-
+  /**
+  * Auto-generated setter for expertTags
+  *
+  * @param expertTags the set of tags to be set for the expert
+  */
   public void setExpertTags(Set<Tag> expertTags) {
     this.expertTags = expertTags;
   }
@@ -244,6 +245,7 @@ public class User {
     return "User [id=" + id + ", username=" + username + ", password=" + password + ", isExpert="
         + isExpert + ", expertTags=" + expertTags + ", questions=" + questions + ", responses="
         + responses + "]";
+
   }
 
 

@@ -37,6 +37,7 @@ public class UserController {
   TagService tagService;
 
   @GetMapping
+  public List<User> findAll() {
   public ResponseEntity<List<User>> findAll(@RequestParam(required = false) Integer page,
       @RequestParam(required = false) Integer size) {
 
@@ -49,10 +50,17 @@ public class UserController {
     return ResponseEntity.ok(userService.findAll(page, size).getContent());
   }
 
+  /**
+   * "findById" obtains a GET request for one user
+   * by the ID column. Throws UserNotFoundException if it fails.
+   * 
+   * @param id
+   * @return
+   */
   @GetMapping("/{id}")
-  public ResponseEntity<User> findById(@PathVariable int id) {
+  public User findById(@PathVariable int id) {
     try {
-      return ResponseEntity.ok(userService.findById(id));
+      return userService.findById(id);
     } catch (UserNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -60,16 +68,16 @@ public class UserController {
     }
   }
 
-  @PutMapping("/{id}")
-  public User createOrUpdate(@RequestBody User user, @PathVariable int id) {
-    user.setId(id);
-    try {
-      return userService.createOrUpdate(user);
-    } catch (UserConflictException e) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists", e);
-    }
-  }
-
+  /**
+   * "updateUser" obtains a PATCH request and updates the user,
+   * in the respective affected columns.
+   * It throws a UserNotFoundException if the userID isn't present
+   * or a UserConflictException if user's info is intact.
+   * 
+   * @param user
+   * @param id
+   * @return
+   */
   @PatchMapping("/{id}")
   public User updateUser(@RequestBody User user, @PathVariable int id) {
     user.setId(id);
@@ -84,11 +92,45 @@ public class UserController {
     }
   }
 
+  /**
+   * "createUser" obtains a POST request and creates
+   * a new row on the table for the new User object.
+   * @param user
+   * @return
+   */
   @PostMapping
   public User createUser(@RequestBody User user) {
     return userService.create(user);
   }
+  
+  /**
+   * "createOrUpdate" obtains a PUT request, and either 
+   * updates the User or creates one if it doesn't exist.
+   * 
+   * Otherwise, it throws a UserConflictException if
+   * the user, with all information intact, already exists.
+   * 
+   * @param user
+   * @param id
+   * @return
+   */
+  @PutMapping("/{id}")
+  public User createOrUpdate(@RequestBody User user, @PathVariable int id) {
+    user.setId(id);
+    try {
+      
+      return userService.createOrUpdate(user);
+    } catch (UserConflictException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists", e);
+    }
+  }
 
+  /**
+   * "deleteUser" obtains a DELETE request with a userID
+   * and deletes the user row in the DB if it exists.
+   * Throws UserNotFoundException if it finds nothing to delete.
+   * @param id
+   */
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteUser(@PathVariable int id) {
@@ -98,7 +140,7 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
   }
-
+    
   /**
    * 
    * Takes HTTP GET requests and returns the set of questions associated with the specified user

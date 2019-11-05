@@ -71,6 +71,15 @@ public interface UserService {
    * @throws UserNotFoundException
    */
   void delete(int id) throws UserNotFoundException;
+  
+  /**
+   * "addUserTag" basically looks for the ID of the 
+   * user and adds a set of Tags to the user.
+   * 
+   * @param id
+   * @throws UserNotFoundException
+   */
+  User addUserTags(User user, Tag[] tags) throws UserNotFoundException, UserConflictException;
 
   /**
    * "updateTags" specialized function to update an existing user's tags

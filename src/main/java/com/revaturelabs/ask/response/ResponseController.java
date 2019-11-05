@@ -3,7 +3,6 @@ package com.revaturelabs.ask.response;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,11 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 /**
  * The ResponseController is responsible for handling responses to questions. Can return a list of
- * responses, a response by id, and add response to database and update a response. It may also
- * return responses based on categories such as the question ID associated with the response.
- * Responses are in JSON format.
+ * responses, a response by id, and add response to database and update a response. Responses are in
+ * JSON format.
  * 
- * @author Bryan Ritter, Chris Allen
+ * @author Bryan Ritter
  *
  */
 @RestController
@@ -38,8 +36,8 @@ public class ResponseController {
    * @return a List of Responses that contain all responses on the database
    */
   @GetMapping
-  public ResponseEntity<List<Response>> getAllResponses() {
-    return ResponseEntity.ok(this.responseService.getAll());
+  public List<Response> getAllResponses() {
+    return this.responseService.getAll();
   }
 
   /**
@@ -49,9 +47,9 @@ public class ResponseController {
    * @return response entity which has the same id as the given id.
    */
   @GetMapping("/{id}")
-  public ResponseEntity<Response> getResponseById(@PathVariable int id) {
+  public Response getResponseById(@PathVariable int id) {
     try {
-      return ResponseEntity.ok(this.responseService.getById(id));
+      return this.responseService.getById(id);
     } catch (ResponseNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
     }
@@ -124,8 +122,6 @@ public class ResponseController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
     }
   }
-
-
 }
 
 

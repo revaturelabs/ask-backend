@@ -1,19 +1,16 @@
 package com.revaturelabs.ask.question;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.revaturelabs.ask.image.Image;
 import com.revaturelabs.ask.tag.Tag;
-import com.revaturelabs.ask.user.User;
+import com.revaturelabs.ask.tag.TagService;
 
 /**
  * 
@@ -64,34 +61,12 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
       }
       question.setId(0);
 
-      if (root.questionerId != null) {
-        question.setQuestionerId(root.questionerId);
+      if ((Integer) root.userId != null) {
+        question.setQuestionerId(root.userId);
       }
-
 
       if (root.associatedTags != null) {
         question.setAssociatedTags(root.associatedTags);
-      }
-
-      if (root.creation_date != null) {
-        try {
-          Date currentDate = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").parse(root.creation_date);
-          question.setCreationDate(currentDate);
-        } catch (ParseException e) {
-        }
-      } else {
-        Date currentDate = new Date();
-        question.setCreationDate(currentDate);
-      }
-
-      if (root.user != null) {
-        question.setUser(root.user);
-      }
-      if (root.highlightedResponseId != null) {
-        question.setHighlightedResponseId(root.highlightedResponseId);
-      }
-      if (root.images != null) {
-        question.setImages(root.images);
       }
     }
 
@@ -124,20 +99,10 @@ public class QuestionJsonDeserializer extends JsonDeserializer<Question> {
     @JsonProperty("body")
     public String body;
 
-    @JsonProperty("questionerId")
-    public Integer questionerId;
-
+    @JsonProperty("userId")
+    public int userId;
 
     @JsonProperty("associatedTags")
     public Set<Tag> associatedTags;
-
-    @JsonProperty("user")
-    public User user;
-
-    @JsonProperty("highlightedResponseId")
-    public Integer highlightedResponseId;
-
-    @JsonProperty("images")
-    public Set<Image> images;
   }
 }

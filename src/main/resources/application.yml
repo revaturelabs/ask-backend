@@ -20,7 +20,8 @@ spring:
       enabled: true
       path: /h2
 server:
-  port: 1337
+  port: 1337 
+
 #Additional profiles can go here
  
  

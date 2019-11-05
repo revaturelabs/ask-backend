@@ -1,13 +1,15 @@
 package com.revaturelabs.ask.question;
 
-import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,16 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
-import com.revaturelabs.ask.image.Image;
-import com.revaturelabs.ask.image.ImageConflictException;
-import com.revaturelabs.ask.response.Response;
-import com.revaturelabs.ask.tag.TagNotFoundException;
 import com.revaturelabs.ask.tag.TagService;
-import com.revaturelabs.ask.user.UserService;
+import com.revaturelabs.ask.user.UserNotFoundException;
 
 /**
  * The QuestionController is responsible for handling request about Questions. QuestionController
@@ -40,12 +36,9 @@ public class QuestionController {
 
   @Autowired
   QuestionService questionService;
-
+  
   @Autowired
   TagService tagService;
-
-  @Autowired
-  UserService userService;
 
 
   /**
@@ -54,16 +47,8 @@ public class QuestionController {
    * @return a List of Question that contain all questions on the database
    */
   @GetMapping
-  public ResponseEntity<List<Question>> getAllQuestions(
-      @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
-
-    if (page == null) {
-      page = 0;
-    }
-    if (size == null) {
-      size = 20;
-    }
-    return ResponseEntity.ok(questionService.getAll(page, size).getContent());
+  public List<Question> getAllQuestions() {
+    return questionService.getAll();
   }
 
   /**
@@ -73,27 +58,42 @@ public class QuestionController {
    * @return a question entity which has the same id as the given id.
    */
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Question> getQuestionById(@PathVariable int id) {
+  /**
+   * Accepts HTTP Get request Returns a list of Question instances as a JSON entity based on the
+   * given user id.
+   * 
+   * @param id receives the id of a user.
+   * @return a list of questions which have the same user id as the given id.
+   */
+
+  @GetMapping("/fromUser/{id}")
+  public List<Question> getQuestionByUserId(@PathVariable int id) {
     try {
-      return ResponseEntity.ok(questionService.getById(id));
+      return questionService.getByUserId(id);
+    } catch (UserNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
+    }
+  }
+
+  @GetMapping("/{id}")
+  public Question getQuestionById(@PathVariable int id) {
+    try {
+      return questionService.getById(id);
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
     }
   }
 
   /**
-   * Accepts a HTTP POST request. Will take a question JSON with optional tag names and return a
-   * valid question object with all specified tags as tag objects
-   * 
+   * Accepts a HTTP POST request. Will take a question JSON with optional tag names
+   * and return a valid question object with all specified tags as tag objects
    * @param a JSON
    * @return question object with correct wiring from JSON to Question object
    */
-  @PostMapping
+  @PostMapping("/create")
   public Question createQuestion(@RequestBody Question question) {
 
     question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
-    question.setUser(userService.findById(question.getQuestionerId()));
 
     return questionService.create(question);
   }
@@ -107,41 +107,15 @@ public class QuestionController {
    * @param id receives an id of a question for update.
    */
   @PatchMapping("/{id}")
-  public ResponseEntity<Question> updateQuestion(@RequestBody Question question,
-      @PathVariable int id) {
+  public Question updateQuestion(@RequestBody Question question, @PathVariable int id) {
     question.setId(id);
 
-    question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
     try {
-      return ResponseEntity.ok(questionService.update(question));
+      return questionService.update(question);
     } catch (QuestionConflictException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "Question already exists", e);
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
-    }
-  }
-
-  /**
-   * 
-   * Accepts HTTP Patch Requests. Takes the specified highlighted response ID from the body of the
-   * request and assigns that value to the question specified by the URL.
-   * 
-   * @param questionId
-   * @param highlightedResponseId
-   */
-  @PatchMapping("/{id}/highlightedResponseId")
-  public ResponseEntity<Question> highlightResponse(@PathVariable int id,
-      @RequestBody int highlightedResponseId) {
-
-
-    try {
-      return ResponseEntity.ok(questionService.highlightResponse(id, highlightedResponseId));
-    } catch (QuestionNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found", e);
-    } catch (DataIntegrityViolationException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Response not found", e);
-    } catch (QuestionConflictException e) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Error updating question!", e);
     }
   }
 
@@ -162,118 +136,6 @@ public class QuestionController {
     } catch (QuestionConflictException e) {
       throw new ResponseStatusException(HttpStatus.CONFLICT,
           "Error during update/creation of question", e);
-    }
-  }
-
-  /**
-   * Accepts HTTP GET requests. Takes in an id from the url and returns the responses to that
-   * question.
-   * 
-   * @param id the ID of the target question
-   */
-  @GetMapping("/{id}/responses")
-  public ResponseEntity<Set<Response>> getResponses(@PathVariable int id) {
-
-    try {
-      return ResponseEntity.ok(questionService.getById(id).getResponses());
-    } catch (QuestionNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "There were no responses found for this question", e);
-    }
-  }
-
-  /**
-   * 
-   * Takes HTTP PUT requests and returns the updated question after setting the tags to be updated
-   * 
-   * @param question The question object with tags to be changed
-   * @return A Question JSON after updating
-   */
-  @PutMapping("/{id}/tags")
-  public ResponseEntity<Question> setTags(@RequestBody Question question, @PathVariable int id) {
-    try {
-      question.setId(id);
-      question.setAssociatedTags(tagService.getValidTags(question.getAssociatedTags()));
-      return ResponseEntity.ok(questionService.updateTags(question));
-    } catch (TagNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A specified tag was not found!");
-    } catch (QuestionNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such question!");
-    }
-
-  }
-
-  /**
-   * Takes HTTP Get requests. Will return the set of images associated with the question.
-   * 
-   * @param id The id of the question to retrieve images from
-   * @return A ResponseEntity of the set of images associated with the question
-   * @author Chris Allen
-   */
-  @GetMapping("/{id}/images")
-  public ResponseEntity<Set<Image>> getImages(@PathVariable int id) {
-    try {
-      return ResponseEntity.ok(questionService.getById(id).getImages());
-    } catch (QuestionNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found!", e);
-    } }
-
-  /**
-   * Takes HTTP Put requests. Will add an image to the set of images associated with the question.
-   * 
-   * @param id The id of the image to be modified
-   * @param request The Multipart Request that contains the image
-   * @return A ResponseEntity of the question
-   * @author Chris Allen
-   */
-  @PutMapping("/{id}/images")
-  public ResponseEntity<Question> addImage(@PathVariable int id, MultipartHttpServletRequest request){
-    try {
-      return ResponseEntity.ok(questionService.addImageToQuestion(id, request));
-    }
-    catch (QuestionNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found!", e);
-    }
-    catch( ImageConflictException e) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "There was an issue uploading the image!", e);
-    } catch (IOException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was an I/O error!", e);
-    }
-    
-  }
-
-  /**
-   * Accepts HTTP GET requests. Takes a boolean and a list of tag names to be searched for and
-   * returns a set of questions that either contain all of the tags or contain at least one of the
-   * tags (denoted by the boolean). Can also specify page number and page size.
-   * 
-   * @author Chris Allen
-   * @param requireAll A boolean that specifies whether to return questions with all the tags or at
-   *        least one of the tags
-   * @param tag The list of tag names to be searched for
-   * @param page The current page to look at
-   * @param size The size of the returning resultset
-   * @return Either a set of questions that match the specified criteria or a bad request exception
-   */
-  @GetMapping("/search")
-  public ResponseEntity<Stream<Question>> filterByTags(@RequestParam(required = false) Integer page,
-      @RequestParam(required = false) Integer size,
-      @RequestParam(required = false) Boolean requireAll,
-      @RequestParam(required = false) List<String> tag) {
-
-    try {
-      if (page == null) {
-        page = 0;
-      }
-      if (size == null) {
-        size = 20;
-      }
-      if (requireAll == null) {
-        requireAll = false;
-      }
-      return ResponseEntity.ok(questionService.findAllByTagNames(requireAll, tag, page, size));
-    } catch (TagNotFoundException e) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A requested tag was not found!");
     }
   }
 }

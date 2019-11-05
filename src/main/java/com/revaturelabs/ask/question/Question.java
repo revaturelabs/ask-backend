@@ -3,30 +3,24 @@ package com.revaturelabs.ask.question;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.CreatedDate;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.revaturelabs.ask.image.Image;
-import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.Tag;
-import com.revaturelabs.ask.user.User;
 
 /**
  * Question class to represent a question. It holds the id of the user who submitted the question,
  * body, head, creation date.
  * 
- * @author Roy L. Brow De Jesús, Chris Allen
+ * @author Roy L. Brow De Jesús
  *
  */
 @Entity
@@ -36,41 +30,28 @@ public class Question {
 
   @Id
   @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue
   private Integer id;
 
-  @Column(name = "questioner_id", nullable = false)
+  @Column(name = "questioner_id")
   private Integer questionerId;
 
   @Column(name = "highlighted_response_id")
   private Integer highlightedResponseId;
 
-  @Column(name = "head", nullable = false)
+  @Column(name = "head")
   private String head;
 
-  @Column(name = "body", nullable = false)
+  @Column(name = "body")
   private String body;
 
-  @Column(name = "creation_date", nullable = false)
+  @Column(name = "creation_date")
   private Date creationDate;
 
   @ManyToMany
   @JoinTable(name = "questions_tags", joinColumns = @JoinColumn(name = "question_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> associatedTags;
-
-  @JsonIgnoreProperties({"question", "user"})
-  @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-  private Set<Response> responses;
-
-  @JoinColumn(name = "questioner_id", insertable = false, updatable = false)
-  @ManyToOne(cascade = CascadeType.REFRESH)
-  @JsonIgnoreProperties({"questions", "responses"})
-  private User user;
-
-  @OneToMany(mappedBy = "question")
-  @JsonIgnoreProperties({"question", "image"})
-  private Set<Image> images;
 
   /**
    * Auto-generated setter for id.
@@ -188,25 +169,6 @@ public class Question {
     this.creationDate = creationDate;
   }
 
-
-  /**
-   * Auto-generated getter for user.
-   * 
-   * @return a User object that is the question's user
-   */
-  public User getUser() {
-    return user;
-  }
-
-  /**
-   * Auto-generated setter for user.
-   * 
-   * @param the user to be treated as the question's user
-   */
-  public void setUser(User user) {
-    this.user = user;
-  }
-
   /**
    * Add a tag to the associated tags set for this question and creates the set if necessary.
    * 
@@ -219,65 +181,6 @@ public class Question {
     associatedTags.add(tag);
   }
 
-  /**
-   * Auto-generated getter for responses
-   * 
-   * @return a set of responses for the question
-   */
-  public Set<Response> getResponses() {
-    return responses;
-  }
-
-  /**
-   * Auto-generated setter for responses
-   * 
-   * @param The set of responses to be used
-   */
-  public void setResponses(Set<Response> responses) {
-    this.responses = responses;
-  }
-
-  /**
-   * Auto-generated getter for images
-   * 
-   * @return a set of images for the question
-   */
-  public Set<Image> getImages() {
-    return images;
-  }
-
-  /**
-   * Auto-generated setter for images
-   * 
-   * @param The set of images to be used
-   */
-  public void setImages(Set<Image> images) {
-    this.images = images;
-  }
-
-  /**
-   * Add an image to the images set for this question and creates the set if necessary.
-   * 
-   * @param image the image to add
-   */
-  public void addImageToImages(Image image) {
-    if(this.images == null) {
-      this.images = new HashSet<Image>();
-    }
-    this.images.add(image);
-  }
-  
-  /**
-   * 
-   * Automatically generated hashing function for question.
-   * 
-   * Note that, if used in conjunction with responses, images or users, if the response, image or
-   * user hash function includes questions, there may be an infinite recursion problem. This
-   * currently assumes that Response and Image do NOT use their question attribute in their hashing
-   * function and that user DOES use its question attribute in hashing.
-   * 
-   */
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -289,17 +192,10 @@ public class Question {
     result =
         prime * result + ((highlightedResponseId == null) ? 0 : highlightedResponseId.hashCode());
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((images == null) ? 0 : images.hashCode());
     result = prime * result + ((questionerId == null) ? 0 : questionerId.hashCode());
-    result = prime * result + ((responses == null) ? 0 : responses.hashCode());
     return result;
   }
 
-  /**
-   * 
-   * Automatically generated equals function
-   * 
-   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -339,37 +235,24 @@ public class Question {
         return false;
     } else if (!id.equals(other.id))
       return false;
-    if (images == null) {
-      if (other.images != null)
-        return false;
-    } else if (!images.equals(other.images))
-      return false;
     if (questionerId == null) {
       if (other.questionerId != null)
         return false;
     } else if (!questionerId.equals(other.questionerId))
       return false;
-    if (responses == null) {
-      if (other.responses != null)
-        return false;
-    } else if (!responses.equals(other.responses))
-      return false;
     return true;
   }
 
   /**
+   * Auto-generated ToString for question class.
    * 
-   * Auto-generated toString method.
-   * 
+   * @return A string to represent the question class
    */
   @Override
   public String toString() {
-    return "Question [id=" + id + ", questionerId=" + questionerId + ", highlightedResponseId="
-        + highlightedResponseId + ", head=" + head + ", body=" + body + ", creationDate="
-        + creationDate + ", associatedTags=" + associatedTags + ", responses=" + responses
-        + ", user=" + user + ", images=" + images + "]";
+    return "Question [id=" + id + ", questionerId=" + questionerId + ", head=" + head + ", body="
+        + body + ", creationDate=" + creationDate + "]";
   }
-
 
 
 }

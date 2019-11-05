@@ -1,12 +1,11 @@
 package com.revaturelabs.ask.user;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.tag.TagService;
@@ -22,9 +21,8 @@ public class UserServiceImpl implements UserService {
   private TagService tagService;
 
   @Override
-  public Page<User> findAll(int page, int size) {
-    Pageable pageable = PageRequest.of(page, size);
-    return userRepo.findAll(pageable);
+  public List<User> findAll() {
+    return (List<User>) userRepo.findAll();
   }
 
   @Override
@@ -47,7 +45,7 @@ public class UserServiceImpl implements UserService {
   public User update(User user) throws UserNotFoundException, UserConflictException {
     Optional<User> existingUser = userRepo.findById(user.getId());
 
-    User updatedUser = null;
+    User updatedUser = existingUser.get();
     if (existingUser.isPresent()) {
       try {
         if (!(user.getUsername().equals(updatedUser.getUsername()) ||
@@ -88,34 +86,6 @@ public class UserServiceImpl implements UserService {
 
     userRepo.deleteById(id);
   }
-  /**
-   * Specialized function to update the tags of an existing user.
-   * 
-   * @param user the User object with a set of tags to use for updating
-   * @return updatedUser The user after being updated in the repository
-   */
-  
-  @Override
-  public User updateTags(User user) {
-    Optional<User> existingUser = userRepo.findById(user.getId());
-
-    User updatedUser = null;
-   
-    if (existingUser.isPresent()) {
-      try {
-        updatedUser = existingUser.get();
-        updatedUser.setExpertTags(user.getExpertTags());
-        updatedUser = userRepo.save(updatedUser);
-      } catch (DataIntegrityViolationException e) {
-        throw new UserConflictException();
-      }
-    } else {
-      throw new UserNotFoundException("to update");
-    }
-
-    return updatedUser;
-  }
-}
 
   @Override
   public User addUserTags(User user, Tag[] tags) throws UserNotFoundException, UserConflictException {

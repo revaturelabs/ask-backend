@@ -3,6 +3,12 @@ package com.revaturelabs.ask.image;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * 
+ * Exception that occurs if a requested Image is not found 
+ * @author Cort Gerlach
+ *
+ */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ImageNotFoundException extends Exception {
 

@@ -2,6 +2,12 @@ package com.revaturelabs.ask.response;
 
 import java.util.List;
 
+/**
+ * An interface for the response service methods.
+ * 
+ * @author Bryan Ritter, Chris Allen
+ *
+ */
 public interface ResponseService {
 
   List<Response> getAll();

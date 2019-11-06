@@ -35,7 +35,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Autowired
   TagService tagService;
-  
+
   @Autowired
   ImageService imageService;
 
@@ -104,6 +104,15 @@ public class QuestionServiceImpl implements QuestionService {
     return updateQuestion;
   }
 
+  /**
+   * Takes a question object and either creates the question in the database or updates the existing
+   * corresponding question.
+   * 
+   * @param question A question object to be updated
+   * @return The question object after being updated
+   * @throws QuestionConflictException an exception that occurs if there is an issue updating the
+   *         question
+   */
   @Override
   public Question createOrUpdate(Question question) throws QuestionConflictException {
     Question updateQuestion = null;
@@ -204,8 +213,8 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   /**
-   * Takes an id and a Multipart Http request and returns a modified question, which has had
-   * an image added to its set of images.
+   * Takes an id and a Multipart Http request and returns a modified question, which has had an
+   * image added to its set of images.
    * 
    * @param id The id of the question to be modified
    * @param request The Multipart HttpRequest containing the image
@@ -221,15 +230,14 @@ public class QuestionServiceImpl implements QuestionService {
       image.setQuestion(question);
       image = imageService.addImage(question, request);
       question.addImageToImages(image);
-//      image = imageService.update(image);
+      // image = imageService.update(image);
       return questionRepository.save(question);
-    }
-    catch(QuestionNotFoundException e) {
+    } catch (QuestionNotFoundException e) {
       throw new QuestionNotFoundException("The specified question was not found!");
     } catch (IOException e) {
       throw new IOException("There was an I/O Exception!");
     } catch (ImageConflictException e) {
-       throw new ImageConflictException("There was an issue when uploading the image!");
+      throw new ImageConflictException("There was an issue when uploading the image!");
     }
   }
 }

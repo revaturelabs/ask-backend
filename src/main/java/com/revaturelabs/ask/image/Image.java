@@ -12,6 +12,13 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revaturelabs.ask.question.Question;
 
+/**
+ * Image class for use within the database. Contains a relation to a question object, the id of the
+ * image in the database, and the bytes for the image.
+ * 
+ * @author Chris Allen, Cort Gerlach
+ *
+ */
 @Entity
 @Table(name = "images")
 public class Image {
@@ -41,30 +48,67 @@ public class Image {
     this.question = question;
   }
 
+  /**
+   * Auto-generated getter for id.
+   * 
+   * @return The id of the image
+   */
   public int getId() {
     return id;
   }
 
+  /**
+   * Auto-generated setter for id.
+   * 
+   * @param id The id to be set for the image
+   */
   public void setId(int id) {
     this.id = id;
   }
 
+
+  /**
+   * Auto-generated getter for the image byte array.
+   * 
+   * @return image The byte array of the image.
+   */
   public byte[] getImage() {
     return image;
   }
 
+  /**
+   * Auto-generated setter for the byte array of images.
+   * 
+   * @param image The byte array of the image to be set
+   */
   public void setImage(byte[] image) {
     this.image = image;
   }
 
+  /**
+   * Auto-generated getter for question
+   *
+   * @return question The question object associated with the image.
+   */
   public Question getQuestion() {
     return question;
   }
 
+  /**
+   * Auto-generated setter for question
+   * 
+   * @param question The question object to be associated with the image.
+   */
   public void setQuestion(Question question) {
     this.question = question;
   }
 
+  /**
+   * Hashing function for images.
+   * 
+   * Does NOT include question to avoid an infinite recursion problem.
+   * 
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -74,6 +118,12 @@ public class Image {
     return result;
   }
 
+  /**
+   * Auto-generated equals function
+   * 
+   * @param obj The object to be compared
+   * 
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -90,6 +140,12 @@ public class Image {
     return true;
   }
 
+  /**
+   * Auto-generated toString function
+   * 
+   * @return The string format of the object
+   * 
+   */
   @Override
   public String toString() {
     return "Image [id=" + id + ", image=" + Arrays.toString(image) + ", question=" + question + "]";

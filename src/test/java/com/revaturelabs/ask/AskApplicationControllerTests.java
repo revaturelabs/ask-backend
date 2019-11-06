@@ -24,6 +24,7 @@ import com.revaturelabs.ask.response.ResponseNotFoundException;
 import com.revaturelabs.ask.response.ResponseService;
 import com.revaturelabs.ask.tag.Tag;
 import com.revaturelabs.ask.tag.TagController;
+import com.revaturelabs.ask.tag.TagRepository;
 import com.revaturelabs.ask.tag.TagService;
 import com.revaturelabs.ask.user.User;
 import com.revaturelabs.ask.user.UserConflictException;
@@ -38,12 +39,14 @@ import com.revaturelabs.ask.user.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AskApplicationTests {
+public class AskApplicationControllerTests {
 
   @Test
   public void contextLoads() {}
 
-
+  @MockBean
+  TagRepository tagRepositoryMock;
+  
   @MockBean
   UserService userServiceMock;
 
@@ -66,8 +69,11 @@ public class AskApplicationTests {
   TagController tagControllerImpl;
 
   @Autowired
+  TagService tagServiceImpl;
+  
+  @Autowired
   QuestionController questionControllerImpl;
-
+  
   @Test
   public void testGetResponseById() {
 
@@ -371,47 +377,7 @@ public class AskApplicationTests {
     
     assertEquals(exampleUser, userControllerImpl.findById(index));
   }
-//
-//  /**
-//   * testAddingUserTags checks for adding tag sets.
-//   */
-//  @Test
-//  public void testAddingUserTags() {
-//    
-//    int index = 1; // the last object in the database so far.
-//    User exampleUser = new User();
-//    Tag[] sampleTags = new Tag[2];
-//    
-//    for (int a = 0; a < sampleTags.length; ++a) {
-//      sampleTags[a] = new Tag();
-//    }
-//    
-//    sampleTags[0].setId(index);
-//    sampleTags[0].setName("JS");
-//    
-//    sampleTags[1].setId(index+1);
-//    sampleTags[1].setName("Java");
-//    
-//    
-//    when((userServiceMock.findById(index))).thenReturn(exampleUser);
-//    System.out.println(exampleUser);
-//    exampleUser.setUsername("blahblahblah");
-//    exampleUser.setId(index);
-//    exampleUser.setExpert(true);
-//​
-//    Set<Tag> replaceTag = new HashSet<Tag>();
-//    for (int a = 0; a < sampleTags.length; ++a) {
-//      replaceTag.add(sampleTags[a]);
-//    }
-//    System.out.println(replaceTag);
-//    exampleUser.setExpertTags(replaceTag);
-//    
-//    when((userServiceMock.addTagsToUser(exampleUser,sampleTags))).thenReturn(exampleUser);
-//​
-//    System.out.println(exampleUser);
-//    
-//    assertEquals(exampleUser, userControllerImpl.addExpertTags(exampleUser,index,sampleTags));
-//  }
+
 
   /**
    * testAddingUser tests if adding user

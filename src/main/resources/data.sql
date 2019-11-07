@@ -2,9 +2,9 @@
 
 --data for the users table
 INSERT INTO users VALUES
-    (default,'James Bishop','1234',false), -- user login
+    (default,'Adam Shipe','1234',false), -- user login
     (default,'Sally OBrien','1234',false), -- user login 2
-    (default,'Thomas Dawson','4321',true), -- expert login
+    (default,'Zach Marshello','4321',true), -- expert login
     (default,'Chad Paulson','4321',true),  -- expert login 2
     (default,'Billy Carter','1234',false), -- user login 3
     (default,'Winifred Hurst','4321',true),  -- expert login 3
@@ -48,22 +48,22 @@ INSERT INTO tags VALUES
 
 -- data for questions
 INSERT INTO questions VALUES 
-  (DEFAULT, 1, null, 'Java Collections',
+  (DEFAULT, 5, null, 'Java Collections',
   	'What are Collections in Java?',
   	'2015-12-17'),
   (DEFAULT, 2, null, 'Angular Structural vs. Attribute Directives',
   	'What is the difference between structural and attribute directives?',
   	'2015-12-17'),
-  (DEFAULT, 1, null, 'Why use Java',
+  (DEFAULT, 7, null, 'Why use Java',
   	'I am wondering what are some advantages of using Java over other programming languages?',
   	'2015-12-17'),
   (DEFAULT, 2, null, 'Input type="submit" not working inside of div',
   	'I want the user to insert his name and when he submits function y() runs.All of this was working till I decided I wanted to put some style into the form, so I cointained everything inside the div with the class of "loginbox". When I did that the form got the style from the class loginbox but does not submit anything nor runs function y(). Hover effect also is not working. I want to understand why and fix this issue.',
   	'2015-12-17'),
-  (DEFAULT, 1, null, 'Read / convert an InputStream to a String',
+  (DEFAULT, 7, null, 'Read / convert an InputStream to a String',
   	'If you have a java.io.InputStream object, how should you process that object and produce a String? Suppose I have an InputStream that contains text data, and I want to convert it to a String, so for example I can write that to a log file. What is the easiest way to take the InputStream and convert it to a String?',
   	'2015-12-17'),
-  (DEFAULT, 2, null, 'HashMap vs. HashTable',
+  (DEFAULT, 1, null, 'HashMap vs. HashTable',
   	'I am not sure whether I should use HashMap or HashTable.  I have heard HashTable is synchronized, but I have also heard you need to write your own synchronization for both.  Can I get some expert advice?',
   	'2015-12-17'),
   (DEFAULT, 1, null, 'Speed up PostgreSQL queries',
@@ -72,13 +72,13 @@ INSERT INTO questions VALUES
   (DEFAULT, 2, null, 'Primitives in TS vs. JS?',
   	'JS has 6 primitives (7 if you count bigint).  Does TS have the same?  I found nice documentation on primitive (non-object) types from MDN for JavaScript, but I could not find anything on primitives in TypeScript.  The TS docs do list data types, but I do not know which are primitives.  Please help!  Sources: https://developer.mozilla.org/en-US/docs/Glossary/Primitive and https://www.typescriptlang.org/docs/handbook/basic-types.html',
   	'2016-12-17'),
-  (DEFAULT, 1, null, 'Playing snake on EC2',
+  (DEFAULT, 5, null, 'Playing snake on EC2',
   	'I found this awesome "nsnake" game that runs on Ubuntu, but my EC2 is running Amazon Linux 2.  How can I play snake without installing Ubuntu locally or spinning up an a different EC2?',
   	'2016-11-17'),
   (DEFAULT, 2, null, 'RESTful architecture in my situation?',
   	'I am helping to design a microservice for internal use at my company.  It will process and transfer large (>10mb) images between 2 other services.  I wanted to make our API RESTful, but one of my colleagues just wants to quickly set up endpoints for RPCs and call it a day.  I know making a RESTful API will be more work, but I think it will pay off in the future.  Can someone help me weigh the benefits and drawbacks of each approach?',
 	'2016-11-18'),
-  (DEFAULT, 1, null, '"Baking" images?',
+  (DEFAULT, 5, null, '"Baking" images?',
   	'During training I became a Docker master and learned how to containerize my deployments, but my first day on the job everyone around me was talking about "baking" docker images.  I have no idea what they are talking about, and running "docker bake" just gives me an error -- please help!',
   	'2016-12-11'),
   (DEFAULT, 7, null, 'Can not interpolate variable into object in html',
@@ -104,9 +104,9 @@ INSERT INTO responses VALUES
   (DEFAULT, 6, 1,'Collections is a utility class in Java to work with objects that implement the Interface Collection.', '2019-10-30'),
   (DEFAULT, 3, 5,'You can use a Scanner to make the conversion.  The scanner will by default split on whitespace and split your string up into tokens.  A neat workaround is to make your Scanner split on the character "//A".  This character marks the beginning of the stream, so the scanner will not split up your stream into tokens at all and myScanner.next() gives you the whole string.',
   	'2019-10-31'),
-  (DEFAULT, 4, 6,'here are several differences between HashMap and Hashtable in Java:  Hashtable is synchronized, whereas HashMap is not. This makes HashMap better for non-threaded applications, as unsynchronized Objects typically perform better than synchronized ones. Hashtable does not allow null keys or values. HashMap allows one null key and any number of null values.  If synchronization is not an issue, use HashMap.  If synchronization is necessary, use HashMap and write your own synchronization logic.  HashTable should never be used.  ConcurrentHashMap might solve your problems if you want an out-of-the-box solution.',
+  (DEFAULT, 4, 6,'Here are several differences between HashMap and Hashtable in Java:  Hashtable is synchronized, whereas HashMap is not. This makes HashMap better for non-threaded applications, as unsynchronized Objects typically perform better than synchronized ones. Hashtable does not allow null keys or values. HashMap allows one null key and any number of null values.  If synchronization is not an issue, use HashMap.  If synchronization is necessary, use HashMap and write your own synchronization logic.  HashTable should never be used.  ConcurrentHashMap might solve your problems if you want an out-of-the-box solution.',
 	'2019-10-31'),
-  (DEFAULT, 3, 16,'position: absolute; top: 50%; //*moves the element halfway DOWN the screen*// left: 50%; //*moves the element halfway ACROSS the screen, at this point the top left corner of the will be at the center of the screen, so we just need to move it half of its own height and half of its own width backwards*// transform: translate(-50%, -50%); //*moves it half of its own height and half of its own width backwards*//', 
+  (DEFAULT, 3, 16,'Use the following: position: absolute; top: 50%; //*moves the element halfway DOWN the screen*// left: 50%; //*moves the element halfway ACROSS the screen, at this point the top left corner of the will be at the center of the screen, so we just need to move it half of its own height and half of its own width backwards*// transform: translate(-50%, -50%); //*moves it half of its own height and half of its own width backwards*//', 
     '2019-10-29');
 
 -- data for questions_tags
@@ -144,7 +144,6 @@ INSERT INTO questions_tags VALUES
     (3, 1),
     (4, 2),
     (3, 3),
-    (3, 5),
     (3, 15),
     (4, 3),
     (4, 5),

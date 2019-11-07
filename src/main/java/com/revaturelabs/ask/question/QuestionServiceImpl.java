@@ -207,7 +207,7 @@ public class QuestionServiceImpl implements QuestionService {
       return update(question);
     } catch (QuestionNotFoundException e) {
       throw new QuestionNotFoundException("The specified question was not found!");
-    } catch (QuestionConflictException e) {
+    } catch (DataIntegrityViolationException e) {
       throw new QuestionConflictException("There was an issue updating the question!");
     }
   }

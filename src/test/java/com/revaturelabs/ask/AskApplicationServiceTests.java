@@ -130,9 +130,13 @@ public class AskApplicationServiceTests {
   static Tag testTag3;
 
   static List<Tag> tagReturnList;
+  
+  static Set<Image> testImageSet1;
 
+  static Set<Image> testImageSet2;
+  
   static Image testImage1;
-
+  
   static Image testImage2;
 
   static Response testResponse1;
@@ -178,12 +182,6 @@ public class AskApplicationServiceTests {
 
     tagReturnList = Arrays.asList(testTag1, testTag2, testTag3);
 
-    testImage1 = new Image();
-    testImage1.setId(1);
-
-    testImage2 = new Image();
-    testImage2.setId(2);
-
     testResponse1 = new Response();
     testResponse1.setId(1);
     testResponse1.setBody("Test response");
@@ -211,9 +209,20 @@ public class AskApplicationServiceTests {
     testUser2 = new User();
     testUser2.setId(2);
 
+    testImage1 = new Image();
+    testImage1.setId(1);
+    testImage2 = new Image();
+    testImage2.setId(2);
+    
+    testImageSet1 = new HashSet<Image>();
+    testImageSet1.add(testImage1);
+    testImageSet2 = new HashSet<Image>();
+    testImageSet2.add(testImage2);
+    
     testQuestion1 = new Question();
     testQuestion1.setId(1);
     testQuestion1.setAssociatedTags(expertTags);
+    testQuestion1.setImages(testImageSet1);
 
     testQuestion1PostCreate = new Question();
     testQuestion1PostCreate.setId(1);
@@ -475,9 +484,9 @@ public class AskApplicationServiceTests {
    */
   @Test
   public void getImageByIdTest() {
-    when(imageRepositoryMock.findById(1)).thenReturn(Optional.of(testImage1));
+	when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
 
-    assertEquals(testImage1, imageServiceImpl.getImages(1));
+    assertEquals(testImageSet1, imageServiceImpl.getImages(1));
   }
 
   /**
@@ -486,20 +495,20 @@ public class AskApplicationServiceTests {
    */
   @Test
   public void getCorrectImageByIdTest() {
-    when(imageRepositoryMock.findById(1)).thenReturn(Optional.of(testImage1));
+	when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
 
-    assertNotEquals(testImage2, imageServiceImpl.getImages(1));
+    assertNotEquals(testImageSet2, imageServiceImpl.getImages(1));
   }
-
+  
   /**
    * Test failure of retrieval of image by invalid id
    * 
    */
   @Test(expected = ImageNotFoundException.class)
   public void getInvalidImageIdTest() {
-    when(imageRepositoryMock.findById(10)).thenReturn(Optional.empty());
+	when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(testQuestion2));
 
-    imageServiceImpl.getImages(10);
+    imageServiceImpl.getImages(2);
   }
 
   /**

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.revaturelabs.ask.question.Question;
-import com.revaturelabs.ask.question.QuestionService;
+import com.revaturelabs.ask.question.QuestionRepository;
 
 /**
  * 
@@ -24,7 +24,7 @@ public class ImageServiceImpl implements ImageService {
   ImageRepository imageRepository;
   
   @Autowired
-  QuestionService questionService;
+  QuestionRepository questionRepository;
 
   /**
    * Method for adding an image to the database and attaching it to a question.
@@ -59,12 +59,16 @@ public class ImageServiceImpl implements ImageService {
    */
   @Override
   public Set<Image> getImages(int id) throws ImageNotFoundException {
-    Set<Image> image = questionService.getById(id).getImages();
-
-    if (image.isEmpty()) {
-      throw new ImageNotFoundException("Image not found");
-    }
-    return image;
+	try {
+		Set<Image> images = questionRepository.findById(id).get().getImages();
+		if (images.isEmpty() || images == null) {
+	      throw new ImageNotFoundException("Image not found");
+		}
+		    
+		return images;
+	} catch (Exception e) {
+		throw new ImageNotFoundException("Image not found");
+	}
   }
 
 }

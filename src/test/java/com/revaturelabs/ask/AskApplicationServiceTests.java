@@ -477,7 +477,7 @@ public class AskApplicationServiceTests {
   public void getImageByIdTest() {
     when(imageRepositoryMock.findById(1)).thenReturn(Optional.of(testImage1));
 
-    assertEquals(testImage1, imageServiceImpl.getImage(1));
+    assertEquals(testImage1, imageServiceImpl.getImages(1));
   }
 
   /**
@@ -488,7 +488,7 @@ public class AskApplicationServiceTests {
   public void getCorrectImageByIdTest() {
     when(imageRepositoryMock.findById(1)).thenReturn(Optional.of(testImage1));
 
-    assertNotEquals(testImage2, imageServiceImpl.getImage(1));
+    assertNotEquals(testImage2, imageServiceImpl.getImages(1));
   }
 
   /**
@@ -499,7 +499,7 @@ public class AskApplicationServiceTests {
   public void getInvalidImageIdTest() {
     when(imageRepositoryMock.findById(10)).thenReturn(Optional.empty());
 
-    imageServiceImpl.getImage(10);
+    imageServiceImpl.getImages(10);
   }
 
   /**

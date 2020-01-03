@@ -1,5 +1,7 @@
 package com.revaturelabs.ask.image;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,16 +28,16 @@ public class ImageController {
   /**
    * Accepts HTTP GET requests. Method to retrieve an existing image by its id
    * 
-   * @param id The id of the image in the database
+   * @param questionId The id of the image's question in the database
    * @return ResponseEntity<Image> An image in the response entity
    * @throws ImageNotFoundException Exception that occurs if the given ID doesn't exist in the
    *         database
    */
-  @GetMapping("/{id}")
-  public ResponseEntity<Image> getImage(@PathVariable int id) throws ImageNotFoundException {
+  @GetMapping("/{questionId}")
+  public ResponseEntity<Set<Image>> getImage(@PathVariable int questionId) throws ImageNotFoundException {
 
     try {
-      return ResponseEntity.ok(imageService.getImage(id));
+      return ResponseEntity.ok(imageService.getImages(questionId));
     } catch (ImageNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found!", e);
     }

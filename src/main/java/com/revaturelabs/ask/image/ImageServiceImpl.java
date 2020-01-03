@@ -1,12 +1,14 @@
 package com.revaturelabs.ask.image;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.revaturelabs.ask.question.Question;
+import com.revaturelabs.ask.question.QuestionRepository;
 
 /**
  * 
@@ -20,6 +22,9 @@ public class ImageServiceImpl implements ImageService {
 
   @Autowired
   ImageRepository imageRepository;
+  
+  @Autowired
+  QuestionRepository questionRepository;
 
   /**
    * Method for adding an image to the database and attaching it to a question.
@@ -48,18 +53,22 @@ public class ImageServiceImpl implements ImageService {
   /**
    * Method for retrieving an image from the database based on ID.
    * 
-   * @param id The id of the image to be retrieved
+   * @param id The id of the question of the image to be retrieved
    * @throws ImageNotFoundException Exception that is thrown when the given ID doesn't exist
    * @return image The image to be retrieved
    */
   @Override
-  public Image getImage(int id) throws ImageNotFoundException {
-    Optional<Image> image = imageRepository.findById(id);
-
-    if (!image.isPresent()) {
-      throw new ImageNotFoundException("Image not found");
-    }
-    return image.get();
+  public Set<Image> getImages(int id) throws ImageNotFoundException {
+	try {
+		Set<Image> images = questionRepository.findById(id).get().getImages();
+		if (images.isEmpty() || images == null) {
+	      throw new ImageNotFoundException("Image not found");
+		}
+		    
+		return images;
+	} catch (Exception e) {
+		throw new ImageNotFoundException("Image not found");
+	}
   }
 
 }

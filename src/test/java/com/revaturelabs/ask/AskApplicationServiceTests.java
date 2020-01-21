@@ -232,6 +232,61 @@ public class AskApplicationServiceTests {
     testQuestion2.setId(2);
   }
 
+  @Test
+  public void tagHashcodeEqualsStringTest() {
+	  Tag testTag = new Tag();
+	  testTag.setId(10);
+	  testTag.setName("tagName");
+	  
+	  Tag testTagSame = new Tag();
+	  testTagSame.setId(10);
+	  testTagSame.setName("tagName");
+	  
+	  Tag testTagDiffId = new Tag();
+	  testTagDiffId.setId(11);
+	  testTagDiffId.setName("tagName");
+	  
+	  Tag testTagDiffName = new Tag();
+	  testTagDiffName.setId(10);
+	  testTagDiffName.setName("tagName2");
+	  
+	  Tag testTagNullName = new Tag();
+	  testTagNullName.setId(10);
+	  testTagNullName.setName(null);
+	  
+	  Tag testTagNullId = new Tag();
+	  testTagNullId.setId(null);
+	  testTagNullId.setName("tagName");
+	  
+	  Tag testTagNullObj = null;
+	  
+	  Image imageNotTag = new Image();
+	  
+	  assertTrue(testTag.equals(testTagSame) && testTagSame.equals(testTag));
+	  assertFalse(testTag.equals(testTagNullId) & testTagNullId.equals(testTag));
+	  assertFalse(testTag.equals(testTagNullName) & testTagNullName.equals(testTag));
+	  assertFalse(testTag.equals(testTagNullObj));
+	  assertFalse(testTag.equals(imageNotTag));
+	  assertFalse(testTag.equals(testTagDiffName) && testTagDiffName.equals(testTag));
+	  assertFalse(testTag.equals(testTagDiffId) && testTagDiffId.equals(testTag));
+	  
+	  assertTrue(testTag.hashCode() == testTagSame.hashCode());
+	  assertFalse(testTagSame.hashCode() == testTagDiffName.hashCode());
+	  
+	  assertEquals(testTag.toString(), "Tag [id=10, name=tagName]");
+  }
+  
+  @Test
+  public void imageJavaBeanTest() {
+	  Image testImage = new Image();
+	  Question imAQuestion = new Question();
+	  testImage.setId(10);
+	  byte[] byteArr = new byte[1];
+	  byteArr[0] = '1';
+	  testImage.setImage(byteArr);
+	  testImage.setQuestion(imAQuestion);
+  }
+  
   /**
    * Test of tagService findAll method.
    * 
@@ -390,7 +445,7 @@ public class AskApplicationServiceTests {
    */
   @Test(expected = TagConflictException.class)
   public void tagFailureToCreateOrUpdateTest() {
-    when(tagRepositoryMock.save(testTag1)).thenThrow(TagConflictException.class);
+    when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
 
     tagServiceImpl.createOrUpdate(testTag1);
   }

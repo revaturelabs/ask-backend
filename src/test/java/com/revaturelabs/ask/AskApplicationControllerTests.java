@@ -15,16 +15,23 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.revaturelabs.ask.image.Image;
+import com.revaturelabs.ask.image.ImageController;
+import com.revaturelabs.ask.image.ImageNotFoundException;
+import com.revaturelabs.ask.image.ImageService;
 import com.revaturelabs.ask.question.Question;
 import com.revaturelabs.ask.question.QuestionConflictException;
 import com.revaturelabs.ask.question.QuestionController;
 import com.revaturelabs.ask.question.QuestionNotFoundException;
 import com.revaturelabs.ask.question.QuestionService;
 import com.revaturelabs.ask.response.Response;
+import com.revaturelabs.ask.response.ResponseConflictException;
 import com.revaturelabs.ask.response.ResponseController;
 import com.revaturelabs.ask.response.ResponseNotFoundException;
 import com.revaturelabs.ask.response.ResponseService;
@@ -68,6 +75,9 @@ public class AskApplicationControllerTests {
 	@MockBean
 	QuestionService questionServiceMock;
 
+	@MockBean
+	ImageService imageServiceMock;
+
 	@Autowired
 	UserController userControllerImpl;
 
@@ -78,10 +88,35 @@ public class AskApplicationControllerTests {
 	TagController tagControllerImpl;
 
 	@Autowired
+	ImageController imageControllerImpl;
+
+	@Autowired
 	TagService tagServiceImpl;
 
 	@Autowired
 	QuestionController questionControllerImpl;
+
+	@Test
+	public void testGetImage() {
+		Set<Image> images = new HashSet<Image>();
+		Image testImage = new Image();
+		Question imAQuestion = new Question();
+		testImage.setId(10);
+		byte[] byteArr = new byte[1];
+		byteArr[0] = '1';
+		testImage.setImage(byteArr);
+		testImage.setQuestion(imAQuestion);
+		images.add(testImage);
+		
+		when(imageServiceMock.getImages(10)).thenReturn(images);
+		assertEquals(ResponseEntity.ok(images), imageControllerImpl.getImage(10));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailureGetImage() {
+		when(imageServiceMock.getImages(10)).thenThrow(ImageNotFoundException.class);
+		imageControllerImpl.getImage(10);
+	}
 
 	@Test
 	public void testGetResponseById() {
@@ -89,6 +124,12 @@ public class AskApplicationControllerTests {
 		Response exampleResponse = new Response();
 		org.mockito.Mockito.when((this.responseServiceMock.getById(-999))).thenReturn(exampleResponse);
 		assertEquals(ResponseEntity.ok(exampleResponse), this.responseControllerImpl.getResponseById(-999));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedGetResponseById() {
+		when(responseServiceMock.getById(10)).thenThrow(ResponseNotFoundException.class);
+		responseControllerImpl.getResponseById(10);
 	}
 
 	/**
@@ -136,6 +177,21 @@ public class AskApplicationControllerTests {
 		org.mockito.Mockito.when(this.responseServiceMock.getById(-33)).thenThrow(new ResponseNotFoundException(null));
 		assertEquals(null, this.responseControllerImpl.updateResponse(exampleResponse3, -33));
 	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedUpdateResponseResponseConflictException() {
+		Response testResponse = new Response();
+		when(responseServiceMock.update(testResponse)).thenThrow(ResponseConflictException.class);
+		responseControllerImpl.updateResponse(testResponse, 1);
+		
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedUpdateResponseResponseNotFoundException() {
+		Response testResponse = new Response();
+		when(responseServiceMock.update(testResponse)).thenThrow(ResponseNotFoundException.class);
+		responseControllerImpl.updateResponse(testResponse, 1);
+	}
 
 	/**
 	 * Tests if CreateOrUpdate results in a response being created or updated
@@ -149,6 +205,13 @@ public class AskApplicationControllerTests {
 		org.mockito.Mockito.when(this.responseServiceMock.createOrUpdate(exampleResponse4))
 				.thenReturn(exampleResponse4);
 		assertEquals(exampleResponse4, this.responseControllerImpl.createOrUpdate(exampleResponse4, -44));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedCreateOrUpdateResponse() {
+		Response testResponse = new Response();
+		when(responseServiceMock.createOrUpdate(testResponse)).thenThrow(ResponseConflictException.class);
+		responseControllerImpl.createOrUpdate(testResponse, 10);
 	}
 
 	@Test
@@ -165,7 +228,20 @@ public class AskApplicationControllerTests {
 		org.mockito.Mockito.when(this.responseServiceMock.getAll()).thenReturn(listResponses);
 		assertEquals(ResponseEntity.ok(listResponses), this.responseControllerImpl.getAllResponses());
 	}
+	
+	@Test
+	public void testDeleteResponse() {
+		
+		doNothing().when(responseServiceMock).delete(10);
+		responseControllerImpl.deleteResponse(10);
+	}
 
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedDeleteResponse() {
+		doThrow(ResponseNotFoundException.class).when(responseServiceMock).delete(10);
+		responseControllerImpl.deleteResponse(10);
+	}
+	
 	/**
 	 * Tests for tags.
 	 */
@@ -233,25 +309,25 @@ public class AskApplicationControllerTests {
 	/**
 	 * Test deleting tag.
 	 */
-	 @Test
-	 public void testDeleteTag() {
-	 Tag exampleTag = new Tag();
-	 exampleTag.setId(1);
-	 exampleTag.setName("JavaScript");
-	 
-	 when((tagServiceMock.create(exampleTag))).thenReturn(exampleTag);
-	 tagServiceMock.create(exampleTag);
-	 doNothing().when(tagServiceMock).delete(exampleTag.getId());
-	 tagServiceMock.delete(exampleTag.getId());
-	 when((tagServiceMock.getById(exampleTag.getId()))).thenReturn(null);
-	 tagControllerImpl.deleteTag(exampleTag.getId());
-	 }
-	 
-	 @Test(expected = ResponseStatusException.class)
-	 public void testFailedDelete() {
-		 doThrow(TagNotFoundException.class).when(tagServiceMock).delete(1);
-		 tagControllerImpl.deleteTag(1);
-	 }
+	@Test
+	public void testDeleteTag() {
+		Tag exampleTag = new Tag();
+		exampleTag.setId(1);
+		exampleTag.setName("JavaScript");
+
+		when((tagServiceMock.create(exampleTag))).thenReturn(exampleTag);
+		tagServiceMock.create(exampleTag);
+		doNothing().when(tagServiceMock).delete(exampleTag.getId());
+		tagServiceMock.delete(exampleTag.getId());
+		when((tagServiceMock.getById(exampleTag.getId()))).thenReturn(null);
+		tagControllerImpl.deleteTag(exampleTag.getId());
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedDelete() {
+		doThrow(TagNotFoundException.class).when(tagServiceMock).delete(1);
+		tagControllerImpl.deleteTag(1);
+	}
 
 	/**
 	 * Test that createOrUpdate returns the tag to be created/updated
@@ -303,7 +379,7 @@ public class AskApplicationControllerTests {
 		when(this.tagServiceMock.update(exampleTag)).thenThrow(TagNotFoundException.class);
 		tagControllerImpl.updateTag(exampleTag, 5);
 	}
-	
+
 	/**
 	 * Tests related to Questions
 	 * 
@@ -360,6 +436,143 @@ public class AskApplicationControllerTests {
 	 * @throws QuestionNotFoundException
 	 */
 
+	/*
+	 * Testing User Controller
+	 */
+	@Test
+	public void testFindAllUsers() {
+		
+		List<User> list = new ArrayList<User>();
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		list.add(testUser);
+		Page<User> page = new PageImpl<>(list);
+		when(userServiceMock.findAll(0, 20)).thenReturn(page);
+		assertEquals(ResponseEntity.ok(page.getContent()), userControllerImpl.findAll(0, 20));
+		assertEquals(ResponseEntity.ok(page.getContent()), userControllerImpl.findAll(null, null));
+	}
+	
+	@Test
+	public void testUserUpdateOrCreate() {
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		
+		User testUser2 = new User();
+		testUser2.setId(11);
+		testUser2.setUsername("username");
+		testUser2.setPassword("password");
+		
+		when(userServiceMock.createOrUpdate(testUser)).thenReturn(testUser);
+		assertEquals(testUser, userControllerImpl.createOrUpdate(testUser, 10));
+		when(userServiceMock.createOrUpdate(testUser2)).thenReturn(testUser2);
+		assertEquals(testUser2, userControllerImpl.createOrUpdate(testUser, 11));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedUserUpdateOrCreate() {
+
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		
+		when(userServiceMock.createOrUpdate(testUser)).thenThrow(UserConflictException.class);
+		userControllerImpl.createOrUpdate(testUser, 0);
+	}
+	
+	@Test
+	public void testUpdateUser() {
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		
+		when(userServiceMock.update(testUser)).thenReturn(testUser);
+		assertEquals(testUser, userControllerImpl.updateUser(testUser, 10));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedUpdateUserUserConflictException() {
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		
+		when(userServiceMock.update(testUser)).thenThrow(UserConflictException.class);
+		userControllerImpl.updateUser(testUser, 10);
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedUpdateUserUserNotFoundException() {
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		
+		when(userServiceMock.update(testUser)).thenThrow(UserNotFoundException.class);
+		userControllerImpl.updateUser(testUser, 10);
+	}
+	
+	@Test
+	public void testDeleteUser() {
+		doNothing().when(userServiceMock).delete(10);
+		userControllerImpl.deleteUser(10);
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedDeleteUser() {
+		doThrow(UserNotFoundException.class).when(userServiceMock).delete(10);
+		userControllerImpl.deleteUser(10);
+	}
+	
+	@Test
+	public void testUserGetQuestions() {
+		Set<Question> questions = new HashSet<Question>();
+		Question testQuestion1 = new Question();
+		questions.add(testQuestion1);
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		testUser.setQuestions(questions);
+		
+		when(userServiceMock.findById(10)).thenReturn(testUser);
+		assertEquals(ResponseEntity.ok(testUser.getQuestions()), userControllerImpl.getQuestions(10));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedUserGetQuestions() {
+		when(userServiceMock.findById(10)).thenThrow(UserNotFoundException.class);
+		userControllerImpl.getQuestions(10);
+	}
+	
+	@Test
+	public void testUpdateUserTags() {
+
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		
+		when(userServiceMock.updateTags(testUser)).thenReturn(testUser);
+		assertEquals(ResponseEntity.ok(testUser), userControllerImpl.updateUserTags(testUser, 10));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedUpdateUserTags() {
+		User testUser = new User();
+		testUser.setId(10);
+		testUser.setUsername("username");
+		testUser.setPassword("password");
+		
+		when(userServiceMock.updateTags(testUser)).thenThrow(UserNotFoundException.class);
+		userControllerImpl.updateUserTags(testUser, 10);
+	}
+	
 	@Test
 	public void testUpdateQuestion() throws QuestionConflictException, QuestionNotFoundException {
 		Question exampleQuestion = new Question();
@@ -378,6 +591,12 @@ public class AskApplicationControllerTests {
 		when((userServiceMock.findById(index))).thenReturn(exampleUser);
 
 		assertEquals(ResponseEntity.ok(exampleUser), userControllerImpl.findById(index));
+	}
+	
+	@Test(expected = ResponseStatusException.class)
+	public void testFailedGetUserById() {
+		when(userServiceMock.findById(10)).thenThrow(UserNotFoundException.class);
+		userControllerImpl.findById(10);
 	}
 
 	/**

@@ -167,6 +167,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<append>false</append>
 					<systemPropertyVariables>
 						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
 					</systemPropertyVariables>

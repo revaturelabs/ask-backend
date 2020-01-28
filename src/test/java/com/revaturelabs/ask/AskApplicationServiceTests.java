@@ -1507,9 +1507,18 @@ public class AskApplicationServiceTests {
 	 */
 	@Test(expected = QuestionConflictException.class)
 	public void questionsConflictExceptionWhenHighlightingResponseTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-
+//		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+//		when(questionServiceImpl.getById(1)).thenReturn((Question) when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1)));
+//		when(questionServiceImpl.update(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
+//		when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
+		
+		when(questionRepositoryMock.findById(1)).thenThrow(DataIntegrityViolationException.class);
+		
 		questionServiceImpl.highlightResponse(1, 4);
+	}
+	
+	@Test
+	public void questionFindAllByTagNameTest() {
+		
 	}
 }

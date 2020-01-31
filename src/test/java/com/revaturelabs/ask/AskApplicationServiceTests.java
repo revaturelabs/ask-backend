@@ -71,1454 +71,1474 @@ import com.revaturelabs.ask.user.UserServiceImpl;
 @SpringBootTest
 public class AskApplicationServiceTests {
 
-	@Test
-	public void contextLoads() {
-	}
+  @Test
+  public void contextLoads() {}
 
-	@Mock
-	TagRepository tagRepositoryMock;
+  @Mock
+  TagRepository tagRepositoryMock;
 
-	@Mock
-	ImageRepository imageRepositoryMock;
+  @Mock
+  ImageRepository imageRepositoryMock;
 
-	@Mock
-	ResponseRepository responseRepositoryMock;
+  @Mock
+  ResponseRepository responseRepositoryMock;
 
-	@Mock
-	UserRepository userRepositoryMock;
+  @Mock
+  UserRepository userRepositoryMock;
 
-	@Mock
-	QuestionRepository questionRepositoryMock;
+  @Mock
+  QuestionRepository questionRepositoryMock;
 
-	@Mock
-	TagService tagServiceMock;
+  @Mock
+  TagService tagServiceMock;
 
-	@Mock
-	ImageService imageServiceMock;
+  @Mock
+  ImageService imageServiceMock;
 
-	@Mock
-	ResponseService responseServiceMock;
+  @Mock
+  ResponseService responseServiceMock;
 
-	@Mock
-	UserService userServiceMock;
+  @Mock
+  UserService userServiceMock;
 
-	@Mock
-	QuestionService questionServiceMock;
+  @Mock
+  QuestionService questionServiceMock;
 
-	@Mock
-	MultipartHttpServletRequest mockRequest;
+  @Mock
+  MultipartHttpServletRequest mockRequest;
 
-	@InjectMocks
-	TagService tagServiceImpl = new TagServiceImpl();
+  @InjectMocks
+  TagService tagServiceImpl = new TagServiceImpl();
 
-	@InjectMocks
-	ImageService imageServiceImpl = new ImageServiceImpl();
+  @InjectMocks
+  ImageService imageServiceImpl = new ImageServiceImpl();
 
-	@InjectMocks
-	ResponseService responseServiceImpl = new ResponseServiceImpl();
+  @InjectMocks
+  ResponseService responseServiceImpl = new ResponseServiceImpl();
 
-	@InjectMocks
-	UserService userServiceImpl = new UserServiceImpl();
+  @InjectMocks
+  UserService userServiceImpl = new UserServiceImpl();
 
-	@InjectMocks
-	QuestionService questionServiceImpl = new QuestionServiceImpl();
+  @InjectMocks
+  QuestionService questionServiceImpl = new QuestionServiceImpl();
 
-	@InjectMocks
-	TagController tagControllerImpl = new TagController();
+  @InjectMocks
+  TagController tagControllerImpl = new TagController();
 
-	@InjectMocks
-	ImageController imageControllerImpl = new ImageController();
+  @InjectMocks
+  ImageController imageControllerImpl = new ImageController();
 
-	@InjectMocks
-	ResponseController responseControllerImpl = new ResponseController();
+  @InjectMocks
+  ResponseController responseControllerImpl = new ResponseController();
 
-	@InjectMocks
-	UserController userControllerImpl = new UserController();
+  @InjectMocks
+  UserController userControllerImpl = new UserController();
 
-	@InjectMocks
-	QuestionController questionControllerImpl = new QuestionController();
+  @InjectMocks
+  QuestionController questionControllerImpl = new QuestionController();
 
-	static Tag testTag1;
+  static Tag testTag1;
 
-	static Tag testTag1PostCreate;
+  static Tag testTag1PostCreate;
 
-	static Tag testTag2;
+  static Tag testTag2;
 
-	static Tag testTag3;
+  static Tag testTag3;
 
-	static List<Tag> tagReturnList;
+  static List<Tag> tagReturnList;
 
-	static Set<Image> testImageSet1;
+  static Set<Image> testImageSet1;
 
-	static Set<Image> testImageSet2;
+  static Set<Image> testImageSet2;
 
-	static Image testImage1;
+  static Image testImage1;
 
-	static Image testImage2;
+  static Image testImage2;
 
-	static Response testResponse1;
+  static Response testResponse1;
 
-	static Response testResponse1PostCreate;
+  static Response testResponse1PostCreate;
 
-	static Response testResponse2;
+  static Response testResponse2;
 
-	static List<Response> responseReturnList;
+  static List<Response> responseReturnList;
 
-	static User testUser1;
+  static User testUser1;
 
-	static User testUser1PostCreate;
+  static User testUser1PostCreate;
 
-	static User testUser2;
+  static User testUser2;
 
-	static Page<User> returnUsersPage;
+  static Page<User> returnUsersPage;
 
-	static Question testQuestion1;
+  static Question testQuestion1;
 
-	static Question testQuestion1PostCreate;
+  static Question testQuestion1PostCreate;
 
-	static Question testQuestion2;
+  static Question testQuestion2;
 
-	static Page<Question> returnQuestionsPage;
+  static Page<Question> returnQuestionsPage;
 
-	static {
-		testTag1 = new Tag();
-		testTag1.setId(0);
-		testTag1.setName("Test 1");
+  static {
+    testTag1 = new Tag();
+    testTag1.setId(0);
+    testTag1.setName("Test 1");
 
-		testTag1PostCreate = new Tag();
-		testTag1PostCreate.setId(1);
-		testTag1PostCreate.setName("Test 1");
-
-		testTag2 = new Tag();
-		testTag2.setId(1);
-		testTag2.setName("Test 2");
-
-		testTag3 = new Tag();
-		testTag3.setId(2);
-		testTag3.setName("Test 3");
+    testTag1PostCreate = new Tag();
+    testTag1PostCreate.setId(1);
+    testTag1PostCreate.setName("Test 1");
 
-		tagReturnList = Arrays.asList(testTag1, testTag2, testTag3);
+    testTag2 = new Tag();
+    testTag2.setId(1);
+    testTag2.setName("Test 2");
 
-		testResponse1 = new Response();
-		testResponse1.setId(1);
-		testResponse1.setBody("Test response");
-
-		testResponse1PostCreate = new Response();
-		testResponse1PostCreate.setId(1);
-		testResponse1PostCreate.setBody("Updated body");
-
-		testResponse2 = new Response();
-		testResponse2.setId(2);
-		testResponse2.setBody("Test response 2");
-
-		responseReturnList = Arrays.asList(testResponse1, testResponse2);
-
-		HashSet<Tag> expertTags = new HashSet<Tag>();
-		expertTags.addAll(tagReturnList);
-
-		testUser1 = new User();
-		testUser1.setId(1);
-		testUser1.setExpertTags(expertTags);
-
-		testUser1PostCreate = testUser1;
-		testUser1PostCreate.setUsername("Test username 2");
-
-		testUser2 = new User();
-		testUser2.setId(2);
-
-		testImage1 = new Image();
-		testImage1.setId(1);
-		testImage2 = new Image();
-		testImage2.setId(2);
-
-		testImageSet1 = new HashSet<Image>();
-		testImageSet1.add(testImage1);
-		testImageSet2 = new HashSet<Image>();
-		testImageSet2.add(testImage2);
-
-		testQuestion1 = new Question();
-		testQuestion1.setId(1);
-		testQuestion1.setAssociatedTags(expertTags);
-		testQuestion1.setImages(testImageSet1);
-
-		testQuestion1PostCreate = new Question();
-		testQuestion1PostCreate.setId(1);
-		testQuestion1.setAssociatedTags(expertTags);
-
-		testQuestion2 = new Question();
-		testQuestion2.setId(2);
-	}
-
-//  @BeforeClass
-//  public void setUp() throws Exception {
-//	  MockitoAnnotations.initMocks(this);
-//  }
-
-	@Test
-	public void tagHashcodeEqualsStringTest() {
-		Tag testTag = new Tag();
-		testTag.setId(10);
-		testTag.setName("tagName");
-
-		Tag testTagSame = new Tag();
-		testTagSame.setId(10);
-		testTagSame.setName("tagName");
-
-		Tag testTagDiffId = new Tag();
-		testTagDiffId.setId(11);
-		testTagDiffId.setName("tagName");
-
-		Tag testTagDiffName = new Tag();
-		testTagDiffName.setId(10);
-		testTagDiffName.setName("tagName2");
-
-		Tag testTagNullId = new Tag();
-		testTagNullId.setId(null);
-		testTagNullId.setName("tagName");
-		
-		Tag testTagNullIdSame = new Tag();
-		testTagNullIdSame.setId(null);
-		testTagNullIdSame.setName("tagName");
-
-		Tag testTagNullName = new Tag();
-		testTagNullName.setId(10);
-		testTagNullName.setName(null);
-		
-		Tag testTagNullNameSame = new Tag();
-		testTagNullNameSame.setId(10);
-		testTagNullNameSame.setName(null);
-		
-		Tag testTagNullFields = new Tag();
-		testTagNullFields.setId(null);
-		testTagNullFields.setName(null);
-
-		Tag testTagNullObj = null;
-
-		Image imageNotTag = new Image();
-
-		//.equals()
-		assertTrue(testTag.equals(testTagSame) & testTagSame.equals(testTag));
-		assertFalse(testTag.equals(testTagNullId) & testTagNullId.equals(testTag));
-		assertFalse(testTag.equals(testTagNullName) & testTagNullName.equals(testTag));
-		assertFalse(testTag.equals(testTagNullObj));
-		assertFalse(testTag.equals(imageNotTag));
-		assertFalse(testTag.equals(testTagDiffName) & testTagDiffName.equals(testTag));
-		assertFalse(testTag.equals(testTagDiffId) & testTagDiffId.equals(testTag));
-		assertTrue(testTagNullId.equals(testTagNullIdSame));
-		assertTrue(testTagNullName.equals(testTagNullNameSame));
-
-		//.hashCode()
-		assertTrue(testTag.hashCode() == testTagSame.hashCode());
-		assertFalse(testTag.hashCode() == testTagNullFields.hashCode());
-
-		//.toString()
-		assertEquals(testTag.toString(), "Tag [id=10, name=tagName]");
-	}
-
-	@Test
-	public void imageJavaBeanTest() {
-		Image testImage = new Image();
-		Question imAQuestion = new Question();
-		testImage.setId(10);
-		byte[] byteArr = new byte[1];
-		byteArr[0] = '1';
-		testImage.setImage(byteArr);
-		testImage.setQuestion(imAQuestion);
-		assertNotNull(testImage);
-		Image testImageSame = new Image(10, byteArr, imAQuestion);
-
-		// getters
-		assertEquals(testImageSame, testImage);
-		assertEquals(testImage, new Image(10, byteArr, imAQuestion));
-		assertEquals(testImage.getId(), 10);
-		assertEquals(testImage.getImage(), byteArr);
-		assertEquals(testImage.getQuestion(), imAQuestion);
-
-		// .equals()
-		Image testImageNull = null;
-		Tag testTag = new Tag();
-		Image testImageDiffId = new Image(11, byteArr, imAQuestion);
-		byte[] byteArr2 = new byte[1];
-		byteArr2[0] = '2';
-		Image testImageDiffImage = new Image(10, byteArr2, imAQuestion);
-		assertTrue(testImage.equals(testImage));
-		assertFalse(testImage.equals(testImageNull));
-		assertFalse(testImage.equals(testTag));
-		assertFalse(testImage.equals(testImageDiffId));
-		assertFalse(testImage.equals(testImageDiffImage));
-
-		// .toString()
-		assertEquals(testImageSame.toString(), "Image [id=10, image=[49], question=" + testImageSame.getQuestion().toString() + "]");
-	}
-
-	@Test
-	public void responseJavaBeanTest() {
-		Response testResponse = new Response();
-		testResponse.setId(10);
-		testResponse.setBody("Response Body");
-		testResponse.setResponderId(10);
-		Date date = new Date();
-		testResponse.setCreationDate(date);
-		testResponse.setQuestionId(10);
-		testResponse.setQuestion(testQuestion1);
-		testResponse.setUser(testUser1);
-
-		Response testResponseSame = new Response();
-		testResponseSame.setId(10);
-		testResponseSame.setBody("Response Body");
-		testResponseSame.setResponderId(10);
-		testResponseSame.setCreationDate(date);
-		testResponseSame.setQuestionId(10);
-		testResponseSame.setQuestion(testQuestion1);
-		testResponseSame.setUser(testUser1);
-
-		Response testResponseNullFields = new Response();
-		testResponseNullFields.setId(null);
-		testResponseNullFields.setBody(null);
-		testResponseNullFields.setResponderId(null);
-		testResponseNullFields.setCreationDate(null);
-		testResponseNullFields.setQuestionId(null);
-		testResponseNullFields.setQuestion(testQuestion1);
-		testResponseNullFields.setUser(testUser1);
-		
-		Response testResponseNullFieldsSame = new Response();
-		testResponseNullFieldsSame.setId(null);
-		testResponseNullFieldsSame.setBody(null);
-		testResponseNullFieldsSame.setResponderId(null);
-		testResponseNullFieldsSame.setCreationDate(null);
-		testResponseNullFieldsSame.setQuestionId(null);
-		testResponseNullFieldsSame.setQuestion(testQuestion1);
-		testResponseNullFieldsSame.setUser(testUser1);
-
-		Response testResponseDiffId = new Response();
-		testResponseDiffId.setId(11);
-		testResponseDiffId.setBody("Response Body");
-		testResponseDiffId.setResponderId(10);
-		testResponseDiffId.setCreationDate(date);
-		testResponseDiffId.setQuestionId(10);
-		testResponseDiffId.setQuestion(testQuestion1);
-		testResponseDiffId.setUser(testUser1);
-		
-		Response testResponseNullId = new Response();
-		testResponseNullId.setId(null);
-		testResponseNullId.setBody("Response Body");
-		testResponseNullId.setResponderId(10);
-		testResponseNullId.setCreationDate(date);
-		testResponseNullId.setQuestionId(10);
-		testResponseNullId.setQuestion(testQuestion1);
-		testResponseNullId.setUser(testUser1);
-
-		Response testResponseDiffBody = new Response();
-		testResponseDiffBody.setId(10);
-		testResponseDiffBody.setBody("Different Response Body");
-		testResponseDiffBody.setResponderId(10);
-		testResponseDiffBody.setCreationDate(date);
-		testResponseDiffBody.setQuestionId(10);
-		testResponseDiffBody.setQuestion(testQuestion1);
-		testResponseDiffBody.setUser(testUser1);
-		
-		Response testResponseNullBody = new Response();
-		testResponseNullBody.setId(10);
-		testResponseNullBody.setBody(null);
-		testResponseNullBody.setResponderId(10);
-		testResponseNullBody.setCreationDate(date);
-		testResponseNullBody.setQuestionId(10);
-		testResponseNullBody.setQuestion(testQuestion1);
-		testResponseNullBody.setUser(testUser1);
-
-		Response testResponseDiffResponderId = new Response();
-		testResponseDiffResponderId.setId(10);
-		testResponseDiffResponderId.setBody("Response Body");
-		testResponseDiffResponderId.setResponderId(11);
-		testResponseDiffResponderId.setCreationDate(date);
-		testResponseDiffResponderId.setQuestionId(10);
-		testResponseDiffResponderId.setQuestion(testQuestion1);
-		testResponseDiffResponderId.setUser(testUser1);
-		
-		Response testResponseNullResponderId = new Response();
-		testResponseNullResponderId.setId(10);
-		testResponseNullResponderId.setBody("Response Body");
-		testResponseNullResponderId.setResponderId(null);
-		testResponseNullResponderId.setCreationDate(date);
-		testResponseNullResponderId.setQuestionId(10);
-		testResponseNullResponderId.setQuestion(testQuestion1);
-		testResponseNullResponderId.setUser(testUser1);
-
-		Response testResponseDiffCreationDate = new Response();
-		testResponseDiffCreationDate.setId(10);
-		testResponseDiffCreationDate.setBody("Response Body");
-		testResponseDiffCreationDate.setResponderId(10);
-		testResponseDiffCreationDate.setCreationDate(new Date(111L));
-		testResponseDiffCreationDate.setQuestionId(10);
-		testResponseDiffCreationDate.setQuestion(testQuestion1);
-		testResponseDiffCreationDate.setUser(testUser1);
-		
-		Response testResponseNullCreationDate = new Response();
-		testResponseNullCreationDate.setId(10);
-		testResponseNullCreationDate.setBody("Response Body");
-		testResponseNullCreationDate.setResponderId(10);
-		testResponseNullCreationDate.setCreationDate(null);
-		testResponseNullCreationDate.setQuestionId(10);
-		testResponseNullCreationDate.setQuestion(testQuestion1);
-		testResponseNullCreationDate.setUser(testUser1);
-
-		Response testResponseDiffQuestionId = new Response();
-		testResponseDiffQuestionId.setId(10);
-		testResponseDiffQuestionId.setBody("Response Body");
-		testResponseDiffQuestionId.setResponderId(10);
-		testResponseDiffQuestionId.setCreationDate(date);
-		testResponseDiffQuestionId.setQuestionId(11);
-		testResponseDiffQuestionId.setQuestion(testQuestion1);
-		testResponseDiffQuestionId.setUser(testUser1);
-		
-		Response testResponseNullQuestionId = new Response();
-		testResponseNullQuestionId.setId(10);
-		testResponseNullQuestionId.setBody("Response Body");
-		testResponseNullQuestionId.setResponderId(10);
-		testResponseNullQuestionId.setCreationDate(date);
-		testResponseNullQuestionId.setQuestionId(null);
-		testResponseNullQuestionId.setQuestion(testQuestion1);
-		testResponseNullQuestionId.setUser(testUser1);
-
-		// Response Exists
-		assertNotNull(testResponse);
-
-		// Test Getters and Setters
-		assertEquals(testResponse.getId(), 10);
-		assertEquals(testResponse.getBody(), "Response Body");
-		assertEquals(testResponse.getResponderId(), (Integer) 10);
-		assertEquals(testResponse.getCreationDate(), date);
-		assertEquals(testResponse.getQuestionId(), (Integer) 10);
-		assertEquals(testResponse.getQuestion(), testQuestion1);
-		assertEquals(testResponse.getUser(), testUser1);
-
-		// .hashcode()
-		assertTrue(testResponse.hashCode() == testResponseSame.hashCode());
-		assertFalse(testResponse.hashCode() == testResponseNullFields.hashCode());
-
-		// .equals()
-		assertTrue(testResponse.equals(testResponseSame));
-		assertTrue(testResponseNullFields.equals(testResponseNullFieldsSame));
-		assertFalse(testResponse.equals(null));
-		assertFalse(testResponse.equals(testTag1));
-		assertFalse(testResponseDiffBody.equals(testResponseNullFields) & testResponseDiffBody.equals(testResponse));
-		assertFalse(testResponseNullBody.equals(testResponseNullFields) & testResponseNullBody.equals(testResponse));
-		assertFalse(testResponseNullId.equals(testResponseNullFields) & testResponseNullId.equals(testResponse));
-		assertFalse(testResponseDiffId.equals(testResponseNullFields) & testResponseDiffId.equals(testResponse));
-		assertFalse(testResponseNullId.equals(testResponseNullFields) & testResponseNullId.equals(testResponse));
-		assertFalse(testResponseDiffCreationDate.equals(testResponseNullFields)
-				& testResponseDiffCreationDate.equals(testResponse));
-		assertFalse(testResponseNullCreationDate.equals(testResponseNullFields)
-				& testResponseNullCreationDate.equals(testResponse));
-		assertFalse(testResponseDiffQuestionId.equals(testResponseNullFields)
-				& testResponseDiffQuestionId.equals(testResponse));
-		assertFalse(testResponseNullQuestionId.equals(testResponseNullFields)
-				& testResponseNullQuestionId.equals(testResponse));
-		assertFalse(testResponseDiffResponderId.equals(testResponseNullFields)
-				& testResponseDiffResponderId.equals(testResponse));
-		assertFalse(testResponseNullResponderId.equals(testResponseNullFields)
-				& testResponseNullResponderId.equals(testResponse));
-
-	}
-
-	@Test
-	public void userJavaBeanTest() {
-		User testUser = new User();
-		testUser.setId(10);
-		assertEquals(testUser.getId(), 10);
-		testUser.setUsername("username");
-		assertEquals(testUser.getUsername(), "username");
-		testUser.setPassword("password");
-		assertEquals(testUser.getPassword(), "password");
-		assertEquals(testUser, new User(10, "username", "password"));
-		testUser.setExpert(true);
-		assertEquals(testUser.isExpert(), true);
-		Set<Tag> tags = new HashSet<Tag>();
-		tags.add(testTag1);
-		testUser.setExpertTags(tags);
-		assertEquals(testUser.getExpertTags(), tags);
-		Set<Question> questions = new HashSet<Question>();
-		questions.add(testQuestion1);
-		testUser.setQuestions(questions);
-		assertEquals(testUser.getQuestions(), questions);
-		Set<Response> responses = new HashSet<Response>();
-		responses.add(testResponse1);
-		testUser.setResponses(responses);
-		assertEquals(testUser.getResponses(), responses);
-
-		User testUserSame = new User();
-		testUserSame.setId(10);
-		testUserSame.setUsername("username");
-		testUserSame.setPassword("password");
-		testUserSame.setExpert(true);
-		testUserSame.addTagToUser(testTag1);
-		testUserSame.setQuestions(questions);
-		testUserSame.setResponses(responses);
-
-		User testUserAddTag = new User();
-		testUserAddTag.addTagToUser(testTag1);
-		testUserAddTag.addTagToUser(testTag2);
-
-		User testUserNullFields = new User();
-		testUserNullFields.setId(10);
-		testUserNullFields.setUsername(null);
-		testUserNullFields.setPassword(null);
-		testUserNullFields.setExpert(false);
-		testUserNullFields.setExpertTags(null);
-		testUserNullFields.setQuestions(null);
-		testUserNullFields.setResponses(null);
-		
-		User testUserNullFieldsSame = new User();
-		testUserNullFieldsSame.setId(10);
-		testUserNullFieldsSame.setUsername(null);
-		testUserNullFieldsSame.setPassword(null);
-		testUserNullFieldsSame.setExpert(false);
-		testUserNullFieldsSame.setExpertTags(null);
-		testUserNullFieldsSame.setQuestions(null);
-		testUserNullFieldsSame.setResponses(null);
-
-		User testUserDiffId = new User();
-		testUserDiffId.setId(11);
-		testUserDiffId.setUsername("username");
-		testUserDiffId.setPassword("password");
-		testUserDiffId.setExpert(true);
-		testUserDiffId.setExpertTags(tags);
-		testUserDiffId.setQuestions(questions);
-		testUserDiffId.setResponses(responses);
-
-		User testUserDiffUsername = new User();
-		testUserDiffUsername.setId(10);
-		testUserDiffUsername.setUsername("Different Username");
-		testUserDiffUsername.setPassword("password");
-		testUserDiffUsername.setExpert(true);
-		testUserDiffUsername.setExpertTags(tags);
-		testUserDiffUsername.setQuestions(questions);
-		testUserDiffUsername.setResponses(responses);
-
-		User testUserNullUsername = new User();
-		testUserNullUsername.setId(10);
-		testUserNullUsername.setUsername(null);
-		testUserNullUsername.setPassword("password");
-		testUserNullUsername.setExpert(true);
-		testUserNullUsername.setExpertTags(tags);
-		testUserNullUsername.setQuestions(questions);
-		testUserNullUsername.setResponses(responses);
-
-		User testUserDiffPassword = new User();
-		testUserDiffPassword.setId(10);
-		testUserDiffPassword.setUsername("username");
-		testUserDiffPassword.setPassword("Different Password");
-		testUserDiffPassword.setExpert(true);
-		testUserDiffPassword.setExpertTags(tags);
-		testUserDiffPassword.setQuestions(questions);
-		testUserDiffPassword.setResponses(responses);
-
-		User testUserNullPassword = new User();
-		testUserNullPassword.setId(10);
-		testUserNullPassword.setUsername("username");
-		testUserNullPassword.setPassword(null);
-		testUserNullPassword.setExpert(true);
-		testUserNullPassword.setExpertTags(tags);
-		testUserNullPassword.setQuestions(questions);
-		testUserNullPassword.setResponses(responses);
-
-		User testUserDiffExpert = new User();
-		testUserDiffExpert.setId(10);
-		testUserDiffExpert.setUsername("username");
-		testUserDiffExpert.setPassword("password");
-		testUserDiffExpert.setExpert(false);
-		testUserDiffExpert.setExpertTags(tags);
-		testUserDiffExpert.setQuestions(questions);
-		testUserDiffExpert.setResponses(responses);
-
-		User testUserDiffTags = new User();
-		testUserDiffTags.setId(10);
-		testUserDiffTags.setUsername("username");
-		testUserDiffTags.setPassword("password");
-		testUserDiffTags.setExpert(true);
-		Set<Tag> tags2 = new HashSet<Tag>();
-		tags2.add(testTag2);
-		testUserDiffTags.setExpertTags(tags2);
-		testUserDiffTags.setQuestions(questions);
-		testUserDiffTags.setResponses(responses);
-		
-		User testUserNullTags = new User();
-		testUserNullTags.setId(10);
-		testUserNullTags.setUsername("username");
-		testUserNullTags.setPassword("password");
-		testUserNullTags.setExpert(true);
-		testUserNullTags.setExpertTags(null);
-		testUserNullTags.setQuestions(questions);
-		testUserNullTags.setResponses(responses);
-
-		User testUserDiffQuestions = new User();
-		testUserDiffQuestions.setId(10);
-		testUserDiffQuestions.setUsername("username");
-		testUserDiffQuestions.setPassword("password");
-		testUserDiffQuestions.setExpert(true);
-		testUserDiffQuestions.setExpertTags(tags);
-		Set<Question> questions2 = new HashSet<Question>();
-		questions2.add(testQuestion2);
-		testUserDiffQuestions.setQuestions(questions2);
-		testUserDiffQuestions.setResponses(responses);
-		
-		User testUserNullQuestions = new User();
-		testUserNullQuestions.setId(10);
-		testUserNullQuestions.setUsername("username");
-		testUserNullQuestions.setPassword("password");
-		testUserNullQuestions.setExpert(true);
-		testUserNullQuestions.setExpertTags(tags);
-		testUserNullQuestions.setQuestions(null);
-		testUserNullQuestions.setResponses(responses);
-
-		User testUserDiffResponses = new User();
-		testUserDiffResponses.setId(10);
-		testUserDiffResponses.setUsername("username");
-		testUserDiffResponses.setPassword("password");
-		testUserDiffResponses.setExpert(true);
-		testUserDiffResponses.setExpertTags(tags);
-		testUserDiffResponses.setQuestions(questions);
-		Set<Response> responses2 = new HashSet<Response>();
-		responses2.add(testResponse2);
-		testUserDiffResponses.setResponses(responses2);
-		
-		User testUserNullResponses = new User();
-		testUserNullResponses.setId(10);
-		testUserNullResponses.setUsername("username");
-		testUserNullResponses.setPassword("password");
-		testUserNullResponses.setExpert(true);
-		testUserNullResponses.setExpertTags(tags);
-		testUserNullResponses.setQuestions(questions);
-		testUserNullResponses.setResponses(null);
-
-		assertNotEquals(testUser.getExpertTags(), testUserAddTag.getExpertTags());
-		assertNotEquals(testUser.getUsername(), "Not the username");
-		assertNotEquals(testUserNullUsername.getUsername(), "Not the username");
-		assertEquals(testUserNullUsername.getUsername(), null);
-
-		// .hashcode()
-		assertTrue(testUser.hashCode() == testUserSame.hashCode());
-		assertFalse(testUser.hashCode() == testUserNullFields.hashCode());
-
-		// .equals()
-		assertTrue(testUser.equals(testUserSame));
-		assertTrue(testUserNullFields.equals(testUserNullFieldsSame));
-		assertFalse(testUser.equals(null));
-		assertFalse(testUser.equals(testImage1));
-		assertFalse(testUserDiffId.equals(testUserNullFields) & testUserDiffId.equals(testUser));
-		assertFalse(testUserDiffUsername.equals(testUserNullFields) & testUserDiffUsername.equals(testUser));
-		assertFalse(testUserNullUsername.equals(testUserNullFields) & testUserNullUsername.equals(testUser)
-				& testUserNullUsername.equals(testUserDiffUsername));
-		assertFalse(testUserDiffPassword.equals(testUserNullFields) & testUserDiffPassword.equals(testUser));
-		assertFalse(testUserNullPassword.equals(testUserNullFields) & testUserNullPassword.equals(testUser));
-		assertFalse(testUserDiffExpert.equals(testUserNullFields) & testUserDiffExpert.equals(testUser));
-		assertFalse(testUserDiffTags.equals(testUserNullFields) & testUserDiffTags.equals(testUser));
-		assertFalse(testUserNullTags.equals(testUserNullFields) & testUserNullTags.equals(testUser));
-		assertFalse(testUserDiffQuestions.equals(testUserNullFields) & testUserDiffQuestions.equals(testUser));
-		assertFalse(testUserNullQuestions.equals(testUserNullFields) & testUserNullQuestions.equals(testUser));
-		assertFalse(testUserDiffResponses.equals(testUserNullFields) & testUserDiffResponses.equals(testUser));
-		assertFalse(testUserNullResponses.equals(testUserNullFields) & testUserNullResponses.equals(testUser));
-	}
-
-	/**
-	 * Test of tagService findAll method.
-	 * 
-	 */
-	@Test
-	public void getAllTagsTest() {
-
-		when((tagRepositoryMock.findAll())).thenReturn(tagReturnList);
-
-		assertEquals(tagReturnList, tagServiceImpl.getAll());
-	}
-
-	/**
-	 * Test retrieval of getting one tag
-	 * 
-	 */
-	@Test
-	public void getOneTagTest() {
-
-		when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
-
-		assertEquals(testTag1, tagServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test failure of getting a non-existent tag
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getBadTagTest() {
-
-		when(tagRepositoryMock.findById(10)).thenReturn(Optional.empty());
-
-		tagServiceImpl.getById(10);
-	}
-
-	/**
-	 * Test accuracy of getting a tag
-	 * 
-	 */
-	@Test
-	public void getTagByIdAccuracyTest() {
-		when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
-
-		assertNotEquals(testTag2, tagServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test retrieval of an existing tag by name
-	 * 
-	 */
-	@Test
-	public void getTagByNameTest() {
-
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		assertEquals(testTag1, tagServiceImpl.getTagByName("Test 1"));
-	}
-
-	/**
-	 * Test failure retrieval of a bad tag name
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getBadTagNameTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-		tagServiceImpl.getTagByName("notTestTag1");
-	}
-
-	/**
-	 * Test accuracy of getting a tag by name
-	 * 
-	 */
-	@Test
-	public void getAccurateTagNameTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		assertNotEquals(testTag2, tagServiceImpl.getTagByName("Test 1"));
-	}
-
-	/**
-	 * Test tag creation
-	 * 
-	 */
-	@Test
-	public void tagCreationAccuracyTest() {
-		when(tagRepositoryMock.save(testTag1)).thenReturn(testTag1PostCreate);
-
-		assertEquals(testTag1PostCreate, tagServiceImpl.create(testTag1));
-	}
-
-	/**
-	 * Test updating a tag
-	 */
-	@Test
-	public void tagUpdateTest() {
-		Tag testTag1UpdateInfo = new Tag();
-		testTag1UpdateInfo.setId(0);
-		testTag1UpdateInfo.setName("New name");
-
-		when(tagRepositoryMock.findById(testTag1UpdateInfo.getId())).thenReturn(Optional.of(testTag1));
-		when(tagRepositoryMock.save(testTag1UpdateInfo)).thenReturn(testTag1);
-
-		assertEquals(testTag1, tagServiceImpl.update(testTag1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent tag
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void tagUpdateNonExistantFailureTest() {
-		Tag nonExistentTag = new Tag();
-		nonExistentTag.setId(5);
-
-		when(tagRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		tagServiceImpl.update(nonExistentTag);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a tag
-	 * 
-	 */
-	@Test(expected = TagConflictException.class)
-	public void tagFailureToUpdateTest() {
-		when(tagRepositoryMock.findById(0)).thenReturn(Optional.of(testTag1));
-		when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
-
-		tagServiceImpl.update(testTag1);
-	}
-
-	/**
-	 * Test create or update
-	 * 
-	 */
-	@Test
-	public void createOrUpdateTagTest() {
-		Tag nonExistentTag = new Tag();
-		nonExistentTag.setId(4);
-		nonExistentTag.setName("New tag");
-		List<Tag> tagReturnList = new ArrayList<Tag>();
-		tagReturnList.addAll(Arrays.asList(testTag1, testTag2, testTag3, nonExistentTag));
-
-		when(tagRepositoryMock.save(nonExistentTag)).thenReturn(nonExistentTag);
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		tagServiceImpl.createOrUpdate(nonExistentTag);
-		assertEquals(tagReturnList, tagServiceImpl.getAll());
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a tag
-	 * 
-	 */
-	@Test(expected = TagConflictException.class)
-	public void tagFailureToCreateOrUpdateTest() {
-		when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
-
-		tagServiceImpl.createOrUpdate(testTag1);
-	}
-
-	/**
-	 * Test deletion of a tag
-	 * 
-	 */
-	@Test
-	public void tagDeletionTest() {
-		when(tagRepositoryMock.existsById(1)).thenReturn(true);
-		Mockito.doNothing().when(tagRepositoryMock).deleteById(1);
-
-		tagServiceImpl.delete(1);
-	}
-
-	/**
-	 * Test exception throw of invalid tag
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void tagDeleteNonExistantTagTest() {
-		when(tagRepositoryMock.existsById(10)).thenReturn(false);
-		Mockito.doNothing().when(tagRepositoryMock).deleteById(10);
-
-		tagServiceImpl.delete(10);
-	}
-
-	/**
-	 * Test retrieval of valid tags
-	 * 
-	 */
-	@Test
-	public void tagGetValidTagsTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-		Set<Tag> searchTagsSet = new HashSet<Tag>();
-		searchTagsSet.add(testTag1);
-		searchTagsSet.add(testTag2);
-
-		assertEquals(searchTagsSet, tagServiceImpl.getValidTags(searchTagsSet));
-	}
-
-	/**
-	 * Test retrieval of no tags
-	 * 
-	 */
-	@Test
-	public void getNoValidTagsTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		assertEquals(new HashSet<Tag>(), tagServiceImpl.getValidTags(null));
-	}
-
-	/**
-	 * Test retrieval of invalid tags
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getInvalidTagsFailureTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		Tag invalidTag = new Tag();
-		invalidTag.setId(20);
-		invalidTag.setName("Invalid tag");
-
-		HashSet<Tag> associatedTags = new HashSet<Tag>();
-		associatedTags.add(invalidTag);
-
-		tagServiceImpl.getValidTags(associatedTags);
-	}
-
-	/**
-	 * Test retrieval of invalid tags with at least one invalid tag and one valid
-	 * tag
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getInvalidTagsWithAtLeastOneValidTagFailureTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		Tag invalidTag = new Tag();
-		invalidTag.setId(20);
-		invalidTag.setName("Invalid tag");
-
-		HashSet<Tag> associatedTags = new HashSet<Tag>();
-		associatedTags.add(invalidTag);
-		associatedTags.add(testTag1);
-
-		tagServiceImpl.getValidTags(associatedTags);
-	}
-
-	/**
-	 * Test retrieval of Image by id
-	 */
-	@Test
-	public void getImageByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertEquals(testImageSet1, imageServiceImpl.getImages(1));
-	}
-
-	/**
-	 * Test valid retrieval of Image by id
-	 * 
-	 */
-	@Test
-	public void getCorrectImageByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertNotEquals(testImageSet2, imageServiceImpl.getImages(1));
-	}
-
-	@Test(expected = ImageNotFoundException.class)
-	public void getFailedImages() {
-		Set<Image> images = new HashSet<Image>();
-		when(questionRepositoryMock.findById(1)).thenReturn(null);
-
-		imageServiceImpl.getImages(1);
-	}
-
-	@Test
-	public void addImageTest() throws IOException, ImageConflictException {
-		MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain",
-				"some xml".getBytes());
-		MultipartFile mpf = firstFile;
-		when(mockRequest.getFile("image")).thenReturn(mpf);
-
-		assertNull(imageServiceImpl.addImage(testQuestion1, mockRequest));
-//	  assertEquals(new Image(0, firstFile.getBytes(), testQuestion1), imageServiceImpl.addImage(testQuestion1, mockRequest));
-	}
-
-//  @Test(expected = ImageConflictException.class)
-//  public void addImageFailTest() throws IOException, ImageConflictException {
-//	  byte[] byteArr = null;
-//	  MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain", byteArr);
-//	  MultipartFile mpf = firstFile;
-//	  when(mockRequest.getFile("image")).thenReturn(firstFile);
-////	  when(mpf.getBytes()).thenReturn(null);
-//	  
-//	  imageServiceImpl.addImage(testQuestion1, mockRequest);
-//  }
-
-	/**
-	 * Test failure of retrieval of image by invalid id
-	 * 
-	 */
-	@Test(expected = ImageNotFoundException.class)
-	public void getInvalidImageIdTest() {
-		when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(testQuestion2));
-
-		imageServiceImpl.getImages(2);
-	}
-
-	/**
-	 * Test find all responses
-	 * 
-	 */
-	@Test
-	public void getAllResponsesTest() {
-		when(responseRepositoryMock.findAll()).thenReturn(responseReturnList);
-
-		assertEquals(responseReturnList, responseServiceImpl.getAll());
-	}
-
-	/**
-	 * Test find a response by id
-	 * 
-	 */
-	@Test
-	public void getResponseByIdTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-
-		assertEquals(testResponse1, responseServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test find a valid response by id
-	 */
-	@Test
-	public void getAccurateResponseByIdTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-
-		assertNotEquals(testResponse2, responseServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test failure of response retrieval given invalid response id
-	 */
-	@Test(expected = ResponseNotFoundException.class)
-	public void invalidResponseIdFailureTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		responseServiceImpl.getById(1);
-	}
-
-	/**
-	 * Test response creation
-	 * 
-	 */
-	@Test
-	public void responseCreationAccuracyTest() {
-		when(responseRepositoryMock.save(testResponse1)).thenReturn(testResponse1PostCreate);
-
-		assertEquals(testResponse1PostCreate, responseServiceImpl.create(testResponse1));
-	}
-
-	/**
-	 * Test updating a response
-	 */
-	@Test
-	public void responseUpdateTest() {
-		Response testResponse1UpdateInfo = new Response();
-		testResponse1UpdateInfo.setId(1);
-		testResponse1UpdateInfo.setBody("Test body update");
-
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-		when(responseRepositoryMock.save(testResponse1UpdateInfo)).thenReturn(testResponse1);
-
-		assertEquals(testResponse1, responseServiceImpl.update(testResponse1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent response
-	 * 
-	 */
-	@Test(expected = ResponseNotFoundException.class)
-	public void responseUpdateNonExistantFailureTest() {
-		Response nonExistentResponse = new Response();
-		nonExistentResponse.setId(5);
-
-		when(responseRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		responseServiceImpl.update(nonExistentResponse);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a response
-	 * 
-	 */
-	@Test(expected = ResponseConflictException.class)
-	public void responseFailureToUpdateTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-		when(responseRepositoryMock.save(testResponse1)).thenThrow(DataIntegrityViolationException.class);
-
-		responseServiceImpl.update(testResponse1);
-	}
-
-	/**
-	 * Test create or update response
-	 * 
-	 */
-	@Test
-	public void createOrUpdateResponseTest() {
-		Response nonExistentResponse = new Response();
-		nonExistentResponse.setId(4);
-		nonExistentResponse.setBody("New response");
-
-		when(responseRepositoryMock.save(nonExistentResponse)).thenReturn(nonExistentResponse);
-
-		responseServiceImpl.createOrUpdate(nonExistentResponse);
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a response
-	 * 
-	 */
-	@Test(expected = ResponseConflictException.class)
-	public void responseFailureToCreateOrUpdateTest() {
-		when(responseRepositoryMock.save(testResponse1)).thenThrow(DataIntegrityViolationException.class);
-
-		responseServiceImpl.createOrUpdate(testResponse1);
-	}
-
-	/**
-	 * Test deletion of a response
-	 * 
-	 */
-	@Test
-	public void responseDeletionTest() {
-		when(responseRepositoryMock.existsById(1)).thenReturn(true);
-		Mockito.doNothing().when(responseRepositoryMock).deleteById(1);
-
-		responseServiceImpl.delete(1);
-	}
-
-	/**
-	 * Test exception throw of invalid response when deleting
-	 */
-	@Test(expected = ResponseNotFoundException.class)
-	public void responseDeleteNonExistantResponseTest() {
-		when(responseRepositoryMock.existsById(10)).thenReturn(false);
-		Mockito.doNothing().when(responseRepositoryMock).deleteById(10);
-
-		responseServiceImpl.delete(10);
-	}
-
-	/**
-	 * Test of findAll users
-	 * 
-	 */
-	@Test
-	public void usersFindAllTest() {
-		when(userRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnUsersPage);
-		assertEquals(returnUsersPage, userServiceImpl.findAll(0, 5));
-	}
-
-	/**
-	 * Test of findById
-	 */
-	@Test
-	public void usersFindByIdTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-
-		assertEquals(testUser1, userServiceImpl.findById(1));
-	}
-
-	/**
-	 * Test of accurate findById
-	 */
-	@Test
-	public void usersFindAccuratelyByIdTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-
-		assertNotEquals(testUser2, userServiceImpl.findById(1));
-	}
-
-	/**
-	 * Test of thrown exception when given an invalid ID
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void usersNotFoundIdExceptionTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		userServiceImpl.findById(1);
-	}
-
-	/**
-	 * Test user creation
-	 * 
-	 */
-	@Test
-	public void userCreationAccuracyTest() {
-		when(userRepositoryMock.save(testUser1)).thenReturn(testUser1PostCreate);
-
-		assertEquals(testUser1PostCreate, userServiceImpl.create(testUser1));
-	}
-
-	/**
-	 * Test updating a user
-	 */
-	@Test
-	public void userUpdateTest() {
-		User testUser1UpdateInfo = new User();
-		testUser1UpdateInfo.setId(1);
-		testUser1UpdateInfo.setUsername("testUsername");
-
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-		when(userRepositoryMock.save(testUser1UpdateInfo)).thenReturn(testUser1);
-
-		assertEquals(testUser1, userServiceImpl.update(testUser1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent user
-	 * 
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void userUpdateNonExistantFailureTest() {
-		User nonExistentUser = new User();
-		nonExistentUser.setId(5);
-
-		when(userRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		userServiceImpl.update(nonExistentUser);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a user
-	 * 
-	 */
-	@Test(expected = UserConflictException.class)
-	public void userFailureToUpdateTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-		when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
-
-		userServiceImpl.update(testUser1);
-	}
-
-	/**
-	 * Test create or update user
-	 * 
-	 */
-	@Test
-	public void createOrUpdateUserTest() {
-		User nonExistentUser = new User();
-		nonExistentUser.setId(4);
-
-		when(userRepositoryMock.save(nonExistentUser)).thenReturn(nonExistentUser);
-
-		userServiceImpl.createOrUpdate(nonExistentUser);
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a user
-	 * 
-	 */
-	@Test(expected = UserConflictException.class)
-	public void userFailureToCreateOrUpdateTest() {
-		when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
-
-		userServiceImpl.createOrUpdate(testUser1);
-	}
-
-	/**
-	 * Test deletion of a user
-	 * 
-	 */
-	@Test
-	public void userDeletionTest() {
-		when(userRepositoryMock.existsById(1)).thenReturn(true);
-		Mockito.doNothing().when(userRepositoryMock).deleteById(1);
-
-		userServiceImpl.delete(1);
-	}
-
-	/**
-	 * Test exception throw of invalid response when deleting
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void userDeleteNonExistantResponseTest() {
-		when(userRepositoryMock.existsById(10)).thenReturn(false);
-		Mockito.doNothing().when(userRepositoryMock).deleteById(10);
-
-		userServiceImpl.delete(10);
-	}
-
-	/**
-	 * Test updating user tags
-	 */
-	@Test
-	public void userUpdateTagsTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser2));
-		when(userRepositoryMock.save(testUser2)).thenReturn(testUser2);
-
-		userServiceImpl.updateTags(testUser1);
-
-		assertEquals(testUser2.getExpertTags(), testUser1.getExpertTags());
-	}
-
-	/**
-	 * Test for proper failure when updating user tags that don't exist
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void userUpdateTagsFailureTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
-		when(userRepositoryMock.save(testUser1)).thenReturn(testUser1);
-
-		userServiceImpl.updateTags(testUser1);
-	}
-
-	/**
-	 * Test for getting all questions
-	 * 
-	 */
-	@Test
-	public void questionsGetAllTest() {
-		when(questionRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnQuestionsPage);
-
-		assertEquals(returnQuestionsPage, questionServiceImpl.getAll(0, 5));
-	}
-
-	/**
-	 * Test for getting a question by ID
-	 * 
-	 */
-	@Test
-	public void questionsGetByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertEquals(testQuestion1, questionServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test for getting a question accurately by ID
-	 */
-
-	@Test
-	public void questionsGetAccuratelyByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertNotEquals(testQuestion2, questionServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test for proper failure when an invalid ID is searched for
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsNotFoundWithBadIDTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		questionServiceImpl.getById(1);
-	}
-
-	/**
-	 * Test question creation
-	 * 
-	 */
-	@Test
-	public void questionCreationAccuracyTest() {
-		when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1PostCreate);
-
-		assertEquals(testQuestion1PostCreate, questionServiceImpl.create(testQuestion1));
-	}
-
-	/**
-	 * Test updating a question
-	 */
-	@Test
-	public void questionUpdateTest() {
-		Question testQuestion1UpdateInfo = new Question();
-		testQuestion1UpdateInfo.setId(1);
-		testQuestion1UpdateInfo.setBody("Test body update");
-
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1UpdateInfo)).thenReturn(testQuestion1);
-
-		assertEquals(testQuestion1, questionServiceImpl.update(testQuestion1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent question
-	 * 
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionUpdateNonExistantFailureTest() {
-		Question nonExistentQuestion = new Question();
-		nonExistentQuestion.setId(5);
-
-		when(questionRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		questionServiceImpl.update(nonExistentQuestion);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a question
-	 * 
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionFailureToUpdateTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-
-		questionServiceImpl.update(testQuestion1);
-	}
-
-	/**
-	 * Test create or update question
-	 * 
-	 */
-	@Test
-	public void createOrUpdateQuestionTest() {
-		Question nonExistentQuestion = new Question();
-		nonExistentQuestion.setId(4);
-		nonExistentQuestion.setBody("New question");
-
-		when(questionRepositoryMock.save(nonExistentQuestion)).thenReturn(nonExistentQuestion);
-
-		questionServiceImpl.createOrUpdate(nonExistentQuestion);
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a question
-	 * 
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionFailureToCreateOrUpdateTest() {
-		when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-
-		questionServiceImpl.createOrUpdate(testQuestion1);
-	}
-
-	/**
-	 * Testing updating tags for a question
-	 * 
-	 */
-	@Test
-	public void questionsUpdateTagsTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion2));
-		when(questionRepositoryMock.save(testQuestion2)).thenReturn(testQuestion2);
-
-		questionServiceImpl.updateTags(testQuestion1);
-
-		assertEquals(testQuestion1.getAssociatedTags(), testQuestion2.getAssociatedTags());
-	}
-
-	/**
-	 * Testing failure to find valid question
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsQuestionNotFoundWhenUpdatingTagsExceptionTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-		questionServiceImpl.updateTags(testQuestion1);
-	}
-
-	/**
-	 * Testing highlighting a response
-	 */
-	@Test
-	public void questionsHighlightResponseTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1);
-
-		assertEquals((Integer) 4, questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
-	}
-
-	/**
-	 * Testing failure to find a question when highlighting a response
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsQuestionNotFoundWhenHighlightingResponseTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		questionServiceImpl.highlightResponse(1, 4);
-	}
-
-	/**
-	 * Testing failure to update a response when there is a conflict updating the
-	 * data
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionsConflictExceptionWhenHighlightingResponseTest() {
-//		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-//		when(questionServiceImpl.getById(1)).thenReturn((Question) when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1)));
-//		when(questionServiceImpl.update(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-//		when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-		
-		when(questionRepositoryMock.findById(1)).thenThrow(DataIntegrityViolationException.class);
-		
-		questionServiceImpl.highlightResponse(1, 4);
-	}
-	
-	@Test
-	public void questionFindAllByTagNameTest() {
-		
-	}
+    testTag3 = new Tag();
+    testTag3.setId(2);
+    testTag3.setName("Test 3");
+
+    tagReturnList = Arrays.asList(testTag1, testTag2, testTag3);
+
+    testResponse1 = new Response();
+    testResponse1.setId(1);
+    testResponse1.setBody("Test response");
+
+    testResponse1PostCreate = new Response();
+    testResponse1PostCreate.setId(1);
+    testResponse1PostCreate.setBody("Updated body");
+
+    testResponse2 = new Response();
+    testResponse2.setId(2);
+    testResponse2.setBody("Test response 2");
+
+    responseReturnList = Arrays.asList(testResponse1, testResponse2);
+
+    HashSet<Tag> expertTags = new HashSet<Tag>();
+    expertTags.addAll(tagReturnList);
+
+    testUser1 = new User();
+    testUser1.setId(1);
+    testUser1.setExpertTags(expertTags);
+
+    testUser1PostCreate = testUser1;
+    testUser1PostCreate.setUsername("Test username 2");
+
+    testUser2 = new User();
+    testUser2.setId(2);
+
+    testImage1 = new Image();
+    testImage1.setId(1);
+    testImage2 = new Image();
+    testImage2.setId(2);
+
+    testImageSet1 = new HashSet<Image>();
+    testImageSet1.add(testImage1);
+    testImageSet2 = new HashSet<Image>();
+    testImageSet2.add(testImage2);
+
+    testQuestion1 = new Question();
+    testQuestion1.setId(1);
+    testQuestion1.setAssociatedTags(expertTags);
+    testQuestion1.setImages(testImageSet1);
+
+    testQuestion1PostCreate = new Question();
+    testQuestion1PostCreate.setId(1);
+    testQuestion1.setAssociatedTags(expertTags);
+
+    testQuestion2 = new Question();
+    testQuestion2.setId(2);
+  }
+
+  // @BeforeClass
+  // public void setUp() throws Exception {
+  // MockitoAnnotations.initMocks(this);
+  // }
+
+  @Test
+  public void tagHashcodeEqualsStringTest() {
+    Tag testTag = new Tag();
+    testTag.setId(10);
+    testTag.setName("tagName");
+
+    Tag testTagSame = new Tag();
+    testTagSame.setId(10);
+    testTagSame.setName("tagName");
+
+    Tag testTagDiffId = new Tag();
+    testTagDiffId.setId(11);
+    testTagDiffId.setName("tagName");
+
+    Tag testTagDiffName = new Tag();
+    testTagDiffName.setId(10);
+    testTagDiffName.setName("tagName2");
+
+    Tag testTagNullId = new Tag();
+    testTagNullId.setId(null);
+    testTagNullId.setName("tagName");
+
+    Tag testTagNullIdSame = new Tag();
+    testTagNullIdSame.setId(null);
+    testTagNullIdSame.setName("tagName");
+
+    Tag testTagNullName = new Tag();
+    testTagNullName.setId(10);
+    testTagNullName.setName(null);
+
+    Tag testTagNullNameSame = new Tag();
+    testTagNullNameSame.setId(10);
+    testTagNullNameSame.setName(null);
+
+    Tag testTagNullFields = new Tag();
+    testTagNullFields.setId(null);
+    testTagNullFields.setName(null);
+
+    Tag testTagNullObj = null;
+
+    Image imageNotTag = new Image();
+
+    // .equals()
+    assertTrue(testTag.equals(testTagSame) & testTagSame.equals(testTag));
+    assertFalse(testTag.equals(testTagNullId) & testTagNullId.equals(testTag));
+    assertFalse(testTag.equals(testTagNullName) & testTagNullName.equals(testTag));
+    assertFalse(testTag.equals(testTagNullObj));
+    assertFalse(testTag.equals(imageNotTag));
+    assertFalse(testTag.equals(testTagDiffName) & testTagDiffName.equals(testTag));
+    assertFalse(testTag.equals(testTagDiffId) & testTagDiffId.equals(testTag));
+    assertTrue(testTagNullId.equals(testTagNullIdSame));
+    assertTrue(testTagNullName.equals(testTagNullNameSame));
+
+    // .hashCode()
+    assertTrue(testTag.hashCode() == testTagSame.hashCode());
+    assertFalse(testTag.hashCode() == testTagNullFields.hashCode());
+
+    // .toString()
+    assertEquals(testTag.toString(), "Tag [id=10, name=tagName]");
+  }
+
+  @Test
+  public void imageJavaBeanTest() {
+    Image testImage = new Image();
+    Question imAQuestion = new Question();
+    testImage.setId(10);
+    byte[] byteArr = new byte[1];
+    byteArr[0] = '1';
+    testImage.setImage(byteArr);
+    testImage.setQuestion(imAQuestion);
+    assertNotNull(testImage);
+    Image testImageSame = new Image(10, byteArr, imAQuestion);
+
+    // getters
+    assertEquals(testImageSame, testImage);
+    assertEquals(testImage, new Image(10, byteArr, imAQuestion));
+    assertEquals(testImage.getId(), 10);
+    assertEquals(testImage.getImage(), byteArr);
+    assertEquals(testImage.getQuestion(), imAQuestion);
+
+    // .equals()
+    Image testImageNull = null;
+    Tag testTag = new Tag();
+    Image testImageDiffId = new Image(11, byteArr, imAQuestion);
+    byte[] byteArr2 = new byte[1];
+    byteArr2[0] = '2';
+    Image testImageDiffImage = new Image(10, byteArr2, imAQuestion);
+    assertTrue(testImage.equals(testImage));
+    assertFalse(testImage.equals(testImageNull));
+    assertFalse(testImage.equals(testTag));
+    assertFalse(testImage.equals(testImageDiffId));
+    assertFalse(testImage.equals(testImageDiffImage));
+
+    // .toString()
+    assertEquals(testImageSame.toString(),
+        "Image [id=10, image=[49], question=" + testImageSame.getQuestion().toString() + "]");
+  }
+
+  @Test
+  public void responseJavaBeanTest() {
+    Response testResponse = new Response();
+    testResponse.setId(10);
+    testResponse.setBody("Response Body");
+    testResponse.setResponderId(10);
+    Date date = new Date();
+    testResponse.setCreationDate(date);
+    testResponse.setQuestionId(10);
+    testResponse.setQuestion(testQuestion1);
+    testResponse.setUser(testUser1);
+
+    Response testResponseSame = new Response();
+    testResponseSame.setId(10);
+    testResponseSame.setBody("Response Body");
+    testResponseSame.setResponderId(10);
+    testResponseSame.setCreationDate(date);
+    testResponseSame.setQuestionId(10);
+    testResponseSame.setQuestion(testQuestion1);
+    testResponseSame.setUser(testUser1);
+
+    Response testResponseNullFields = new Response();
+    testResponseNullFields.setId(null);
+    testResponseNullFields.setBody(null);
+    testResponseNullFields.setResponderId(null);
+    testResponseNullFields.setCreationDate(null);
+    testResponseNullFields.setQuestionId(null);
+    testResponseNullFields.setQuestion(testQuestion1);
+    testResponseNullFields.setUser(testUser1);
+
+    Response testResponseNullFieldsSame = new Response();
+    testResponseNullFieldsSame.setId(null);
+    testResponseNullFieldsSame.setBody(null);
+    testResponseNullFieldsSame.setResponderId(null);
+    testResponseNullFieldsSame.setCreationDate(null);
+    testResponseNullFieldsSame.setQuestionId(null);
+    testResponseNullFieldsSame.setQuestion(testQuestion1);
+    testResponseNullFieldsSame.setUser(testUser1);
+
+    Response testResponseDiffId = new Response();
+    testResponseDiffId.setId(11);
+    testResponseDiffId.setBody("Response Body");
+    testResponseDiffId.setResponderId(10);
+    testResponseDiffId.setCreationDate(date);
+    testResponseDiffId.setQuestionId(10);
+    testResponseDiffId.setQuestion(testQuestion1);
+    testResponseDiffId.setUser(testUser1);
+
+    Response testResponseNullId = new Response();
+    testResponseNullId.setId(null);
+    testResponseNullId.setBody("Response Body");
+    testResponseNullId.setResponderId(10);
+    testResponseNullId.setCreationDate(date);
+    testResponseNullId.setQuestionId(10);
+    testResponseNullId.setQuestion(testQuestion1);
+    testResponseNullId.setUser(testUser1);
+
+    Response testResponseDiffBody = new Response();
+    testResponseDiffBody.setId(10);
+    testResponseDiffBody.setBody("Different Response Body");
+    testResponseDiffBody.setResponderId(10);
+    testResponseDiffBody.setCreationDate(date);
+    testResponseDiffBody.setQuestionId(10);
+    testResponseDiffBody.setQuestion(testQuestion1);
+    testResponseDiffBody.setUser(testUser1);
+
+    Response testResponseNullBody = new Response();
+    testResponseNullBody.setId(10);
+    testResponseNullBody.setBody(null);
+    testResponseNullBody.setResponderId(10);
+    testResponseNullBody.setCreationDate(date);
+    testResponseNullBody.setQuestionId(10);
+    testResponseNullBody.setQuestion(testQuestion1);
+    testResponseNullBody.setUser(testUser1);
+
+    Response testResponseDiffResponderId = new Response();
+    testResponseDiffResponderId.setId(10);
+    testResponseDiffResponderId.setBody("Response Body");
+    testResponseDiffResponderId.setResponderId(11);
+    testResponseDiffResponderId.setCreationDate(date);
+    testResponseDiffResponderId.setQuestionId(10);
+    testResponseDiffResponderId.setQuestion(testQuestion1);
+    testResponseDiffResponderId.setUser(testUser1);
+
+    Response testResponseNullResponderId = new Response();
+    testResponseNullResponderId.setId(10);
+    testResponseNullResponderId.setBody("Response Body");
+    testResponseNullResponderId.setResponderId(null);
+    testResponseNullResponderId.setCreationDate(date);
+    testResponseNullResponderId.setQuestionId(10);
+    testResponseNullResponderId.setQuestion(testQuestion1);
+    testResponseNullResponderId.setUser(testUser1);
+
+    Response testResponseDiffCreationDate = new Response();
+    testResponseDiffCreationDate.setId(10);
+    testResponseDiffCreationDate.setBody("Response Body");
+    testResponseDiffCreationDate.setResponderId(10);
+    testResponseDiffCreationDate.setCreationDate(new Date(111L));
+    testResponseDiffCreationDate.setQuestionId(10);
+    testResponseDiffCreationDate.setQuestion(testQuestion1);
+    testResponseDiffCreationDate.setUser(testUser1);
+
+    Response testResponseNullCreationDate = new Response();
+    testResponseNullCreationDate.setId(10);
+    testResponseNullCreationDate.setBody("Response Body");
+    testResponseNullCreationDate.setResponderId(10);
+    testResponseNullCreationDate.setCreationDate(null);
+    testResponseNullCreationDate.setQuestionId(10);
+    testResponseNullCreationDate.setQuestion(testQuestion1);
+    testResponseNullCreationDate.setUser(testUser1);
+
+    Response testResponseDiffQuestionId = new Response();
+    testResponseDiffQuestionId.setId(10);
+    testResponseDiffQuestionId.setBody("Response Body");
+    testResponseDiffQuestionId.setResponderId(10);
+    testResponseDiffQuestionId.setCreationDate(date);
+    testResponseDiffQuestionId.setQuestionId(11);
+    testResponseDiffQuestionId.setQuestion(testQuestion1);
+    testResponseDiffQuestionId.setUser(testUser1);
+
+    Response testResponseNullQuestionId = new Response();
+    testResponseNullQuestionId.setId(10);
+    testResponseNullQuestionId.setBody("Response Body");
+    testResponseNullQuestionId.setResponderId(10);
+    testResponseNullQuestionId.setCreationDate(date);
+    testResponseNullQuestionId.setQuestionId(null);
+    testResponseNullQuestionId.setQuestion(testQuestion1);
+    testResponseNullQuestionId.setUser(testUser1);
+
+    // Response Exists
+    assertNotNull(testResponse);
+
+    // Test Getters and Setters
+    assertEquals(testResponse.getId(), 10);
+    assertEquals(testResponse.getBody(), "Response Body");
+    assertEquals(testResponse.getResponderId(), (Integer) 10);
+    assertEquals(testResponse.getCreationDate(), date);
+    assertEquals(testResponse.getQuestionId(), (Integer) 10);
+    assertEquals(testResponse.getQuestion(), testQuestion1);
+    assertEquals(testResponse.getUser(), testUser1);
+
+    // .hashcode()
+    assertTrue(testResponse.hashCode() == testResponseSame.hashCode());
+    assertFalse(testResponse.hashCode() == testResponseNullFields.hashCode());
+
+    // .equals()
+    assertTrue(testResponse.equals(testResponseSame));
+    assertTrue(testResponseNullFields.equals(testResponseNullFieldsSame));
+    assertFalse(testResponse.equals(null));
+    assertFalse(testResponse.equals(testTag1));
+    assertFalse(testResponseDiffBody.equals(testResponseNullFields)
+        & testResponseDiffBody.equals(testResponse));
+    assertFalse(testResponseNullBody.equals(testResponseNullFields)
+        & testResponseNullBody.equals(testResponse));
+    assertFalse(testResponseNullId.equals(testResponseNullFields)
+        & testResponseNullId.equals(testResponse));
+    assertFalse(testResponseDiffId.equals(testResponseNullFields)
+        & testResponseDiffId.equals(testResponse));
+    assertFalse(testResponseNullId.equals(testResponseNullFields)
+        & testResponseNullId.equals(testResponse));
+    assertFalse(testResponseDiffCreationDate.equals(testResponseNullFields)
+        & testResponseDiffCreationDate.equals(testResponse));
+    assertFalse(testResponseNullCreationDate.equals(testResponseNullFields)
+        & testResponseNullCreationDate.equals(testResponse));
+    assertFalse(testResponseDiffQuestionId.equals(testResponseNullFields)
+        & testResponseDiffQuestionId.equals(testResponse));
+    assertFalse(testResponseNullQuestionId.equals(testResponseNullFields)
+        & testResponseNullQuestionId.equals(testResponse));
+    assertFalse(testResponseDiffResponderId.equals(testResponseNullFields)
+        & testResponseDiffResponderId.equals(testResponse));
+    assertFalse(testResponseNullResponderId.equals(testResponseNullFields)
+        & testResponseNullResponderId.equals(testResponse));
+
+  }
+
+  @Test
+  public void userJavaBeanTest() {
+    User testUser = new User();
+    testUser.setId(10);
+    assertEquals(testUser.getId(), 10);
+    testUser.setUsername("username");
+    assertEquals(testUser.getUsername(), "username");
+    testUser.setPassword("password");
+    assertEquals(testUser.getPassword(), "password");
+    assertEquals(testUser, new User(10, "username", "password"));
+    testUser.setExpert(true);
+    assertEquals(testUser.isExpert(), true);
+    Set<Tag> tags = new HashSet<Tag>();
+    tags.add(testTag1);
+    testUser.setExpertTags(tags);
+    assertEquals(testUser.getExpertTags(), tags);
+    Set<Question> questions = new HashSet<Question>();
+    questions.add(testQuestion1);
+    testUser.setQuestions(questions);
+    assertEquals(testUser.getQuestions(), questions);
+    Set<Response> responses = new HashSet<Response>();
+    responses.add(testResponse1);
+    testUser.setResponses(responses);
+    assertEquals(testUser.getResponses(), responses);
+
+    User testUserSame = new User();
+    testUserSame.setId(10);
+    testUserSame.setUsername("username");
+    testUserSame.setPassword("password");
+    testUserSame.setExpert(true);
+    testUserSame.addTagToUser(testTag1);
+    testUserSame.setQuestions(questions);
+    testUserSame.setResponses(responses);
+
+    User testUserAddTag = new User();
+    testUserAddTag.addTagToUser(testTag1);
+    testUserAddTag.addTagToUser(testTag2);
+
+    User testUserNullFields = new User();
+    testUserNullFields.setId(10);
+    testUserNullFields.setUsername(null);
+    testUserNullFields.setPassword(null);
+    testUserNullFields.setExpert(false);
+    testUserNullFields.setExpertTags(null);
+    testUserNullFields.setQuestions(null);
+    testUserNullFields.setResponses(null);
+
+    User testUserNullFieldsSame = new User();
+    testUserNullFieldsSame.setId(10);
+    testUserNullFieldsSame.setUsername(null);
+    testUserNullFieldsSame.setPassword(null);
+    testUserNullFieldsSame.setExpert(false);
+    testUserNullFieldsSame.setExpertTags(null);
+    testUserNullFieldsSame.setQuestions(null);
+    testUserNullFieldsSame.setResponses(null);
+
+    User testUserDiffId = new User();
+    testUserDiffId.setId(11);
+    testUserDiffId.setUsername("username");
+    testUserDiffId.setPassword("password");
+    testUserDiffId.setExpert(true);
+    testUserDiffId.setExpertTags(tags);
+    testUserDiffId.setQuestions(questions);
+    testUserDiffId.setResponses(responses);
+
+    User testUserDiffUsername = new User();
+    testUserDiffUsername.setId(10);
+    testUserDiffUsername.setUsername("Different Username");
+    testUserDiffUsername.setPassword("password");
+    testUserDiffUsername.setExpert(true);
+    testUserDiffUsername.setExpertTags(tags);
+    testUserDiffUsername.setQuestions(questions);
+    testUserDiffUsername.setResponses(responses);
+
+    User testUserNullUsername = new User();
+    testUserNullUsername.setId(10);
+    testUserNullUsername.setUsername(null);
+    testUserNullUsername.setPassword("password");
+    testUserNullUsername.setExpert(true);
+    testUserNullUsername.setExpertTags(tags);
+    testUserNullUsername.setQuestions(questions);
+    testUserNullUsername.setResponses(responses);
+
+    User testUserDiffPassword = new User();
+    testUserDiffPassword.setId(10);
+    testUserDiffPassword.setUsername("username");
+    testUserDiffPassword.setPassword("Different Password");
+    testUserDiffPassword.setExpert(true);
+    testUserDiffPassword.setExpertTags(tags);
+    testUserDiffPassword.setQuestions(questions);
+    testUserDiffPassword.setResponses(responses);
+
+    User testUserNullPassword = new User();
+    testUserNullPassword.setId(10);
+    testUserNullPassword.setUsername("username");
+    testUserNullPassword.setPassword(null);
+    testUserNullPassword.setExpert(true);
+    testUserNullPassword.setExpertTags(tags);
+    testUserNullPassword.setQuestions(questions);
+    testUserNullPassword.setResponses(responses);
+
+    User testUserDiffExpert = new User();
+    testUserDiffExpert.setId(10);
+    testUserDiffExpert.setUsername("username");
+    testUserDiffExpert.setPassword("password");
+    testUserDiffExpert.setExpert(false);
+    testUserDiffExpert.setExpertTags(tags);
+    testUserDiffExpert.setQuestions(questions);
+    testUserDiffExpert.setResponses(responses);
+
+    User testUserDiffTags = new User();
+    testUserDiffTags.setId(10);
+    testUserDiffTags.setUsername("username");
+    testUserDiffTags.setPassword("password");
+    testUserDiffTags.setExpert(true);
+    Set<Tag> tags2 = new HashSet<Tag>();
+    tags2.add(testTag2);
+    testUserDiffTags.setExpertTags(tags2);
+    testUserDiffTags.setQuestions(questions);
+    testUserDiffTags.setResponses(responses);
+
+    User testUserNullTags = new User();
+    testUserNullTags.setId(10);
+    testUserNullTags.setUsername("username");
+    testUserNullTags.setPassword("password");
+    testUserNullTags.setExpert(true);
+    testUserNullTags.setExpertTags(null);
+    testUserNullTags.setQuestions(questions);
+    testUserNullTags.setResponses(responses);
+
+    User testUserDiffQuestions = new User();
+    testUserDiffQuestions.setId(10);
+    testUserDiffQuestions.setUsername("username");
+    testUserDiffQuestions.setPassword("password");
+    testUserDiffQuestions.setExpert(true);
+    testUserDiffQuestions.setExpertTags(tags);
+    Set<Question> questions2 = new HashSet<Question>();
+    questions2.add(testQuestion2);
+    testUserDiffQuestions.setQuestions(questions2);
+    testUserDiffQuestions.setResponses(responses);
+
+    User testUserNullQuestions = new User();
+    testUserNullQuestions.setId(10);
+    testUserNullQuestions.setUsername("username");
+    testUserNullQuestions.setPassword("password");
+    testUserNullQuestions.setExpert(true);
+    testUserNullQuestions.setExpertTags(tags);
+    testUserNullQuestions.setQuestions(null);
+    testUserNullQuestions.setResponses(responses);
+
+    User testUserDiffResponses = new User();
+    testUserDiffResponses.setId(10);
+    testUserDiffResponses.setUsername("username");
+    testUserDiffResponses.setPassword("password");
+    testUserDiffResponses.setExpert(true);
+    testUserDiffResponses.setExpertTags(tags);
+    testUserDiffResponses.setQuestions(questions);
+    Set<Response> responses2 = new HashSet<Response>();
+    responses2.add(testResponse2);
+    testUserDiffResponses.setResponses(responses2);
+
+    User testUserNullResponses = new User();
+    testUserNullResponses.setId(10);
+    testUserNullResponses.setUsername("username");
+    testUserNullResponses.setPassword("password");
+    testUserNullResponses.setExpert(true);
+    testUserNullResponses.setExpertTags(tags);
+    testUserNullResponses.setQuestions(questions);
+    testUserNullResponses.setResponses(null);
+
+    assertNotEquals(testUser.getExpertTags(), testUserAddTag.getExpertTags());
+    assertNotEquals(testUser.getUsername(), "Not the username");
+    assertNotEquals(testUserNullUsername.getUsername(), "Not the username");
+    assertEquals(testUserNullUsername.getUsername(), null);
+
+    // .hashcode()
+    assertTrue(testUser.hashCode() == testUserSame.hashCode());
+    assertFalse(testUser.hashCode() == testUserNullFields.hashCode());
+
+    // .equals()
+    assertTrue(testUser.equals(testUserSame));
+    assertTrue(testUserNullFields.equals(testUserNullFieldsSame));
+    assertFalse(testUser.equals(null));
+    assertFalse(testUser.equals(testImage1));
+    assertFalse(testUserDiffId.equals(testUserNullFields) & testUserDiffId.equals(testUser));
+    assertFalse(
+        testUserDiffUsername.equals(testUserNullFields) & testUserDiffUsername.equals(testUser));
+    assertFalse(
+        testUserNullUsername.equals(testUserNullFields) & testUserNullUsername.equals(testUser)
+            & testUserNullUsername.equals(testUserDiffUsername));
+    assertFalse(
+        testUserDiffPassword.equals(testUserNullFields) & testUserDiffPassword.equals(testUser));
+    assertFalse(
+        testUserNullPassword.equals(testUserNullFields) & testUserNullPassword.equals(testUser));
+    assertFalse(
+        testUserDiffExpert.equals(testUserNullFields) & testUserDiffExpert.equals(testUser));
+    assertFalse(testUserDiffTags.equals(testUserNullFields) & testUserDiffTags.equals(testUser));
+    assertFalse(testUserNullTags.equals(testUserNullFields) & testUserNullTags.equals(testUser));
+    assertFalse(
+        testUserDiffQuestions.equals(testUserNullFields) & testUserDiffQuestions.equals(testUser));
+    assertFalse(
+        testUserNullQuestions.equals(testUserNullFields) & testUserNullQuestions.equals(testUser));
+    assertFalse(
+        testUserDiffResponses.equals(testUserNullFields) & testUserDiffResponses.equals(testUser));
+    assertFalse(
+        testUserNullResponses.equals(testUserNullFields) & testUserNullResponses.equals(testUser));
+  }
+
+  /**
+   * Test of tagService findAll method.
+   * 
+   */
+  @Test
+  public void getAllTagsTest() {
+
+    when((tagRepositoryMock.findAll())).thenReturn(tagReturnList);
+
+    assertEquals(tagReturnList, tagServiceImpl.getAll());
+  }
+
+  /**
+   * Test retrieval of getting one tag
+   * 
+   */
+  @Test
+  public void getOneTagTest() {
+
+    when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
+
+    assertEquals(testTag1, tagServiceImpl.getById(1));
+  }
+
+  /**
+   * Test failure of getting a non-existent tag
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getBadTagTest() {
+
+    when(tagRepositoryMock.findById(10)).thenReturn(Optional.empty());
+
+    tagServiceImpl.getById(10);
+  }
+
+  /**
+   * Test accuracy of getting a tag
+   * 
+   */
+  @Test
+  public void getTagByIdAccuracyTest() {
+    when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
+
+    assertNotEquals(testTag2, tagServiceImpl.getById(1));
+  }
+
+  /**
+   * Test retrieval of an existing tag by name
+   * 
+   */
+  @Test
+  public void getTagByNameTest() {
+
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    assertEquals(testTag1, tagServiceImpl.getTagByName("Test 1"));
+  }
+
+  /**
+   * Test failure retrieval of a bad tag name
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getBadTagNameTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+    tagServiceImpl.getTagByName("notTestTag1");
+  }
+
+  /**
+   * Test accuracy of getting a tag by name
+   * 
+   */
+  @Test
+  public void getAccurateTagNameTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    assertNotEquals(testTag2, tagServiceImpl.getTagByName("Test 1"));
+  }
+
+  /**
+   * Test tag creation
+   * 
+   */
+  @Test
+  public void tagCreationAccuracyTest() {
+    when(tagRepositoryMock.save(testTag1)).thenReturn(testTag1PostCreate);
+
+    assertEquals(testTag1PostCreate, tagServiceImpl.create(testTag1));
+  }
+
+  /**
+   * Test updating a tag
+   */
+  @Test
+  public void tagUpdateTest() {
+    Tag testTag1UpdateInfo = new Tag();
+    testTag1UpdateInfo.setId(0);
+    testTag1UpdateInfo.setName("New name");
+
+    when(tagRepositoryMock.findById(testTag1UpdateInfo.getId())).thenReturn(Optional.of(testTag1));
+    when(tagRepositoryMock.save(testTag1UpdateInfo)).thenReturn(testTag1);
+
+    assertEquals(testTag1, tagServiceImpl.update(testTag1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent tag
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void tagUpdateNonExistantFailureTest() {
+    Tag nonExistentTag = new Tag();
+    nonExistentTag.setId(5);
+
+    when(tagRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    tagServiceImpl.update(nonExistentTag);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a tag
+   * 
+   */
+  @Test(expected = TagConflictException.class)
+  public void tagFailureToUpdateTest() {
+    when(tagRepositoryMock.findById(0)).thenReturn(Optional.of(testTag1));
+    when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
+
+    tagServiceImpl.update(testTag1);
+  }
+
+  /**
+   * Test create or update
+   * 
+   */
+  @Test
+  public void createOrUpdateTagTest() {
+    Tag nonExistentTag = new Tag();
+    nonExistentTag.setId(4);
+    nonExistentTag.setName("New tag");
+    List<Tag> tagReturnList = new ArrayList<Tag>();
+    tagReturnList.addAll(Arrays.asList(testTag1, testTag2, testTag3, nonExistentTag));
+
+    when(tagRepositoryMock.save(nonExistentTag)).thenReturn(nonExistentTag);
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    tagServiceImpl.createOrUpdate(nonExistentTag);
+    assertEquals(tagReturnList, tagServiceImpl.getAll());
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a tag
+   * 
+   */
+  @Test(expected = TagConflictException.class)
+  public void tagFailureToCreateOrUpdateTest() {
+    when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
+
+    tagServiceImpl.createOrUpdate(testTag1);
+  }
+
+  /**
+   * Test deletion of a tag
+   * 
+   */
+  @Test
+  public void tagDeletionTest() {
+    when(tagRepositoryMock.existsById(1)).thenReturn(true);
+    Mockito.doNothing().when(tagRepositoryMock).deleteById(1);
+
+    tagServiceImpl.delete(1);
+  }
+
+  /**
+   * Test exception throw of invalid tag
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void tagDeleteNonExistantTagTest() {
+    when(tagRepositoryMock.existsById(10)).thenReturn(false);
+    Mockito.doNothing().when(tagRepositoryMock).deleteById(10);
+
+    tagServiceImpl.delete(10);
+  }
+
+  /**
+   * Test retrieval of valid tags
+   * 
+   */
+  @Test
+  public void tagGetValidTagsTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+    Set<Tag> searchTagsSet = new HashSet<Tag>();
+    searchTagsSet.add(testTag1);
+    searchTagsSet.add(testTag2);
+
+    assertEquals(searchTagsSet, tagServiceImpl.getValidTags(searchTagsSet));
+  }
+
+  /**
+   * Test retrieval of no tags
+   * 
+   */
+  @Test
+  public void getNoValidTagsTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    assertEquals(new HashSet<Tag>(), tagServiceImpl.getValidTags(null));
+  }
+
+  /**
+   * Test retrieval of invalid tags
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getInvalidTagsFailureTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    Tag invalidTag = new Tag();
+    invalidTag.setId(20);
+    invalidTag.setName("Invalid tag");
+
+    HashSet<Tag> associatedTags = new HashSet<Tag>();
+    associatedTags.add(invalidTag);
+
+    tagServiceImpl.getValidTags(associatedTags);
+  }
+
+  /**
+   * Test retrieval of invalid tags with at least one invalid tag and one valid tag
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getInvalidTagsWithAtLeastOneValidTagFailureTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    Tag invalidTag = new Tag();
+    invalidTag.setId(20);
+    invalidTag.setName("Invalid tag");
+
+    HashSet<Tag> associatedTags = new HashSet<Tag>();
+    associatedTags.add(invalidTag);
+    associatedTags.add(testTag1);
+
+    tagServiceImpl.getValidTags(associatedTags);
+  }
+
+  /**
+   * Test retrieval of Image by id
+   */
+  @Test
+  public void getImageByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertEquals(testImageSet1, imageServiceImpl.getImages(1));
+  }
+
+  /**
+   * Test valid retrieval of Image by id
+   * 
+   */
+  @Test
+  public void getCorrectImageByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertNotEquals(testImageSet2, imageServiceImpl.getImages(1));
+  }
+
+  @Test(expected = ImageNotFoundException.class)
+  public void getFailedImages() {
+    Set<Image> images = new HashSet<Image>();
+    when(questionRepositoryMock.findById(1)).thenReturn(null);
+
+    imageServiceImpl.getImages(1);
+  }
+
+  @Test
+  public void addImageTest() throws IOException, ImageConflictException {
+    MockMultipartFile firstFile =
+        new MockMultipartFile("data", "filename.txt", "text/plain", "some xml".getBytes());
+    MultipartFile mpf = firstFile;
+    when(mockRequest.getFile("image")).thenReturn(mpf);
+
+    assertNull(imageServiceImpl.addImage(testQuestion1, mockRequest));
+    // assertEquals(new Image(0, firstFile.getBytes(), testQuestion1),
+    // imageServiceImpl.addImage(testQuestion1, mockRequest));
+  }
+
+  // @Test(expected = ImageConflictException.class)
+  // public void addImageFailTest() throws IOException, ImageConflictException {
+  // byte[] byteArr = null;
+  // MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain",
+  // byteArr);
+  // MultipartFile mpf = firstFile;
+  // when(mockRequest.getFile("image")).thenReturn(firstFile);
+  //// when(mpf.getBytes()).thenReturn(null);
+  //
+  // imageServiceImpl.addImage(testQuestion1, mockRequest);
+  // }
+
+  /**
+   * Test failure of retrieval of image by invalid id
+   * 
+   */
+  @Test(expected = ImageNotFoundException.class)
+  public void getInvalidImageIdTest() {
+    when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(testQuestion2));
+
+    imageServiceImpl.getImages(2);
+  }
+
+  /**
+   * Test find all responses
+   * 
+   */
+  @Test
+  public void getAllResponsesTest() {
+    when(responseRepositoryMock.findAll()).thenReturn(responseReturnList);
+
+    assertEquals(responseReturnList, responseServiceImpl.getAll());
+  }
+
+  /**
+   * Test find a response by id
+   * 
+   */
+  @Test
+  public void getResponseByIdTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+
+    assertEquals(testResponse1, responseServiceImpl.getById(1));
+  }
+
+  /**
+   * Test find a valid response by id
+   */
+  @Test
+  public void getAccurateResponseByIdTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+
+    assertNotEquals(testResponse2, responseServiceImpl.getById(1));
+  }
+
+  /**
+   * Test failure of response retrieval given invalid response id
+   */
+  @Test(expected = ResponseNotFoundException.class)
+  public void invalidResponseIdFailureTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    responseServiceImpl.getById(1);
+  }
+
+  /**
+   * Test response creation
+   * 
+   */
+  @Test
+  public void responseCreationAccuracyTest() {
+    when(responseRepositoryMock.save(testResponse1)).thenReturn(testResponse1PostCreate);
+
+    assertEquals(testResponse1PostCreate, responseServiceImpl.create(testResponse1));
+  }
+
+  /**
+   * Test updating a response
+   */
+  @Test
+  public void responseUpdateTest() {
+    Response testResponse1UpdateInfo = new Response();
+    testResponse1UpdateInfo.setId(1);
+    testResponse1UpdateInfo.setBody("Test body update");
+
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+    when(responseRepositoryMock.save(testResponse1UpdateInfo)).thenReturn(testResponse1);
+
+    assertEquals(testResponse1, responseServiceImpl.update(testResponse1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent response
+   * 
+   */
+  @Test(expected = ResponseNotFoundException.class)
+  public void responseUpdateNonExistantFailureTest() {
+    Response nonExistentResponse = new Response();
+    nonExistentResponse.setId(5);
+
+    when(responseRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    responseServiceImpl.update(nonExistentResponse);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a response
+   * 
+   */
+  @Test(expected = ResponseConflictException.class)
+  public void responseFailureToUpdateTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+    when(responseRepositoryMock.save(testResponse1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    responseServiceImpl.update(testResponse1);
+  }
+
+  /**
+   * Test create or update response
+   * 
+   */
+  @Test
+  public void createOrUpdateResponseTest() {
+    Response nonExistentResponse = new Response();
+    nonExistentResponse.setId(4);
+    nonExistentResponse.setBody("New response");
+
+    when(responseRepositoryMock.save(nonExistentResponse)).thenReturn(nonExistentResponse);
+
+    responseServiceImpl.createOrUpdate(nonExistentResponse);
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a response
+   * 
+   */
+  @Test(expected = ResponseConflictException.class)
+  public void responseFailureToCreateOrUpdateTest() {
+    when(responseRepositoryMock.save(testResponse1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    responseServiceImpl.createOrUpdate(testResponse1);
+  }
+
+  /**
+   * Test deletion of a response
+   * 
+   */
+  @Test
+  public void responseDeletionTest() {
+    when(responseRepositoryMock.existsById(1)).thenReturn(true);
+    Mockito.doNothing().when(responseRepositoryMock).deleteById(1);
+
+    responseServiceImpl.delete(1);
+  }
+
+  /**
+   * Test exception throw of invalid response when deleting
+   */
+  @Test(expected = ResponseNotFoundException.class)
+  public void responseDeleteNonExistantResponseTest() {
+    when(responseRepositoryMock.existsById(10)).thenReturn(false);
+    Mockito.doNothing().when(responseRepositoryMock).deleteById(10);
+
+    responseServiceImpl.delete(10);
+  }
+
+  /**
+   * Test of findAll users
+   * 
+   */
+  @Test
+  public void usersFindAllTest() {
+    when(userRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnUsersPage);
+    assertEquals(returnUsersPage, userServiceImpl.findAll(0, 5));
+  }
+
+  /**
+   * Test of findById
+   */
+  @Test
+  public void usersFindByIdTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+
+    assertEquals(testUser1, userServiceImpl.findById(1));
+  }
+
+  /**
+   * Test of accurate findById
+   */
+  @Test
+  public void usersFindAccuratelyByIdTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+
+    assertNotEquals(testUser2, userServiceImpl.findById(1));
+  }
+
+  /**
+   * Test of thrown exception when given an invalid ID
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void usersNotFoundIdExceptionTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    userServiceImpl.findById(1);
+  }
+
+  /**
+   * Test user creation
+   * 
+   */
+  @Test
+  public void userCreationAccuracyTest() {
+    when(userRepositoryMock.save(testUser1)).thenReturn(testUser1PostCreate);
+
+    assertEquals(testUser1PostCreate, userServiceImpl.create(testUser1));
+  }
+
+  /**
+   * Test updating a user
+   */
+  @Test
+  public void userUpdateTest() {
+    User testUser1UpdateInfo = new User();
+    testUser1UpdateInfo.setId(1);
+    testUser1UpdateInfo.setUsername("testUsername");
+
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+    when(userRepositoryMock.save(testUser1UpdateInfo)).thenReturn(testUser1);
+
+    assertEquals(testUser1, userServiceImpl.update(testUser1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent user
+   * 
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void userUpdateNonExistantFailureTest() {
+    User nonExistentUser = new User();
+    nonExistentUser.setId(5);
+
+    when(userRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    userServiceImpl.update(nonExistentUser);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a user
+   * 
+   */
+  @Test(expected = UserConflictException.class)
+  public void userFailureToUpdateTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+    when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
+
+    userServiceImpl.update(testUser1);
+  }
+
+  /**
+   * Test create or update user
+   * 
+   */
+  @Test
+  public void createOrUpdateUserTest() {
+    User nonExistentUser = new User();
+    nonExistentUser.setId(4);
+
+    when(userRepositoryMock.save(nonExistentUser)).thenReturn(nonExistentUser);
+
+    userServiceImpl.createOrUpdate(nonExistentUser);
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a user
+   * 
+   */
+  @Test(expected = UserConflictException.class)
+  public void userFailureToCreateOrUpdateTest() {
+    when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
+
+    userServiceImpl.createOrUpdate(testUser1);
+  }
+
+  /**
+   * Test deletion of a user
+   * 
+   */
+  @Test
+  public void userDeletionTest() {
+    when(userRepositoryMock.existsById(1)).thenReturn(true);
+    Mockito.doNothing().when(userRepositoryMock).deleteById(1);
+
+    userServiceImpl.delete(1);
+  }
+
+  /**
+   * Test exception throw of invalid response when deleting
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void userDeleteNonExistantResponseTest() {
+    when(userRepositoryMock.existsById(10)).thenReturn(false);
+    Mockito.doNothing().when(userRepositoryMock).deleteById(10);
+
+    userServiceImpl.delete(10);
+  }
+
+  /**
+   * Test updating user tags
+   */
+  @Test
+  public void userUpdateTagsTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser2));
+    when(userRepositoryMock.save(testUser2)).thenReturn(testUser2);
+
+    userServiceImpl.updateTags(testUser1);
+
+    assertEquals(testUser2.getExpertTags(), testUser1.getExpertTags());
+  }
+
+  /**
+   * Test for proper failure when updating user tags that don't exist
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void userUpdateTagsFailureTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
+    when(userRepositoryMock.save(testUser1)).thenReturn(testUser1);
+
+    userServiceImpl.updateTags(testUser1);
+  }
+
+  /**
+   * Test for getting all questions
+   * 
+   */
+  @Test
+  public void questionsGetAllTest() {
+    when(questionRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnQuestionsPage);
+
+    assertEquals(returnQuestionsPage, questionServiceImpl.getAll(0, 5));
+  }
+
+  /**
+   * Test for getting a question by ID
+   * 
+   */
+  @Test
+  public void questionsGetByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertEquals(testQuestion1, questionServiceImpl.getById(1));
+  }
+
+  /**
+   * Test for getting a question accurately by ID
+   */
+
+  @Test
+  public void questionsGetAccuratelyByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertNotEquals(testQuestion2, questionServiceImpl.getById(1));
+  }
+
+  /**
+   * Test for proper failure when an invalid ID is searched for
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsNotFoundWithBadIDTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    questionServiceImpl.getById(1);
+  }
+
+  /**
+   * Test question creation
+   * 
+   */
+  @Test
+  public void questionCreationAccuracyTest() {
+    when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1PostCreate);
+
+    assertEquals(testQuestion1PostCreate, questionServiceImpl.create(testQuestion1));
+  }
+
+  /**
+   * Test updating a question
+   */
+  @Test
+  public void questionUpdateTest() {
+    Question testQuestion1UpdateInfo = new Question();
+    testQuestion1UpdateInfo.setId(1);
+    testQuestion1UpdateInfo.setBody("Test body update");
+
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.save(testQuestion1UpdateInfo)).thenReturn(testQuestion1);
+
+    assertEquals(testQuestion1, questionServiceImpl.update(testQuestion1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent question
+   * 
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionUpdateNonExistantFailureTest() {
+    Question nonExistentQuestion = new Question();
+    nonExistentQuestion.setId(5);
+
+    when(questionRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    questionServiceImpl.update(nonExistentQuestion);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a question
+   * 
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionFailureToUpdateTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.save(testQuestion1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    questionServiceImpl.update(testQuestion1);
+  }
+
+  /**
+   * Test create or update question
+   * 
+   */
+  @Test
+  public void createOrUpdateQuestionTest() {
+    Question nonExistentQuestion = new Question();
+    nonExistentQuestion.setId(4);
+    nonExistentQuestion.setBody("New question");
+
+    when(questionRepositoryMock.save(nonExistentQuestion)).thenReturn(nonExistentQuestion);
+
+    questionServiceImpl.createOrUpdate(nonExistentQuestion);
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a question
+   * 
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionFailureToCreateOrUpdateTest() {
+    when(questionRepositoryMock.save(testQuestion1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    questionServiceImpl.createOrUpdate(testQuestion1);
+  }
+
+  /**
+   * Testing updating tags for a question
+   * 
+   */
+  @Test
+  public void questionsUpdateTagsTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion2));
+    when(questionRepositoryMock.save(testQuestion2)).thenReturn(testQuestion2);
+
+    questionServiceImpl.updateTags(testQuestion1);
+
+    assertEquals(testQuestion1.getAssociatedTags(), testQuestion2.getAssociatedTags());
+  }
+
+  /**
+   * Testing failure to find valid question
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsQuestionNotFoundWhenUpdatingTagsExceptionTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+    questionServiceImpl.updateTags(testQuestion1);
+  }
+
+  /**
+   * Testing highlighting a response
+   */
+  @Test
+  public void questionsHighlightResponseTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1);
+
+    assertEquals((Integer) 4,
+        questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
+  }
+
+  /**
+   * Testing failure to find a question when highlighting a response
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsQuestionNotFoundWhenHighlightingResponseTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    questionServiceImpl.highlightResponse(1, 4);
+  }
+
+  /**
+   * Testing failure to update a response when there is a conflict updating the data
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionsConflictExceptionWhenHighlightingResponseTest() {
+    // when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    // when(questionServiceImpl.getById(1)).thenReturn((Question)
+    // when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1)));
+    // when(questionServiceImpl.update(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
+    // when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
+
+    when(questionRepositoryMock.findById(1)).thenThrow(DataIntegrityViolationException.class);
+
+    questionServiceImpl.highlightResponse(1, 4);
+  }
+
+  @Test
+  public void questionFindAllByTagNameTest() {
+
+  }
 }

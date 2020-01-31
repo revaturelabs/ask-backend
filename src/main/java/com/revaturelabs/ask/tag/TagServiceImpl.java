@@ -131,24 +131,24 @@ public class TagServiceImpl implements TagService {
   }
 
   /**
-   * Given a set of tag objects that don't exist in the database,
-   * retrieves a set of corresponding tags that are in the database.
+   * Given a set of tag objects that don't exist in the database, retrieves a set of corresponding
+   * tags that are in the database.
    * 
-   * @param associatedTags -A set of tag objects to be converted to existing objects
-   * in the database.
+   * @param associatedTags -A set of tag objects to be converted to existing objects in the
+   *        database.
    */
   @Override
   public Set<Tag> getValidTags(Set<Tag> associatedTags) {
-    
+
     Set<Tag> validTags = new HashSet<Tag>();
-    
-    if(associatedTags == null) {
+
+    if (associatedTags == null) {
       return validTags;
     }
-    for(Tag t : associatedTags) {
+    for (Tag t : associatedTags) {
       validTags.add(getTagByName(t.getName()));
     }
-    
+
     return validTags;
   }
 

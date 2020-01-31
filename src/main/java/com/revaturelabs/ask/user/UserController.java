@@ -32,7 +32,7 @@ public class UserController {
 
   @Autowired
   UserService userService;
-  
+
   @Autowired
   TagService tagService;
 
@@ -73,7 +73,7 @@ public class UserController {
   @PatchMapping("/{id}")
   public User updateUser(@RequestBody User user, @PathVariable int id) {
     user.setId(id);
-    
+
     user.setExpertTags(tagService.getValidTags(user.getExpertTags()));
     try {
       return userService.update(user);
@@ -114,15 +114,16 @@ public class UserController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
   }
-  
+
   /**
    * 
    * Takes HTTP PUT requests and returns the updated user after setting the tags to be updated
+   * 
    * @param user The user object with tags to be changed
    * @return A User JSON after updating
    */
   @PutMapping("/{id}/tags")
-  public ResponseEntity<User> updateUserTags(@RequestBody User user, @PathVariable int id){
+  public ResponseEntity<User> updateUserTags(@RequestBody User user, @PathVariable int id) {
     user.setExpertTags(tagService.getValidTags(user.getExpertTags()));
     user.setId(id);
     try {

@@ -17,8 +17,7 @@ public class UserServiceImpl implements UserService {
   private UserRepository userRepo;
 
   /**
-   * "findAll" basically gets all
-   * the users from the H2 database.
+   * "findAll" basically gets all the users from the H2 database.
    * 
    * @return List of all users in database.
    */
@@ -47,8 +46,7 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * "create" gets the user object and
-   * creates a new row for it in the database.
+   * "create" gets the user object and creates a new row for it in the database.
    * 
    * @param user
    * @return
@@ -59,8 +57,7 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * "update" checks if the user exists beforehand.
-   * If so, it saves changes into the specified row
+   * "update" checks if the user exists beforehand. If so, it saves changes into the specified row
    * of the database, given it doesn't overwrite the ID.
    * 
    * If not, it throws the exception.
@@ -75,7 +72,7 @@ public class UserServiceImpl implements UserService {
     Optional<User> existingUser = userRepo.findById(user.getId());
 
     User updatedUser = null;
-   
+
     if (existingUser.isPresent()) {
       try {
         updatedUser = userRepo.save(user);
@@ -90,9 +87,8 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * "createOrUpdate" does the same function as
-   * "update" except it also creates the user
-   * if the user in question doesn't exist.
+   * "createOrUpdate" does the same function as "update" except it also creates the user if the user
+   * in question doesn't exist.
    * 
    * @param user
    * @return
@@ -111,9 +107,7 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * "delete" basically looks for the ID of the 
-   * user and deletes the specified user with 
-   * that ID.
+   * "delete" basically looks for the ID of the user and deletes the specified user with that ID.
    * 
    * @param id
    * @throws UserNotFoundException
@@ -135,13 +129,13 @@ public class UserServiceImpl implements UserService {
    * @param user the User object with a set of tags to use for updating
    * @return updatedUser The user after being updated in the repository
    */
-  
+
   @Override
   public User updateTags(User user) {
     Optional<User> existingUser = userRepo.findById(user.getId());
 
     User updatedUser = null;
-   
+
     if (existingUser.isPresent()) {
       try {
         updatedUser = existingUser.get();

@@ -135,7 +135,7 @@ public class User {
    * @param tag The tag to be added to the set.
    */
   public void addTagToUser(Tag tag) {
-    if(this.expertTags == null) {
+    if (this.expertTags == null) {
       this.expertTags = new HashSet<Tag>();
     }
     this.expertTags.add(tag);

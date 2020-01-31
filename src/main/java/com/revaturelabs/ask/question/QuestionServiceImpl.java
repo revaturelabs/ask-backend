@@ -203,9 +203,9 @@ public class QuestionServiceImpl implements QuestionService {
     Question question = null;
     try {
       question = getById(questionId);
-//    	question = (Question) questionRepository.findById(questionId);
+      // question = (Question) questionRepository.findById(questionId);
       question.setHighlightedResponseId(highlightedResponseId);
-//      return questionRepository.save(question);
+      // return questionRepository.save(question);
       return update(question);
     } catch (QuestionNotFoundException e) {
       throw new QuestionNotFoundException("The specified question was not found!");

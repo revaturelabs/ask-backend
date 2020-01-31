@@ -23,8 +23,10 @@ public interface QuestionService {
 
   Question updateTags(Question question) throws QuestionNotFoundException;
 
-  Question highlightResponse(int questionId, int highlightedResponseId) throws QuestionNotFoundException, QuestionConflictException;
+  Question highlightResponse(int questionId, int highlightedResponseId)
+      throws QuestionNotFoundException, QuestionConflictException;
 
-  Question addImageToQuestion(int id, MultipartHttpServletRequest request) throws QuestionNotFoundException, ImageConflictException, IOException;
+  Question addImageToQuestion(int id, MultipartHttpServletRequest request)
+      throws QuestionNotFoundException, ImageConflictException, IOException;
 
 }

@@ -27,7 +27,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
    */
   @Query(
       value = "SELECT q FROM Question q join q.associatedTags t WHERE t in :tags GROUP BY q HAVING count(q) = :tagsSize")
-  Page<Question> findAllContainingAllTags(@Param("tags") Set<Tag> tags, long tagsSize, Pageable pageable);
+  Page<Question> findAllContainingAllTags(@Param("tags") Set<Tag> tags, long tagsSize,
+      Pageable pageable);
 
   /**
    * Custom query that will return all questions provided that at least one of the specified tags
@@ -37,9 +38,10 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
    */
   @Query(value = "SELECT distinct q from Question q join q.associatedTags t where t in ?1")
   Page<Question> findAllContainingAtLeastOneTag(Set<Tag> tagSet, Pageable pageable);
-  
+
   /**
-   * Overwritten findAll query that will return all questions ordered from the largest ID to the smallest
+   * Overwritten findAll query that will return all questions ordered from the largest ID to the
+   * smallest
    * 
    */
   @Query(value = "SELECT q FROM Question q ORDER BY q.id desc")

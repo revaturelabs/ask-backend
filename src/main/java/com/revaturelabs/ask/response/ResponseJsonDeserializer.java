@@ -50,14 +50,14 @@ public class ResponseJsonDeserializer extends JsonDeserializer<Response> {
           Date currentDate = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").parse(root.creationDate);
           response.setCreationDate(currentDate);
         } catch (ParseException e) {
-          
+
         }
       } else {
         Date currentDate = new Date();
         response.setCreationDate(currentDate);
       }
-      
-      if(root.question != null) {
+
+      if (root.question != null) {
         response.setQuestion(root.question);
       }
     }
@@ -79,7 +79,7 @@ public class ResponseJsonDeserializer extends JsonDeserializer<Response> {
 
     @JsonProperty("responderId")
     public Integer responderId;
-    
+
     @JsonProperty("questionId")
     public Integer questionId;
 
@@ -89,7 +89,7 @@ public class ResponseJsonDeserializer extends JsonDeserializer<Response> {
 
     @JsonProperty("creationDate")
     public String creationDate;
-  
+
     @JsonProperty("question")
     public Question question;
   }

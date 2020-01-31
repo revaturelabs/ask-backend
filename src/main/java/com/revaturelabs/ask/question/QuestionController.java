@@ -216,7 +216,8 @@ public class QuestionController {
       return ResponseEntity.ok(questionService.getById(id).getImages());
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found!", e);
-    } }
+    }
+  }
 
   /**
    * Takes HTTP Put requests. Will add an image to the set of images associated with the question.
@@ -227,19 +228,19 @@ public class QuestionController {
    * @author Chris Allen
    */
   @PutMapping("/{id}/images")
-  public ResponseEntity<Question> addImage(@PathVariable int id, MultipartHttpServletRequest request){
+  public ResponseEntity<Question> addImage(@PathVariable int id,
+      MultipartHttpServletRequest request) {
     try {
       return ResponseEntity.ok(questionService.addImageToQuestion(id, request));
-    }
-    catch (QuestionNotFoundException e) {
+    } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found!", e);
-    }
-    catch( ImageConflictException e) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "There was an issue uploading the image!", e);
+    } catch (ImageConflictException e) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT,
+          "There was an issue uploading the image!", e);
     } catch (IOException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was an I/O error!", e);
     }
-    
+
   }
 
   /**

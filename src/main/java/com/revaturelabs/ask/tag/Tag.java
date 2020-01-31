@@ -32,7 +32,7 @@ public class Tag implements Serializable {
 
   @ManyToMany(mappedBy = "associatedTags")
   Set<Question> taggedQuestions;
-  
+
   @ManyToMany(mappedBy = "expertTags")
   Set<User> expertTags;
 

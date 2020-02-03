@@ -1053,10 +1053,11 @@ public class AskApplicationServiceTests {
   public void testAddImageToQuestionForQuestionNotFoundException()
       throws QuestionNotFoundException, ImageConflictException, IOException {
 
-    MultipartHttpServletRequest request = null;
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+    assertNotNull(questionRepositoryMock.findById(1));
+    assertEquals(questionRepositoryMock.findById(1), Optional.empty());
 
-    questionServiceImpl.addImageToQuestion(1, request);
+    questionServiceImpl.addImageToQuestion(1, mockRequest);
   }
 
   @Test(expected = ImageConflictException.class)
@@ -1066,6 +1067,8 @@ public class AskApplicationServiceTests {
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
     when(imageServiceMock.addImage(testQuestion1, mockRequest))
         .thenThrow(ImageConflictException.class);
+    assertNotNull(questionRepositoryMock.findById(1));
+    assertEquals(questionRepositoryMock.findById(1), Optional.of(testQuestion1));
 
     questionServiceImpl.addImageToQuestion(1, mockRequest);
   }
@@ -1076,6 +1079,8 @@ public class AskApplicationServiceTests {
 
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
     when(imageServiceMock.addImage(testQuestion1, mockRequest)).thenThrow(IOException.class);
+    assertNotNull(questionRepositoryMock.findById(1));
+    assertEquals(questionRepositoryMock.findById(1), Optional.of(testQuestion1));
 
     questionServiceImpl.addImageToQuestion(1, mockRequest);
   }
@@ -1089,8 +1094,6 @@ public class AskApplicationServiceTests {
     questions2.add(testQuestion2);
     Page<Question> page1 = new PageImpl<>(questions1);
     Page<Question> page2 = new PageImpl<>(questions2);
-//    Stream<Question> question1 = page1.get();
-//    Stream<Question> question2 = page2.get();
 
     List<String> tagNames = new ArrayList<String>();
     tagNames.add(testTag1.getName());
@@ -1111,6 +1114,12 @@ public class AskApplicationServiceTests {
         .thenReturn(page1);
     when(questionRepositoryMock.findAllContainingAtLeastOneTag(expertTags, pageable))
         .thenReturn(page2);
+    assertNotNull(
+        questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable));
+    assertEquals(
+        questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable),
+        page1);
+
     questionServiceImpl.findAllByTagNames(true, tagNames, 0, 20);
     questionServiceImpl.findAllByTagNames(false, tagNames, 0, 20);
   }
@@ -1118,9 +1127,6 @@ public class AskApplicationServiceTests {
   @Test(expected = TagNotFoundException.class)
   public void testFindAllByTagNamesForTagNotFoundException() {
 
-//    List<Question> questions = new ArrayList<Question>();
-//    Page<Question> page = new PageImpl<>(questions);
-//    Stream<Question> question = page.get();
     List<String> tagNames = new ArrayList<String>();
     tagNames.add(testTag1.getName());
     tagNames.add(testTag2.getName());
@@ -1128,7 +1134,6 @@ public class AskApplicationServiceTests {
 
     HashSet<Tag> expertTags = new HashSet<Tag>();
     expertTags.addAll(tagReturnList);
-//    Pageable pageable = (Pageable) PageRequest.of(0, 20);
 
     when(tagServiceMock.getTagByName(tagNames.get(0))).thenReturn(testTag1);
     when(tagServiceMock.getTagByName(tagNames.get(1))).thenReturn(testTag2);

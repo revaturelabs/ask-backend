@@ -150,4 +150,4 @@ jacoco-ut/
 /target/
 
 ### Test Output ###
-.test-output/
+test-output/

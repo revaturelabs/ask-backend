@@ -4,12 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.revaturelabs.ask.image.Image;
 import com.revaturelabs.ask.image.ImageController;
 import com.revaturelabs.ask.image.ImageNotFoundException;
@@ -327,6 +325,7 @@ public class AskApplicationControllerTests {
     tagServiceMock.delete(exampleTag.getId());
     when((tagServiceMock.getById(exampleTag.getId()))).thenReturn(null);
     tagControllerImpl.deleteTag(exampleTag.getId());
+    Assert.assertNull(tagServiceMock.getById(exampleTag.getId()));
   }
 
   @Test(expected = ResponseStatusException.class)
@@ -523,10 +522,19 @@ public class AskApplicationControllerTests {
     userControllerImpl.updateUser(testUser, 10);
   }
 
-  @Test
+  @Test(expected = ResponseStatusException.class)
   public void testDeleteUser() {
+    
+    User testUser = new User();
+    testUser.setId(10);
+    testUser.setUsername("username");
+    testUser.setPassword("password");
+    
+    when(userServiceMock.createOrUpdate(testUser)).thenReturn(testUser);
     doNothing().when(userServiceMock).delete(10);
     userControllerImpl.deleteUser(10);
+    when(userServiceMock.findById(10)).thenThrow(UserNotFoundException.class);
+    userControllerImpl.findById(10);
   }
 
   @Test(expected = ResponseStatusException.class)

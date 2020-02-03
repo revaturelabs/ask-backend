@@ -236,8 +236,19 @@ public class AskApplicationControllerTests {
   @Test
   public void testDeleteResponse() {
 
+    Response exampleResponse1 = new Response();
+    exampleResponse1.setBody("I'm here 1");
+    exampleResponse1.setId(10);
+    when(this.responseServiceMock.create(exampleResponse1)).thenReturn(exampleResponse1);
+    this.responseControllerImpl.createResponse(exampleResponse1);
+
+    when((this.responseServiceMock.getById(10))).thenReturn(exampleResponse1);
     doNothing().when(responseServiceMock).delete(10);
     responseControllerImpl.deleteResponse(10);
+
+    when((this.responseServiceMock.getById(10))).thenReturn(null);
+    Assert.assertNull(this.responseServiceMock.getById(10));
+
   }
 
   @Test(expected = ResponseStatusException.class)

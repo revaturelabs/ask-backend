@@ -374,6 +374,7 @@ public class AskApplicationControllerTests {
 
     Response resp1 = new Response();
     Response resp2 = new Response();
+    resp2.setResponderId(91);
     Set<Response> setResponse = new HashSet<Response>();
     Set<Response> setResponse2 = new HashSet<Response>();
     setResponse.add(resp1);
@@ -504,7 +505,7 @@ public class AskApplicationControllerTests {
     exampleQuesiton9.setId(1);
     exampleQuesiton9.setQuestionerId(1);
     // exampleQuesiton9.setUser(user2);
-    exampleQuesiton9.setResponses(setResponse);
+    exampleQuesiton9.setResponses(null);
     exampleQuesiton9.setHighlightedResponseId(1);
     exampleQuesiton9.setCreationDate(date);
     exampleQuesiton9.addTagToQuestion(javaTag);
@@ -516,8 +517,8 @@ public class AskApplicationControllerTests {
     exampleQuesiton10.setHead("This is the head");
     exampleQuesiton10.setId(1);
     exampleQuesiton10.setQuestionerId(1);
-    exampleQuesiton10.setUser(user);
-    exampleQuesiton10.setResponses(null);
+//    exampleQuesiton10.setUser(user);
+    exampleQuesiton10.setResponses(setResponse2);
     exampleQuesiton10.setHighlightedResponseId(1);
     exampleQuesiton10.setCreationDate(date);
     exampleQuesiton10.addTagToQuestion(javaTag);
@@ -591,8 +592,8 @@ public class AskApplicationControllerTests {
         exampleQuesiton.equals(exampleQuesiton7) & exampleQuesiton7.equals(exampleQuesiton));
     assertFalse(
         exampleQuesiton.equals(exampleQuesiton8) & exampleQuesiton8.equals(exampleQuesiton));
-    // assertFalse(exampleQuesiton.equals(exampleQuesiton9) &
-    // exampleQuesiton9.equals(exampleQuesiton));
+    assertFalse(
+        exampleQuesiton.equals(exampleQuesiton9) & exampleQuesiton9.equals(exampleQuesiton));
     assertFalse(
         exampleQuesiton.equals(exampleQuesiton10) & exampleQuesiton10.equals(exampleQuesiton));
     assertFalse(

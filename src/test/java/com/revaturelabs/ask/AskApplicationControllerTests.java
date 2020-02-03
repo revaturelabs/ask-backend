@@ -524,12 +524,12 @@ public class AskApplicationControllerTests {
 
   @Test(expected = ResponseStatusException.class)
   public void testDeleteUser() {
-    
+
     User testUser = new User();
     testUser.setId(10);
     testUser.setUsername("username");
     testUser.setPassword("password");
-    
+
     when(userServiceMock.createOrUpdate(testUser)).thenReturn(testUser);
     doNothing().when(userServiceMock).delete(10);
     userControllerImpl.deleteUser(10);

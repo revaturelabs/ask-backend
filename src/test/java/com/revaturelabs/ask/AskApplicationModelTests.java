@@ -61,7 +61,7 @@ public class AskApplicationModelTests {
   static Question testQuestion2;
 
   static Page<Question> returnQuestionsPage;
-  
+
   static {
     testTag1 = new Tag();
     testTag1.setId(0);
@@ -130,7 +130,7 @@ public class AskApplicationModelTests {
     testQuestion2 = new Question();
     testQuestion2.setId(2);
   }
-  
+
   @Test
   public void tagHashcodeEqualsStringTest() {
     Tag testTag = new Tag();

@@ -149,5 +149,5 @@ build/
 jacoco-ut/
 /target/
 
-### Test Output ###
+# Test Output
 test-output/

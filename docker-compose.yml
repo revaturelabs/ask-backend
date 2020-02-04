@@ -1,0 +1,10 @@
+version : '3'
+services : 
+    ask-backend :
+      build: ./ask-backend
+      ports: 
+        - "1337:1337"
+    ask-frontend :
+      build: ./ask-frontend
+      ports: 
+        - "3354:3354"

@@ -261,12 +261,12 @@ public class Question {
    * @param image the image to add
    */
   public void addImageToImages(Image image) {
-    if(this.images == null) {
+    if (this.images == null) {
       this.images = new HashSet<Image>();
     }
     this.images.add(image);
   }
-  
+
   /**
    * 
    * Automatically generated hashing function for question.

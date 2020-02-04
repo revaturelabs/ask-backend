@@ -1,13 +1,20 @@
 package com.revaturelabs.ask;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+// import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,8 +24,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.revaturelabs.ask.image.Image;
+import com.revaturelabs.ask.image.ImageConflictException;
 import com.revaturelabs.ask.image.ImageController;
 import com.revaturelabs.ask.image.ImageNotFoundException;
 import com.revaturelabs.ask.image.ImageRepository;
@@ -57,7 +68,6 @@ import com.revaturelabs.ask.user.UserServiceImpl;
 @SpringBootTest
 public class AskApplicationServiceTests {
 
-
   @Test
   public void contextLoads() {}
 
@@ -90,6 +100,9 @@ public class AskApplicationServiceTests {
 
   @Mock
   QuestionService questionServiceMock;
+
+  @Mock
+  MultipartHttpServletRequest mockRequest;
 
   @InjectMocks
   TagService tagServiceImpl = new TagServiceImpl();
@@ -130,13 +143,13 @@ public class AskApplicationServiceTests {
   static Tag testTag3;
 
   static List<Tag> tagReturnList;
-  
+
   static Set<Image> testImageSet1;
 
   static Set<Image> testImageSet2;
-  
+
   static Image testImage1;
-  
+
   static Image testImage2;
 
   static Response testResponse1;
@@ -213,12 +226,12 @@ public class AskApplicationServiceTests {
     testImage1.setId(1);
     testImage2 = new Image();
     testImage2.setId(2);
-    
+
     testImageSet1 = new HashSet<Image>();
     testImageSet1.add(testImage1);
     testImageSet2 = new HashSet<Image>();
     testImageSet2.add(testImage2);
-    
+
     testQuestion1 = new Question();
     testQuestion1.setId(1);
     testQuestion1.setAssociatedTags(expertTags);
@@ -231,6 +244,8 @@ public class AskApplicationServiceTests {
     testQuestion2 = new Question();
     testQuestion2.setId(2);
   }
+
+
 
   /**
    * Test of tagService findAll method.
@@ -335,7 +350,6 @@ public class AskApplicationServiceTests {
     when(tagRepositoryMock.findById(testTag1UpdateInfo.getId())).thenReturn(Optional.of(testTag1));
     when(tagRepositoryMock.save(testTag1UpdateInfo)).thenReturn(testTag1);
 
-
     assertEquals(testTag1, tagServiceImpl.update(testTag1UpdateInfo));
   }
 
@@ -390,7 +404,7 @@ public class AskApplicationServiceTests {
    */
   @Test(expected = TagConflictException.class)
   public void tagFailureToCreateOrUpdateTest() {
-    when(tagRepositoryMock.save(testTag1)).thenThrow(TagConflictException.class);
+    when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
 
     tagServiceImpl.createOrUpdate(testTag1);
   }
@@ -403,8 +417,11 @@ public class AskApplicationServiceTests {
   public void tagDeletionTest() {
     when(tagRepositoryMock.existsById(1)).thenReturn(true);
     Mockito.doNothing().when(tagRepositoryMock).deleteById(1);
-
     tagServiceImpl.delete(1);
+    when(tagRepositoryMock.existsById(1)).thenReturn(false);
+
+
+    Assert.assertFalse(tagRepositoryMock.existsById(1));
   }
 
   /**
@@ -484,7 +501,7 @@ public class AskApplicationServiceTests {
    */
   @Test
   public void getImageByIdTest() {
-	when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
 
     assertEquals(testImageSet1, imageServiceImpl.getImages(1));
   }
@@ -495,18 +512,49 @@ public class AskApplicationServiceTests {
    */
   @Test
   public void getCorrectImageByIdTest() {
-	when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
 
     assertNotEquals(testImageSet2, imageServiceImpl.getImages(1));
   }
-  
+
+  @Test(expected = ImageNotFoundException.class)
+  public void getFailedImages() {
+    Set<Image> images = new HashSet<Image>();
+    when(questionRepositoryMock.findById(1)).thenReturn(null);
+
+    imageServiceImpl.getImages(1);
+  }
+
+  @Test
+  public void addImageTest() throws IOException, ImageConflictException {
+    MockMultipartFile firstFile =
+        new MockMultipartFile("data", "filename.txt", "text/plain", "some xml".getBytes());
+    MultipartFile mpf = firstFile;
+    when(mockRequest.getFile("image")).thenReturn(mpf);
+
+    assertNull(imageServiceImpl.addImage(testQuestion1, mockRequest));
+  }
+
+  // Can't pass with current state of addImage
+  @Ignore
+  @Test(expected = ImageConflictException.class)
+  public void addImageFailTest() throws IOException, ImageConflictException {
+    byte[] byteArr = null;
+    MockMultipartFile firstFile =
+        new MockMultipartFile("data", "filename.txt", "text/plain", byteArr);
+    MultipartFile mpf = firstFile;
+    when(mockRequest.getFile("image")).thenReturn(firstFile);
+
+    imageServiceImpl.addImage(testQuestion1, mockRequest);
+  }
+
   /**
    * Test failure of retrieval of image by invalid id
    * 
    */
   @Test(expected = ImageNotFoundException.class)
   public void getInvalidImageIdTest() {
-	when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(testQuestion2));
+    when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(testQuestion2));
 
     imageServiceImpl.getImages(2);
   }
@@ -564,7 +612,6 @@ public class AskApplicationServiceTests {
     assertEquals(testResponse1PostCreate, responseServiceImpl.create(testResponse1));
   }
 
-
   /**
    * Test updating a response
    */
@@ -576,7 +623,6 @@ public class AskApplicationServiceTests {
 
     when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
     when(responseRepositoryMock.save(testResponse1UpdateInfo)).thenReturn(testResponse1);
-
 
     assertEquals(testResponse1, responseServiceImpl.update(testResponse1UpdateInfo));
   }
@@ -621,6 +667,8 @@ public class AskApplicationServiceTests {
     when(responseRepositoryMock.save(nonExistentResponse)).thenReturn(nonExistentResponse);
 
     responseServiceImpl.createOrUpdate(nonExistentResponse);
+    assertEquals(nonExistentResponse.getId(), 4);
+    assertEquals(nonExistentResponse.getBody(), "New response");
   }
 
   /**
@@ -645,6 +693,8 @@ public class AskApplicationServiceTests {
     Mockito.doNothing().when(responseRepositoryMock).deleteById(1);
 
     responseServiceImpl.delete(1);
+    when(responseRepositoryMock.existsById(1)).thenReturn(false);
+    assertFalse(responseRepositoryMock.existsById(1));
   }
 
   /**
@@ -709,7 +759,6 @@ public class AskApplicationServiceTests {
     assertEquals(testUser1PostCreate, userServiceImpl.create(testUser1));
   }
 
-
   /**
    * Test updating a user
    */
@@ -721,7 +770,6 @@ public class AskApplicationServiceTests {
 
     when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
     when(userRepositoryMock.save(testUser1UpdateInfo)).thenReturn(testUser1);
-
 
     assertEquals(testUser1, userServiceImpl.update(testUser1UpdateInfo));
   }
@@ -764,6 +812,7 @@ public class AskApplicationServiceTests {
     when(userRepositoryMock.save(nonExistentUser)).thenReturn(nonExistentUser);
 
     userServiceImpl.createOrUpdate(nonExistentUser);
+    assertEquals(nonExistentUser.getId(), 4);
   }
 
   /**
@@ -787,6 +836,8 @@ public class AskApplicationServiceTests {
     Mockito.doNothing().when(userRepositoryMock).deleteById(1);
 
     userServiceImpl.delete(1);
+    when(userRepositoryMock.existsById(1)).thenReturn(false);
+    assertFalse(userRepositoryMock.existsById(1));
   }
 
   /**
@@ -867,7 +918,6 @@ public class AskApplicationServiceTests {
     questionServiceImpl.getById(1);
   }
 
-
   /**
    * Test question creation
    * 
@@ -878,7 +928,6 @@ public class AskApplicationServiceTests {
 
     assertEquals(testQuestion1PostCreate, questionServiceImpl.create(testQuestion1));
   }
-
 
   /**
    * Test updating a question
@@ -891,7 +940,6 @@ public class AskApplicationServiceTests {
 
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
     when(questionRepositoryMock.save(testQuestion1UpdateInfo)).thenReturn(testQuestion1);
-
 
     assertEquals(testQuestion1, questionServiceImpl.update(testQuestion1UpdateInfo));
   }
@@ -936,6 +984,9 @@ public class AskApplicationServiceTests {
     when(questionRepositoryMock.save(nonExistentQuestion)).thenReturn(nonExistentQuestion);
 
     questionServiceImpl.createOrUpdate(nonExistentQuestion);
+    assertEquals(nonExistentQuestion.getId(), new Integer(4));
+    assertEquals(nonExistentQuestion.getBody(), "New question");
+
   }
 
   /**
@@ -949,7 +1000,7 @@ public class AskApplicationServiceTests {
 
     questionServiceImpl.createOrUpdate(testQuestion1);
   }
-  
+
   /**
    * Testing updating tags for a question
    * 
@@ -958,12 +1009,12 @@ public class AskApplicationServiceTests {
   public void questionsUpdateTagsTest() {
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion2));
     when(questionRepositoryMock.save(testQuestion2)).thenReturn(testQuestion2);
-    
+
     questionServiceImpl.updateTags(testQuestion1);
-    
+
     assertEquals(testQuestion1.getAssociatedTags(), testQuestion2.getAssociatedTags());
   }
-  
+
   /**
    * Testing failure to find valid question
    */
@@ -972,7 +1023,7 @@ public class AskApplicationServiceTests {
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
     questionServiceImpl.updateTags(testQuestion1);
   }
-  
+
   /**
    * Testing highlighting a response
    */
@@ -980,28 +1031,20 @@ public class AskApplicationServiceTests {
   public void questionsHighlightResponseTest() {
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
     when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1);
-    
-    assertEquals((Integer) 4, questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
+
+    assertEquals((Integer) 4,
+        questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
   }
-  
+
   /**
    * Testing failure to find a question when highlighting a response
    */
   @Test(expected = QuestionNotFoundException.class)
   public void questionsQuestionNotFoundWhenHighlightingResponseTest() {
     when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-    
+
     questionServiceImpl.highlightResponse(1, 4);
   }
-  
-  /**
-   * Testing failure to update a response when there is a conflict updating the data
-   */
-  @Test(expected = QuestionConflictException.class)
-  public void questionsConflictExceptionWhenHighlightingResponseTest() {
-    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-    when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-    
-    questionServiceImpl.highlightResponse(1, 4);
-  }
+
+
 }

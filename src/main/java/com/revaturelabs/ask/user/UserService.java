@@ -12,8 +12,7 @@ import org.springframework.data.domain.Page;
 public interface UserService {
 
   /**
-   * "findAll" basically gets all
-   * the users from the H2 database based on the size.
+   * "findAll" basically gets all the users from the H2 database based on the size.
    * 
    * @return Page of all users in database.
    */
@@ -29,8 +28,7 @@ public interface UserService {
   User findById(int id) throws UserNotFoundException;
 
   /**
-   * "create" gets the user object and
-   * creates a new row for it in the database.
+   * "create" gets the user object and creates a new row for it in the database.
    * 
    * @param user
    * @return
@@ -38,8 +36,7 @@ public interface UserService {
   User create(User user);
 
   /**
-   * "update" checks if the user exists beforehand.
-   * If so, it saves changes into the specified row
+   * "update" checks if the user exists beforehand. If so, it saves changes into the specified row
    * of the database, given it doesn't overwrite the ID.
    * 
    * If not, it throws the exception.
@@ -52,9 +49,8 @@ public interface UserService {
   User update(User user) throws UserNotFoundException, UserConflictException;
 
   /**
-   * "createOrUpdate" does the same function as
-   * "update" except it also creates the user
-   * if the user in question doesn't exist.
+   * "createOrUpdate" does the same function as "update" except it also creates the user if the user
+   * in question doesn't exist.
    * 
    * @param user
    * @return
@@ -63,9 +59,7 @@ public interface UserService {
   User createOrUpdate(User user) throws UserConflictException;
 
   /**
-   * "delete" basically looks for the ID of the 
-   * user and deletes the specified user with 
-   * that ID.
+   * "delete" basically looks for the ID of the user and deletes the specified user with that ID.
    * 
    * @param id
    * @throws UserNotFoundException
@@ -74,6 +68,7 @@ public interface UserService {
 
   /**
    * "updateTags" specialized function to update an existing user's tags
+   * 
    * @param user a user object with the set of tags to be updated
    * @return The updated user object
    */

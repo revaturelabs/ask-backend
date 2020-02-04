@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * 
  * Exception that occurs if there is a conflict when updating an image
+ * 
  * @author Cort Gerlach
  *
  */

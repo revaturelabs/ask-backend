@@ -34,7 +34,8 @@ public class ImageController {
    *         database
    */
   @GetMapping("/{questionId}")
-  public ResponseEntity<Set<Image>> getImage(@PathVariable int questionId) throws ImageNotFoundException {
+  public ResponseEntity<Set<Image>> getImage(@PathVariable int questionId)
+      throws ImageNotFoundException {
 
     try {
       return ResponseEntity.ok(imageService.getImages(questionId));

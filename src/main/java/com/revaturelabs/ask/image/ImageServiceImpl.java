@@ -22,7 +22,7 @@ public class ImageServiceImpl implements ImageService {
 
   @Autowired
   ImageRepository imageRepository;
-  
+
   @Autowired
   QuestionRepository questionRepository;
 
@@ -59,16 +59,16 @@ public class ImageServiceImpl implements ImageService {
    */
   @Override
   public Set<Image> getImages(int id) throws ImageNotFoundException {
-	try {
-		Set<Image> images = questionRepository.findById(id).get().getImages();
-		if (images.isEmpty() || images == null) {
-	      throw new ImageNotFoundException("Image not found");
-		}
-		    
-		return images;
-	} catch (Exception e) {
-		throw new ImageNotFoundException("Image not found");
-	}
+    try {
+      Set<Image> images = questionRepository.findById(id).get().getImages();
+      if (images.isEmpty() || images == null) {
+        throw new ImageNotFoundException("Image not found");
+      }
+
+      return images;
+    } catch (Exception e) {
+      throw new ImageNotFoundException("Image not found");
+    }
   }
 
 }

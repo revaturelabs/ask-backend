@@ -64,7 +64,6 @@ public class ImageServiceImpl implements ImageService {
       if (images.isEmpty() || images == null) {
         throw new ImageNotFoundException("Image not found");
       }
-
       return images;
     } catch (Exception e) {
       throw new ImageNotFoundException("Image not found");

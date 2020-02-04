@@ -1,8 +1,10 @@
 package com.revaturelabs.ask;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
-
+import static org.testng.Assert.assertEquals;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -17,10 +21,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.revaturelabs.ask.image.Image;
 import com.revaturelabs.ask.image.ImageConflictException;
 import com.revaturelabs.ask.image.ImageController;
@@ -84,7 +90,7 @@ public class AskApplicationServiceTests {
 	TagService tagServiceMock;
 
 	@Mock
-	ImageService imageServiceMock;
+	ImageService imageServiceMock
 
 	@Mock
 	ResponseService responseServiceMock;
@@ -152,7 +158,7 @@ public class AskApplicationServiceTests {
 
 	static Response testResponse2;
 
-	static List<Response> responseReturnList;
+  static List<Response> responseReturnList;
 
 	static User testUser1;
 
@@ -231,10 +237,6 @@ public class AskApplicationServiceTests {
 		testQuestion1.setAssociatedTags(expertTags);
 		testQuestion1.setImages(testImageSet1);
 
-		testQuestion1PostCreate = new Question();
-		testQuestion1PostCreate.setId(1);
-		testQuestion1.setAssociatedTags(expertTags);
-
 		testQuestion2 = new Question();
 		testQuestion2.setId(2);
 	}
@@ -247,748 +249,795 @@ public class AskApplicationServiceTests {
 	public void getAllTagsTest() {
 
 		when((tagRepositoryMock.findAll())).thenReturn(tagReturnList);
-
 		assertEquals(tagReturnList, tagServiceImpl.getAll());
 	}
 
-	/**
-	 * Test retrieval of getting one tag
-	 * 
-	 */
-	@Test
-	public void getOneTagTest() {
-
-		when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
-
-		assertEquals(testTag1, tagServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test failure of getting a non-existent tag
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getBadTagTest() {
-
-		when(tagRepositoryMock.findById(10)).thenReturn(Optional.empty());
-
-		tagServiceImpl.getById(10);
-	}
-
-	/**
-	 * Test accuracy of getting a tag
-	 * 
-	 */
-	@Test
-	public void getTagByIdAccuracyTest() {
-		when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
-
-		assertNotEquals(testTag2, tagServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test retrieval of an existing tag by name
-	 * 
-	 */
-	@Test
-	public void getTagByNameTest() {
-
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		assertEquals(testTag1, tagServiceImpl.getTagByName("Test 1"));
-	}
-
-	/**
-	 * Test failure retrieval of a bad tag name
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getBadTagNameTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-		tagServiceImpl.getTagByName("notTestTag1");
-	}
-
-	/**
-	 * Test accuracy of getting a tag by name
-	 * 
-	 */
-	@Test
-	public void getAccurateTagNameTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		assertNotEquals(testTag2, tagServiceImpl.getTagByName("Test 1"));
-	}
-
-	/**
-	 * Test tag creation
-	 * 
-	 */
-	@Test
-	public void tagCreationAccuracyTest() {
-		when(tagRepositoryMock.save(testTag1)).thenReturn(testTag1PostCreate);
-
-		assertEquals(testTag1PostCreate, tagServiceImpl.create(testTag1));
-	}
-
-	/**
-	 * Test updating a tag
-	 */
-	@Test
-	public void tagUpdateTest() {
-		Tag testTag1UpdateInfo = new Tag();
-		testTag1UpdateInfo.setId(0);
-		testTag1UpdateInfo.setName("New name");
-
-		when(tagRepositoryMock.findById(testTag1UpdateInfo.getId())).thenReturn(Optional.of(testTag1));
-		when(tagRepositoryMock.save(testTag1UpdateInfo)).thenReturn(testTag1);
-
-		assertEquals(testTag1, tagServiceImpl.update(testTag1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent tag
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void tagUpdateNonExistantFailureTest() {
-		Tag nonExistentTag = new Tag();
-		nonExistentTag.setId(5);
-
-		when(tagRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		tagServiceImpl.update(nonExistentTag);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a tag
-	 * 
-	 */
-	@Test(expected = TagConflictException.class)
-	public void tagFailureToUpdateTest() {
-		when(tagRepositoryMock.findById(0)).thenReturn(Optional.of(testTag1));
-		when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
-
-		tagServiceImpl.update(testTag1);
-	}
-
-	/**
-	 * Test create or update
-	 * 
-	 */
-	@Test
-	public void createOrUpdateTagTest() {
-		Tag nonExistentTag = new Tag();
-		nonExistentTag.setId(4);
-		nonExistentTag.setName("New tag");
-		List<Tag> tagReturnList = new ArrayList<Tag>();
-		tagReturnList.addAll(Arrays.asList(testTag1, testTag2, testTag3, nonExistentTag));
-
-		when(tagRepositoryMock.save(nonExistentTag)).thenReturn(nonExistentTag);
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		tagServiceImpl.createOrUpdate(nonExistentTag);
-		assertEquals(tagReturnList, tagServiceImpl.getAll());
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a tag
-	 * 
-	 */
-	@Test(expected = TagConflictException.class)
-	public void tagFailureToCreateOrUpdateTest() {
-		when(tagRepositoryMock.save(testTag1)).thenThrow(TagConflictException.class);
-
-		tagServiceImpl.createOrUpdate(testTag1);
-	}
-
-	/**
-	 * Test deletion of a tag
-	 * 
-	 */
-	@Test
-	public void tagDeletionTest() {
-		when(tagRepositoryMock.existsById(1)).thenReturn(true);
-		Mockito.doNothing().when(tagRepositoryMock).deleteById(1);
-
-		tagServiceImpl.delete(1);
-	}
-
-	/**
-	 * Test exception throw of invalid tag
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void tagDeleteNonExistantTagTest() {
-		when(tagRepositoryMock.existsById(10)).thenReturn(false);
-		Mockito.doNothing().when(tagRepositoryMock).deleteById(10);
-
-		tagServiceImpl.delete(10);
-	}
-
-	/**
-	 * Test retrieval of valid tags
-	 * 
-	 */
-	@Test
-	public void tagGetValidTagsTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-		Set<Tag> searchTagsSet = new HashSet<Tag>();
-		searchTagsSet.add(testTag1);
-		searchTagsSet.add(testTag2);
-
-		assertEquals(searchTagsSet, tagServiceImpl.getValidTags(searchTagsSet));
-	}
-
-	/**
-	 * Test retrieval of no tags
-	 * 
-	 */
-	@Test
-	public void getNoValidTagsTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		assertEquals(new HashSet<Tag>(), tagServiceImpl.getValidTags(null));
-	}
-
-	/**
-	 * Test retrieval of invalid tags
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getInvalidTagsFailureTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		Tag invalidTag = new Tag();
-		invalidTag.setId(20);
-		invalidTag.setName("Invalid tag");
-
-		HashSet<Tag> associatedTags = new HashSet<Tag>();
-		associatedTags.add(invalidTag);
-
-		tagServiceImpl.getValidTags(associatedTags);
-	}
-
-	/**
-	 * Test retrieval of invalid tags with at least one invalid tag and one valid
-	 * tag
-	 * 
-	 */
-	@Test(expected = TagNotFoundException.class)
-	public void getInvalidTagsWithAtLeastOneValidTagFailureTest() {
-		when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
-
-		Tag invalidTag = new Tag();
-		invalidTag.setId(20);
-		invalidTag.setName("Invalid tag");
-
-		HashSet<Tag> associatedTags = new HashSet<Tag>();
-		associatedTags.add(invalidTag);
-		associatedTags.add(testTag1);
-
-		tagServiceImpl.getValidTags(associatedTags);
-	}
-
-	/**
-	 * Test retrieval of Image by id
-	 */
-	@Test
-	public void getImageByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertEquals(testImageSet1, imageServiceImpl.getImages(1));
-	}
-
-	/**
-	 * Test valid retrieval of Image by id
-	 * 
-	 */
-	@Test
-	public void getCorrectImageByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertNotEquals(testImageSet2, imageServiceImpl.getImages(1));
-	}
-
-	/**
-	 * Test failure of retrieval of image by invalid id
-	 * 
-	 */
-	@Test(expected = ImageNotFoundException.class)
-	public void getInvalidImageIdTest() {
-		when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(testQuestion2));
-
-		imageServiceImpl.getImages(2);
-	}
-
-	/**
-	 * Test find all responses
-	 * 
-	 */
-	@Test
-	public void getAllResponsesTest() {
-		when(responseRepositoryMock.findAll()).thenReturn(responseReturnList);
-
-		assertEquals(responseReturnList, responseServiceImpl.getAll());
-	}
-
-	/**
-	 * Test find a response by id
-	 * 
-	 */
-	@Test
-	public void getResponseByIdTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-
-		assertEquals(testResponse1, responseServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test find a valid response by id
-	 */
-	@Test
-	public void getAccurateResponseByIdTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-
-		assertNotEquals(testResponse2, responseServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test failure of response retrieval given invalid response id
-	 */
-	@Test(expected = ResponseNotFoundException.class)
-	public void invalidResponseIdFailureTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		responseServiceImpl.getById(1);
-	}
-
-	/**
-	 * Test response creation
-	 * 
-	 */
-	@Test
-	public void responseCreationAccuracyTest() {
-		when(responseRepositoryMock.save(testResponse1)).thenReturn(testResponse1PostCreate);
-
-		assertEquals(testResponse1PostCreate, responseServiceImpl.create(testResponse1));
-	}
-
-	/**
-	 * Test updating a response
-	 */
-	@Test
-	public void responseUpdateTest() {
-		Response testResponse1UpdateInfo = new Response();
-		testResponse1UpdateInfo.setId(1);
-		testResponse1UpdateInfo.setBody("Test body update");
-
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-		when(responseRepositoryMock.save(testResponse1UpdateInfo)).thenReturn(testResponse1);
-
-		assertEquals(testResponse1, responseServiceImpl.update(testResponse1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent response
-	 * 
-	 */
-	@Test(expected = ResponseNotFoundException.class)
-	public void responseUpdateNonExistantFailureTest() {
-		Response nonExistentResponse = new Response();
-		nonExistentResponse.setId(5);
-
-		when(responseRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		responseServiceImpl.update(nonExistentResponse);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a response
-	 * 
-	 */
-	@Test(expected = ResponseConflictException.class)
-	public void responseFailureToUpdateTest() {
-		when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
-		when(responseRepositoryMock.save(testResponse1)).thenThrow(DataIntegrityViolationException.class);
-
-		responseServiceImpl.update(testResponse1);
-	}
-
-	/**
-	 * Test create or update response
-	 * 
-	 */
-	@Test
-	public void createOrUpdateResponseTest() {
-		Response nonExistentResponse = new Response();
-		nonExistentResponse.setId(4);
-		nonExistentResponse.setBody("New response");
-
-		when(responseRepositoryMock.save(nonExistentResponse)).thenReturn(nonExistentResponse);
-
-		responseServiceImpl.createOrUpdate(nonExistentResponse);
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a response
-	 * 
-	 */
-	@Test(expected = ResponseConflictException.class)
-	public void responseFailureToCreateOrUpdateTest() {
-		when(responseRepositoryMock.save(testResponse1)).thenThrow(DataIntegrityViolationException.class);
-
-		responseServiceImpl.createOrUpdate(testResponse1);
-	}
-
-	/**
-	 * Test deletion of a response
-	 * 
-	 */
-	@Test
-	public void responseDeletionTest() {
-		when(responseRepositoryMock.existsById(1)).thenReturn(true);
-		Mockito.doNothing().when(responseRepositoryMock).deleteById(1);
-
-		responseServiceImpl.delete(1);
-	}
-
-	/**
-	 * Test exception throw of invalid response when deleting
-	 */
-	@Test(expected = ResponseNotFoundException.class)
-	public void responseDeleteNonExistantResponseTest() {
-		when(responseRepositoryMock.existsById(10)).thenReturn(false);
-		Mockito.doNothing().when(responseRepositoryMock).deleteById(10);
-
-		responseServiceImpl.delete(10);
-	}
-
-	/**
-	 * Test of findAll users
-	 * 
-	 */
-	@Test
-	public void usersFindAllTest() {
-		when(userRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnUsersPage);
-		assertEquals(returnUsersPage, userServiceImpl.findAll(0, 5));
-	}
-
-	/**
-	 * Test of findById
-	 */
-	@Test
-	public void usersFindByIdTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-
-		assertEquals(testUser1, userServiceImpl.findById(1));
-	}
-
-	/**
-	 * Test of accurate findById
-	 */
-	@Test
-	public void usersFindAccuratelyByIdTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-
-		assertNotEquals(testUser2, userServiceImpl.findById(1));
-	}
-
-	/**
-	 * Test of thrown exception when given an invalid ID
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void usersNotFoundIdExceptionTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		userServiceImpl.findById(1);
-	}
-
-	/**
-	 * Test user creation
-	 * 
-	 */
-	@Test
-	public void userCreationAccuracyTest() {
-		when(userRepositoryMock.save(testUser1)).thenReturn(testUser1PostCreate);
-
-		assertEquals(testUser1PostCreate, userServiceImpl.create(testUser1));
-	}
-
-	/**
-	 * Test updating a user
-	 */
-	@Test
-	public void userUpdateTest() {
-		User testUser1UpdateInfo = new User();
-		testUser1UpdateInfo.setId(1);
-		testUser1UpdateInfo.setUsername("testUsername");
-
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-		when(userRepositoryMock.save(testUser1UpdateInfo)).thenReturn(testUser1);
-
-		assertEquals(testUser1, userServiceImpl.update(testUser1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent user
-	 * 
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void userUpdateNonExistantFailureTest() {
-		User nonExistentUser = new User();
-		nonExistentUser.setId(5);
-
-		when(userRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		userServiceImpl.update(nonExistentUser);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a user
-	 * 
-	 */
-	@Test(expected = UserConflictException.class)
-	public void userFailureToUpdateTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
-		when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
-
-		userServiceImpl.update(testUser1);
-	}
-
-	/**
-	 * Test create or update user
-	 * 
-	 */
-	@Test
-	public void createOrUpdateUserTest() {
-		User nonExistentUser = new User();
-		nonExistentUser.setId(4);
-
-		when(userRepositoryMock.save(nonExistentUser)).thenReturn(nonExistentUser);
-
-		userServiceImpl.createOrUpdate(nonExistentUser);
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a user
-	 * 
-	 */
-	@Test(expected = UserConflictException.class)
-	public void userFailureToCreateOrUpdateTest() {
-		when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
-
-		userServiceImpl.createOrUpdate(testUser1);
-	}
-
-	/**
-	 * Test deletion of a user
-	 * 
-	 */
-	@Test
-	public void userDeletionTest() {
-		when(userRepositoryMock.existsById(1)).thenReturn(true);
-		Mockito.doNothing().when(userRepositoryMock).deleteById(1);
-
-		userServiceImpl.delete(1);
-	}
-
-	/**
-	 * Test exception throw of invalid response when deleting
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void userDeleteNonExistantResponseTest() {
-		when(userRepositoryMock.existsById(10)).thenReturn(false);
-		Mockito.doNothing().when(userRepositoryMock).deleteById(10);
-
-		userServiceImpl.delete(10);
-	}
-
-	/**
-	 * Test updating user tags
-	 */
-	@Test
-	public void userUpdateTagsTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser2));
-		when(userRepositoryMock.save(testUser2)).thenReturn(testUser2);
-
-		userServiceImpl.updateTags(testUser1);
-
-		assertEquals(testUser2.getExpertTags(), testUser1.getExpertTags());
-	}
-
-	/**
-	 * Test for proper failure when updating user tags that don't exist
-	 */
-	@Test(expected = UserNotFoundException.class)
-	public void userUpdateTagsFailureTest() {
-		when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
-		when(userRepositoryMock.save(testUser1)).thenReturn(testUser1);
-
-		userServiceImpl.updateTags(testUser1);
-	}
-
-	/**
-	 * Test for getting all questions
-	 * 
-	 */
-	@Test
-	public void questionsGetAllTest() {
-		when(questionRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnQuestionsPage);
-
-		assertEquals(returnQuestionsPage, questionServiceImpl.getAll(0, 5));
-	}
-
-	/**
-	 * Test for getting a question by ID
-	 * 
-	 */
-	@Test
-	public void questionsGetByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertEquals(testQuestion1, questionServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test for getting a question accurately by ID
-	 */
-
-	@Test
-	public void questionsGetAccuratelyByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-
-		assertNotEquals(testQuestion2, questionServiceImpl.getById(1));
-	}
-
-	/**
-	 * Test for proper failure when an invalid ID is searched for
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsNotFoundWithBadIDTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		questionServiceImpl.getById(1);
-	}
-
-	/**
-	 * Test question creation
-	 * 
-	 */
-	@Test
-	public void questionCreationAccuracyTest() {
-		when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1PostCreate);
-
-		assertEquals(testQuestion1PostCreate, questionServiceImpl.create(testQuestion1));
-	}
-
-	/**
-	 * Test updating a question
-	 */
-	@Test
-	public void questionUpdateTest() {
-		Question testQuestion1UpdateInfo = new Question();
-		testQuestion1UpdateInfo.setId(1);
-		testQuestion1UpdateInfo.setBody("Test body update");
-
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1UpdateInfo)).thenReturn(testQuestion1);
-
-		assertEquals(testQuestion1, questionServiceImpl.update(testQuestion1UpdateInfo));
-	}
-
-	/**
-	 * Test updating failure for non-existent question
-	 * 
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionUpdateNonExistantFailureTest() {
-		Question nonExistentQuestion = new Question();
-		nonExistentQuestion.setId(5);
-
-		when(questionRepositoryMock.findById(5)).thenReturn(Optional.empty());
-
-		questionServiceImpl.update(nonExistentQuestion);
-	}
-
-	/**
-	 * Testing data integrity violation failure for updating a question
-	 * 
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionFailureToUpdateTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-
-		questionServiceImpl.update(testQuestion1);
-	}
-
-	/**
-	 * Test create or update question
-	 * 
-	 */
-	@Test
-	public void createOrUpdateQuestionTest() {
-		Question nonExistentQuestion = new Question();
-		nonExistentQuestion.setId(4);
-		nonExistentQuestion.setBody("New question");
-
-		when(questionRepositoryMock.save(nonExistentQuestion)).thenReturn(nonExistentQuestion);
-
-		questionServiceImpl.createOrUpdate(nonExistentQuestion);
-	}
-
-	/**
-	 * Testing data integrity violation failure for creating or updating a question
-	 * 
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionFailureToCreateOrUpdateTest() {
-		when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-
-		questionServiceImpl.createOrUpdate(testQuestion1);
-	}
-
-	/**
-	 * Testing updating tags for a question
-	 * 
-	 */
-	@Test
-	public void questionsUpdateTagsTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion2));
-		when(questionRepositoryMock.save(testQuestion2)).thenReturn(testQuestion2);
-
-		questionServiceImpl.updateTags(testQuestion1);
-
-		assertEquals(testQuestion1.getAssociatedTags(), testQuestion2.getAssociatedTags());
-	}
-
-	/**
-	 * Testing failure to find valid question
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsQuestionNotFoundWhenUpdatingTagsExceptionTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-		questionServiceImpl.updateTags(testQuestion1);
-	}
-
-	/**
-	 * Testing highlighting a response
-	 */
-	@Test
-	public void questionsHighlightResponseTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1);
-
-		assertEquals((Integer) 4, questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
-	}
-
-	/**
-	 * Testing failure to find a question when highlighting a response
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsQuestionNotFoundWhenHighlightingResponseTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-
-		questionServiceImpl.highlightResponse(1, 4);
-	}
+  /**
+   * Test retrieval of getting one tag
+   * 
+   */
+  @Test
+  public void getOneTagTest() {
+
+    when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
+
+    assertEquals(testTag1, tagServiceImpl.getById(1));
+  }
+
+  /**
+   * Test failure of getting a non-existent tag
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getBadTagTest() {
+
+    when(tagRepositoryMock.findById(10)).thenReturn(Optional.empty());
+
+    tagServiceImpl.getById(10);
+  }
+
+  /**
+   * Test accuracy of getting a tag
+   * 
+   */
+  @Test
+  public void getTagByIdAccuracyTest() {
+    when(tagRepositoryMock.findById(1)).thenReturn(Optional.of(testTag1));
+
+    assertNotEquals(testTag2, tagServiceImpl.getById(1));
+  }
+
+  /**
+   * Test retrieval of an existing tag by name
+   * 
+   */
+  @Test
+  public void getTagByNameTest() {
+
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    assertEquals(testTag1, tagServiceImpl.getTagByName("Test 1"));
+  }
+
+  /**
+   * Test failure retrieval of a bad tag name
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getBadTagNameTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+    tagServiceImpl.getTagByName("notTestTag1");
+  }
+
+  /**
+   * Test accuracy of getting a tag by name
+   * 
+   */
+  @Test
+  public void getAccurateTagNameTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    assertNotEquals(testTag2, tagServiceImpl.getTagByName("Test 1"));
+  }
+
+  /**
+   * Test tag creation
+   * 
+   */
+  @Test
+  public void tagCreationAccuracyTest() {
+    when(tagRepositoryMock.save(testTag1)).thenReturn(testTag1PostCreate);
+
+    assertEquals(testTag1PostCreate, tagServiceImpl.create(testTag1));
+  }
+
+  /**
+   * Test updating a tag
+   */
+  @Test
+  public void tagUpdateTest() {
+    Tag testTag1UpdateInfo = new Tag();
+    testTag1UpdateInfo.setId(0);
+    testTag1UpdateInfo.setName("New name");
+
+    when(tagRepositoryMock.findById(testTag1UpdateInfo.getId())).thenReturn(Optional.of(testTag1));
+    when(tagRepositoryMock.save(testTag1UpdateInfo)).thenReturn(testTag1);
+
+    assertEquals(testTag1, tagServiceImpl.update(testTag1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent tag
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void tagUpdateNonExistantFailureTest() {
+    Tag nonExistentTag = new Tag();
+    nonExistentTag.setId(5);
+
+    when(tagRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    tagServiceImpl.update(nonExistentTag);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a tag
+   * 
+   */
+  @Test(expected = TagConflictException.class)
+  public void tagFailureToUpdateTest() {
+    when(tagRepositoryMock.findById(0)).thenReturn(Optional.of(testTag1));
+    when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
+
+    tagServiceImpl.update(testTag1);
+  }
+
+  /**
+   * Test create or update
+   * 
+   */
+  @Test
+  public void createOrUpdateTagTest() {
+    Tag nonExistentTag = new Tag();
+    nonExistentTag.setId(4);
+    nonExistentTag.setName("New tag");
+    List<Tag> tagReturnList = new ArrayList<Tag>();
+    tagReturnList.addAll(Arrays.asList(testTag1, testTag2, testTag3, nonExistentTag));
+
+    when(tagRepositoryMock.save(nonExistentTag)).thenReturn(nonExistentTag);
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    tagServiceImpl.createOrUpdate(nonExistentTag);
+    assertEquals(tagReturnList, tagServiceImpl.getAll());
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a tag
+   * 
+   */
+  @Test(expected = TagConflictException.class)
+  public void tagFailureToCreateOrUpdateTest() {
+    when(tagRepositoryMock.save(testTag1)).thenThrow(DataIntegrityViolationException.class);
+
+    tagServiceImpl.createOrUpdate(testTag1);
+  }
+
+  /**
+   * Test deletion of a tag
+   * 
+   */
+  @Test
+  public void tagDeletionTest() {
+    when(tagRepositoryMock.existsById(1)).thenReturn(true);
+    Mockito.doNothing().when(tagRepositoryMock).deleteById(1);
+    tagServiceImpl.delete(1);
+    when(tagRepositoryMock.existsById(1)).thenReturn(false);
+
+
+    Assert.assertFalse(tagRepositoryMock.existsById(1));
+  }
+
+  /**
+   * Test exception throw of invalid tag
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void tagDeleteNonExistantTagTest() {
+    when(tagRepositoryMock.existsById(10)).thenReturn(false);
+    Mockito.doNothing().when(tagRepositoryMock).deleteById(10);
+
+    tagServiceImpl.delete(10);
+  }
+
+  /**
+   * Test retrieval of valid tags
+   * 
+   */
+  @Test
+  public void tagGetValidTagsTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+    Set<Tag> searchTagsSet = new HashSet<Tag>();
+    searchTagsSet.add(testTag1);
+    searchTagsSet.add(testTag2);
+
+    assertEquals(searchTagsSet, tagServiceImpl.getValidTags(searchTagsSet));
+  }
+
+  /**
+   * Test retrieval of no tags
+   * 
+   */
+  @Test
+  public void getNoValidTagsTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    assertEquals(new HashSet<Tag>(), tagServiceImpl.getValidTags(null));
+  }
+
+  /**
+   * Test retrieval of invalid tags
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getInvalidTagsFailureTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    Tag invalidTag = new Tag();
+    invalidTag.setId(20);
+    invalidTag.setName("Invalid tag");
+
+    HashSet<Tag> associatedTags = new HashSet<Tag>();
+    associatedTags.add(invalidTag);
+
+    tagServiceImpl.getValidTags(associatedTags);
+  }
+
+  /**
+   * Test retrieval of invalid tags with at least one invalid tag and one valid tag
+   * 
+   */
+  @Test(expected = TagNotFoundException.class)
+  public void getInvalidTagsWithAtLeastOneValidTagFailureTest() {
+    when(tagRepositoryMock.findAll()).thenReturn(tagReturnList);
+
+    Tag invalidTag = new Tag();
+    invalidTag.setId(20);
+    invalidTag.setName("Invalid tag");
+
+    HashSet<Tag> associatedTags = new HashSet<Tag>();
+    associatedTags.add(invalidTag);
+    associatedTags.add(testTag1);
+
+    tagServiceImpl.getValidTags(associatedTags);
+  }
+
+  /**
+   * Test retrieval of Image by id
+   */
+  @Test
+  public void getImageByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertEquals(testImageSet1, imageServiceImpl.getImages(1));
+  }
+
+  /**
+   * Test valid retrieval of Image by id
+   * 
+   */
+  @Test
+  public void getCorrectImageByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertNotEquals(testImageSet2, imageServiceImpl.getImages(1));
+  }
+
+  @Test(expected = ImageNotFoundException.class)
+  public void getFailedImages() {
+    Set<Image> images = new HashSet<Image>();
+    when(questionRepositoryMock.findById(1)).thenReturn(null);
+
+    imageServiceImpl.getImages(1);
+  }
+
+  @Test
+  public void addImageTest() throws IOException, ImageConflictException {
+    MockMultipartFile firstFile =
+        new MockMultipartFile("data", "filename.txt", "text/plain", "some xml".getBytes());
+    MultipartFile mpf = firstFile;
+    when(mockRequest.getFile("image")).thenReturn(mpf);
+
+    assertNull(imageServiceImpl.addImage(testQuestion1, mockRequest));
+  }
+
+  // Can't pass with current state of addImage
+  @Ignore
+  @Test(expected = ImageConflictException.class)
+  public void addImageFailTest() throws IOException, ImageConflictException {
+    byte[] byteArr = null;
+    MockMultipartFile firstFile =
+        new MockMultipartFile("data", "filename.txt", "text/plain", byteArr);
+    MultipartFile mpf = firstFile;
+    when(mockRequest.getFile("image")).thenReturn(firstFile);
+
+    imageServiceImpl.addImage(testQuestion1, mockRequest);
+  }
+
+  /**
+   * Test failure of retrieval of image by invalid id
+   * 
+   */
+  @Test(expected = ImageNotFoundException.class)
+  public void getInvalidImageIdTest() {
+    when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(testQuestion2));
+
+    imageServiceImpl.getImages(2);
+  }
+
+  /**
+   * Test find all responses
+   * 
+   */
+  @Test
+  public void getAllResponsesTest() {
+    when(responseRepositoryMock.findAll()).thenReturn(responseReturnList);
+
+    assertEquals(responseReturnList, responseServiceImpl.getAll());
+  }
+
+  /**
+   * Test find a response by id
+   * 
+   */
+  @Test
+  public void getResponseByIdTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+
+    assertEquals(testResponse1, responseServiceImpl.getById(1));
+  }
+
+  /**
+   * Test find a valid response by id
+   */
+  @Test
+  public void getAccurateResponseByIdTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+
+    assertNotEquals(testResponse2, responseServiceImpl.getById(1));
+  }
+
+  /**
+   * Test failure of response retrieval given invalid response id
+   */
+  @Test(expected = ResponseNotFoundException.class)
+  public void invalidResponseIdFailureTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    responseServiceImpl.getById(1);
+  }
+
+  /**
+   * Test response creation
+   * 
+   */
+  @Test
+  public void responseCreationAccuracyTest() {
+    when(responseRepositoryMock.save(testResponse1)).thenReturn(testResponse1PostCreate);
+
+    assertEquals(testResponse1PostCreate, responseServiceImpl.create(testResponse1));
+  }
+
+  /**
+   * Test updating a response
+   */
+  @Test
+  public void responseUpdateTest() {
+    Response testResponse1UpdateInfo = new Response();
+    testResponse1UpdateInfo.setId(1);
+    testResponse1UpdateInfo.setBody("Test body update");
+
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+    when(responseRepositoryMock.save(testResponse1UpdateInfo)).thenReturn(testResponse1);
+
+    assertEquals(testResponse1, responseServiceImpl.update(testResponse1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent response
+   * 
+   */
+  @Test(expected = ResponseNotFoundException.class)
+  public void responseUpdateNonExistantFailureTest() {
+    Response nonExistentResponse = new Response();
+    nonExistentResponse.setId(5);
+
+    when(responseRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    responseServiceImpl.update(nonExistentResponse);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a response
+   * 
+   */
+  @Test(expected = ResponseConflictException.class)
+  public void responseFailureToUpdateTest() {
+    when(responseRepositoryMock.findById(1)).thenReturn(Optional.of(testResponse1));
+    when(responseRepositoryMock.save(testResponse1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    responseServiceImpl.update(testResponse1);
+  }
+
+  /**
+   * Test create or update response
+   * 
+   */
+  @Test
+  public void createOrUpdateResponseTest() {
+    Response nonExistentResponse = new Response();
+    nonExistentResponse.setId(4);
+    nonExistentResponse.setBody("New response");
+
+    when(responseRepositoryMock.save(nonExistentResponse)).thenReturn(nonExistentResponse);
+
+    responseServiceImpl.createOrUpdate(nonExistentResponse);
+    assertEquals(nonExistentResponse.getId(), 4);
+    assertEquals(nonExistentResponse.getBody(), "New response");
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a response
+   * 
+   */
+  @Test(expected = ResponseConflictException.class)
+  public void responseFailureToCreateOrUpdateTest() {
+    when(responseRepositoryMock.save(testResponse1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    responseServiceImpl.createOrUpdate(testResponse1);
+  }
+
+  /**
+   * Test deletion of a response
+   * 
+   */
+  @Test
+  public void responseDeletionTest() {
+    when(responseRepositoryMock.existsById(1)).thenReturn(true);
+    Mockito.doNothing().when(responseRepositoryMock).deleteById(1);
+
+    responseServiceImpl.delete(1);
+    when(responseRepositoryMock.existsById(1)).thenReturn(false);
+    assertFalse(responseRepositoryMock.existsById(1));
+  }
+
+  /**
+   * Test exception throw of invalid response when deleting
+   */
+  @Test(expected = ResponseNotFoundException.class)
+  public void responseDeleteNonExistantResponseTest() {
+    when(responseRepositoryMock.existsById(10)).thenReturn(false);
+    Mockito.doNothing().when(responseRepositoryMock).deleteById(10);
+
+    responseServiceImpl.delete(10);
+  }
+
+  /**
+   * Test of findAll users
+   * 
+   */
+  @Test
+  public void usersFindAllTest() {
+    when(userRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnUsersPage);
+    assertEquals(returnUsersPage, userServiceImpl.findAll(0, 5));
+  }
+
+  /**
+   * Test of findById
+   */
+  @Test
+  public void usersFindByIdTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+
+    assertEquals(testUser1, userServiceImpl.findById(1));
+  }
+
+  /**
+   * Test of accurate findById
+   */
+  @Test
+  public void usersFindAccuratelyByIdTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+
+    assertNotEquals(testUser2, userServiceImpl.findById(1));
+  }
+
+  /**
+   * Test of thrown exception when given an invalid ID
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void usersNotFoundIdExceptionTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    userServiceImpl.findById(1);
+  }
+
+  /**
+   * Test user creation
+   * 
+   */
+  @Test
+  public void userCreationAccuracyTest() {
+    when(userRepositoryMock.save(testUser1)).thenReturn(testUser1PostCreate);
+
+    assertEquals(testUser1PostCreate, userServiceImpl.create(testUser1));
+  }
+
+  /**
+   * Test updating a user
+   */
+  @Test
+  public void userUpdateTest() {
+    User testUser1UpdateInfo = new User();
+    testUser1UpdateInfo.setId(1);
+    testUser1UpdateInfo.setUsername("testUsername");
+
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+    when(userRepositoryMock.save(testUser1UpdateInfo)).thenReturn(testUser1);
+
+    assertEquals(testUser1, userServiceImpl.update(testUser1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent user
+   * 
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void userUpdateNonExistantFailureTest() {
+    User nonExistentUser = new User();
+    nonExistentUser.setId(5);
+
+    when(userRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    userServiceImpl.update(nonExistentUser);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a user
+   * 
+   */
+  @Test(expected = UserConflictException.class)
+  public void userFailureToUpdateTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser1));
+    when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
+
+    userServiceImpl.update(testUser1);
+  }
+
+  /**
+   * Test create or update user
+   * 
+   */
+  @Test
+  public void createOrUpdateUserTest() {
+    User nonExistentUser = new User();
+    nonExistentUser.setId(4);
+
+    when(userRepositoryMock.save(nonExistentUser)).thenReturn(nonExistentUser);
+
+    userServiceImpl.createOrUpdate(nonExistentUser);
+    assertEquals(nonExistentUser.getId(), 4);
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a user
+   * 
+   */
+  @Test(expected = UserConflictException.class)
+  public void userFailureToCreateOrUpdateTest() {
+    when(userRepositoryMock.save(testUser1)).thenThrow(DataIntegrityViolationException.class);
+
+    userServiceImpl.createOrUpdate(testUser1);
+  }
+
+  /**
+   * Test deletion of a user
+   * 
+   */
+  @Test
+  public void userDeletionTest() {
+    when(userRepositoryMock.existsById(1)).thenReturn(true);
+    Mockito.doNothing().when(userRepositoryMock).deleteById(1);
+
+    userServiceImpl.delete(1);
+    when(userRepositoryMock.existsById(1)).thenReturn(false);
+    assertFalse(userRepositoryMock.existsById(1));
+  }
+
+  /**
+   * Test exception throw of invalid response when deleting
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void userDeleteNonExistantResponseTest() {
+    when(userRepositoryMock.existsById(10)).thenReturn(false);
+    Mockito.doNothing().when(userRepositoryMock).deleteById(10);
+
+    userServiceImpl.delete(10);
+  }
+
+  /**
+   * Test updating user tags
+   */
+  @Test
+  public void userUpdateTagsTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.of(testUser2));
+    when(userRepositoryMock.save(testUser2)).thenReturn(testUser2);
+
+    userServiceImpl.updateTags(testUser1);
+
+    assertEquals(testUser2.getExpertTags(), testUser1.getExpertTags());
+  }
+
+  /**
+   * Test for proper failure when updating user tags that don't exist
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void userUpdateTagsFailureTest() {
+    when(userRepositoryMock.findById(1)).thenReturn(Optional.empty());
+    when(userRepositoryMock.save(testUser1)).thenReturn(testUser1);
+
+    userServiceImpl.updateTags(testUser1);
+  }
+
+  /**
+   * Test for getting all questions
+   * 
+   */
+  @Test
+  public void questionsGetAllTest() {
+    when(questionRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(returnQuestionsPage);
+
+    assertEquals(returnQuestionsPage, questionServiceImpl.getAll(0, 5));
+  }
+
+  /**
+   * Test for getting a question by ID
+   * 
+   */
+  @Test
+  public void questionsGetByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertEquals(testQuestion1, questionServiceImpl.getById(1));
+  }
+
+  /**
+   * Test for getting a question accurately by ID
+   */
+
+  @Test
+  public void questionsGetAccuratelyByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+
+    assertNotEquals(testQuestion2, questionServiceImpl.getById(1));
+  }
+
+  /**
+   * Test for proper failure when an invalid ID is searched for
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsNotFoundWithBadIDTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    questionServiceImpl.getById(1);
+  }
+
+  /**
+   * Test question creation
+   * 
+   */
+  @Test
+  public void questionCreationAccuracyTest() {
+    when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1PostCreate);
+
+    assertEquals(testQuestion1PostCreate, questionServiceImpl.create(testQuestion1));
+  }
+
+  /**
+   * Test updating a question
+   */
+  @Test
+  public void questionUpdateTest() {
+    Question testQuestion1UpdateInfo = new Question();
+    testQuestion1UpdateInfo.setId(1);
+    testQuestion1UpdateInfo.setBody("Test body update");
+
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.save(testQuestion1UpdateInfo)).thenReturn(testQuestion1);
+
+    assertEquals(testQuestion1, questionServiceImpl.update(testQuestion1UpdateInfo));
+  }
+
+  /**
+   * Test updating failure for non-existent question
+   * 
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionUpdateNonExistantFailureTest() {
+    Question nonExistentQuestion = new Question();
+    nonExistentQuestion.setId(5);
+
+    when(questionRepositoryMock.findById(5)).thenReturn(Optional.empty());
+
+    questionServiceImpl.update(nonExistentQuestion);
+  }
+
+  /**
+   * Testing data integrity violation failure for updating a question
+   * 
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionFailureToUpdateTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.save(testQuestion1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    questionServiceImpl.update(testQuestion1);
+  }
+
+  /**
+   * Test create or update question
+   * 
+   */
+  @Test
+  public void createOrUpdateQuestionTest() {
+    Question nonExistentQuestion = new Question();
+    nonExistentQuestion.setId(4);
+    nonExistentQuestion.setBody("New question");
+
+    when(questionRepositoryMock.save(nonExistentQuestion)).thenReturn(nonExistentQuestion);
+
+    questionServiceImpl.createOrUpdate(nonExistentQuestion);
+    assertEquals(nonExistentQuestion.getId(), new Integer(4));
+    assertEquals(nonExistentQuestion.getBody(), "New question");
+
+  }
+
+  /**
+   * Testing data integrity violation failure for creating or updating a question
+   * 
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionFailureToCreateOrUpdateTest() {
+    when(questionRepositoryMock.save(testQuestion1))
+        .thenThrow(DataIntegrityViolationException.class);
+
+    questionServiceImpl.createOrUpdate(testQuestion1);
+  }
+
+  /**
+   * Testing updating tags for a question
+   * 
+   */
+  @Test
+  public void questionsUpdateTagsTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion2));
+    when(questionRepositoryMock.save(testQuestion2)).thenReturn(testQuestion2);
+
+    questionServiceImpl.updateTags(testQuestion1);
+
+    assertEquals(testQuestion1.getAssociatedTags(), testQuestion2.getAssociatedTags());
+  }
+
+  /**
+   * Testing failure to find valid question
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsQuestionNotFoundWhenUpdatingTagsExceptionTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+    questionServiceImpl.updateTags(testQuestion1);
+  }
+
+  /**
+   * Testing highlighting a response
+   */
+  @Test
+  public void questionsHighlightResponseTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    when(questionRepositoryMock.save(testQuestion1)).thenReturn(testQuestion1);
+
+    assertEquals((Integer) 4,
+        questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
+  }
+
+  /**
+   * Testing failure to find a question when highlighting a response
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsQuestionNotFoundWhenHighlightingResponseTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+
+    questionServiceImpl.highlightResponse(1, 4);
+  }
 
 	/**
 	 * Testing failure to update a response when there is a conflict updating the

@@ -145,3 +145,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### JaCoCo html ###
+jacoco-ut/
+/target/
+
+# Test Output
+test-output/

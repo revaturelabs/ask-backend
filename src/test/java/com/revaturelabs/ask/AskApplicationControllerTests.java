@@ -159,8 +159,6 @@ public class AskApplicationControllerTests {
         .thenReturn(exampleResponse2);
     assertEquals(exampleResponse2,
         this.responseControllerImpl.updateResponse(exampleResponse2, -11));
-    System.out.println("exampleResponse1: " + exampleResponse1);
-    System.out.println("exampleResponse2: " + exampleResponse2); // Should match number above
   }
 
   /**
@@ -649,13 +647,11 @@ public class AskApplicationControllerTests {
     when((userServiceMock.update(exampleUser))).thenThrow(UserConflictException.class);
 
     // actual update
-    System.out.println(exampleUser);
     exampleUser.setUsername("blahblahblah");
     exampleUser.setPassword("djfjgjofoo");
     exampleUser.setExpert(true);
 
     when((userServiceMock.update(exampleUser))).thenReturn(exampleUser);
-    System.out.println(exampleUser);
 
     assertEquals(exampleUser, userControllerImpl.findById(index));
   }
@@ -672,7 +668,6 @@ public class AskApplicationControllerTests {
     exampleUser.setPassword("dsafjawjf");
 
     when((userServiceMock.create(exampleUser))).thenReturn(exampleUser);
-    System.out.println(exampleUser);
 
     assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
   }
@@ -718,7 +713,6 @@ public class AskApplicationControllerTests {
     when((userServiceMock.createOrUpdate(exampleUser))).thenReturn(exampleUser);
     assertEquals(exampleUser, userServiceMock.createOrUpdate(exampleUser));
 
-    System.out.println(exampleUser);
     User anotherExampleUser = new User();
 
     anotherExampleUser.setId(index);
@@ -729,7 +723,6 @@ public class AskApplicationControllerTests {
     when((userServiceMock.createOrUpdate(anotherExampleUser)))
         .thenThrow(UserConflictException.class);
     assertEquals(anotherExampleUser, userServiceMock.createOrUpdate(anotherExampleUser));
-    System.out.println(anotherExampleUser);
 
     when((userServiceMock.findById(index))).thenReturn(exampleUser);
     // creating
@@ -739,7 +732,6 @@ public class AskApplicationControllerTests {
     exampleUser.setExpert(false);
 
     when((userServiceMock.createOrUpdate(exampleUser))).thenReturn(exampleUser);
-    System.out.println(exampleUser);
 
     assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
 

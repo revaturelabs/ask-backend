@@ -39,318 +39,334 @@ import com.revaturelabs.ask.image.ImageService;
 @SpringBootTest
 public class QuestionServiceTest {
 
-	@Test
-	public void contextLoads() {
-	}
+  @Test
+  public void contextLoads() {}
 
-	static ServiceMockData mockData;
-	
-	@Mock
-	ImageService imageServiceMock;
+  static ServiceMockData mockData;
 
-	@Mock
-	TagRepository tagRepositoryMock;
+  @Mock
+  ImageService imageServiceMock;
 
-	@Mock
-	QuestionRepository questionRepositoryMock;
+  @Mock
+  TagRepository tagRepositoryMock;
 
-	@Mock
-	TagService tagServiceMock;
+  @Mock
+  QuestionRepository questionRepositoryMock;
 
-	@Mock
-	QuestionService questionServiceMock;
-	
-	@Mock
-	MultipartHttpServletRequest mockRequest;
+  @Mock
+  TagService tagServiceMock;
 
-	@InjectMocks
-	TagService tagServiceImpl = new TagServiceImpl();
+  @Mock
+  QuestionService questionServiceMock;
 
-	@InjectMocks
-	QuestionService questionServiceImpl = new QuestionServiceImpl();
+  @Mock
+  MultipartHttpServletRequest mockRequest;
 
-	@InjectMocks
-	TagController tagControllerImpl = new TagController();
+  @InjectMocks
+  TagService tagServiceImpl = new TagServiceImpl();
 
-	@InjectMocks
-	QuestionController questionControllerImpl = new QuestionController();
+  @InjectMocks
+  QuestionService questionServiceImpl = new QuestionServiceImpl();
 
-	/**
-	 * Test for getting all questions
-	 * 
-	 */
-	@Test
-	public void questionsGetAllTest() {
-		when(questionRepositoryMock.findAll(PageRequest.of(0, 5))).thenReturn(ServiceMockData.returnQuestionsPage);
+  @InjectMocks
+  TagController tagControllerImpl = new TagController();
 
-		assertEquals(ServiceMockData.returnQuestionsPage, questionServiceImpl.getAll(0, 5));
-	}
+  @InjectMocks
+  QuestionController questionControllerImpl = new QuestionController();
 
-	/**
-	 * Test for getting a question by ID
-	 * 
-	 */
-	@Test
-	public void questionsGetByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+  /**
+   * Test for getting all questions
+   * 
+   */
+  @Test
+  public void questionsGetAllTest() {
+    when(questionRepositoryMock.findAll(PageRequest.of(0, 5)))
+        .thenReturn(ServiceMockData.returnQuestionsPage);
 
-		assertEquals(ServiceMockData.testQuestion1, questionServiceImpl.getById(1));
-	}
+    assertEquals(ServiceMockData.returnQuestionsPage, questionServiceImpl.getAll(0, 5));
+  }
 
-	/**
-	 * Test for getting a question accurately by ID
-	 */
-	@Test
-	public void questionsGetAccuratelyByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+  /**
+   * Test for getting a question by ID
+   * 
+   */
+  @Test
+  public void questionsGetByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
 
-		assertNotEquals(ServiceMockData.testQuestion2, questionServiceImpl.getById(1));
-	}
+    assertEquals(ServiceMockData.testQuestion1, questionServiceImpl.getById(1));
+  }
 
-	/**
-	 * Test for proper failure when an invalid ID is searched for
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsNotFoundWithBadIDTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+  /**
+   * Test for getting a question accurately by ID
+   */
+  @Test
+  public void questionsGetAccuratelyByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
 
-		questionServiceImpl.getById(1);
-	}
+    assertNotEquals(ServiceMockData.testQuestion2, questionServiceImpl.getById(1));
+  }
 
-	/**
-	 * Test question creation
-	 * 
-	 */
-	@Test
-	public void questionCreationAccuracyTest() {
-		when(questionRepositoryMock.save(ServiceMockData.testQuestion1))
-				.thenReturn(ServiceMockData.testQuestion1PostCreate);
+  /**
+   * Test for proper failure when an invalid ID is searched for
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsNotFoundWithBadIDTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
 
-		assertEquals(ServiceMockData.testQuestion1PostCreate,
-				questionServiceImpl.create(ServiceMockData.testQuestion1));
-	}
+    questionServiceImpl.getById(1);
+  }
 
-	/**
-	 * Test updating a question
-	 */
-	@Test
-	public void questionUpdateTest() {
-		Question testQuestion1UpdateInfo = new Question();
-		testQuestion1UpdateInfo.setId(1);
-		testQuestion1UpdateInfo.setBody("Test body update");
+  /**
+   * Test question creation
+   * 
+   */
+  @Test
+  public void questionCreationAccuracyTest() {
+    when(questionRepositoryMock.save(ServiceMockData.testQuestion1))
+        .thenReturn(ServiceMockData.testQuestion1PostCreate);
 
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
-		when(questionRepositoryMock.save(testQuestion1UpdateInfo)).thenReturn(ServiceMockData.testQuestion1);
+    assertEquals(ServiceMockData.testQuestion1PostCreate,
+        questionServiceImpl.create(ServiceMockData.testQuestion1));
+  }
 
-		assertEquals(ServiceMockData.testQuestion1, questionServiceImpl.update(testQuestion1UpdateInfo));
-	}
+  /**
+   * Test updating a question
+   */
+  @Test
+  public void questionUpdateTest() {
+    Question testQuestion1UpdateInfo = new Question();
+    testQuestion1UpdateInfo.setId(1);
+    testQuestion1UpdateInfo.setBody("Test body update");
 
-	/**
-	 * Test updating failure for non-existent question
-	 * 
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionUpdateNonExistantFailureTest() {
-		Question nonExistentQuestion = new Question();
-		nonExistentQuestion.setId(5);
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+    when(questionRepositoryMock.save(testQuestion1UpdateInfo))
+        .thenReturn(ServiceMockData.testQuestion1);
 
-		when(questionRepositoryMock.findById(5)).thenReturn(Optional.empty());
+    assertEquals(ServiceMockData.testQuestion1,
+        questionServiceImpl.update(testQuestion1UpdateInfo));
+  }
 
-		questionServiceImpl.update(nonExistentQuestion);
-	}
+  /**
+   * Test updating failure for non-existent question
+   * 
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionUpdateNonExistantFailureTest() {
+    Question nonExistentQuestion = new Question();
+    nonExistentQuestion.setId(5);
 
-	/**
-	 * Testing data integrity violation failure for updating a question
-	 * 
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionFailureToUpdateTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
-		when(questionRepositoryMock.save(ServiceMockData.testQuestion1))
-				.thenThrow(DataIntegrityViolationException.class);
+    when(questionRepositoryMock.findById(5)).thenReturn(Optional.empty());
 
-		questionServiceImpl.update(ServiceMockData.testQuestion1);
-	}
+    questionServiceImpl.update(nonExistentQuestion);
+  }
 
-	/**
-	 * Test create or update question
-	 * 
-	 */
-	@Test
-	public void createOrUpdateQuestionTest() {
-		Question nonExistentQuestion = new Question();
-		nonExistentQuestion.setId(4);
-		nonExistentQuestion.setBody("New question");
+  /**
+   * Testing data integrity violation failure for updating a question
+   * 
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionFailureToUpdateTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+    when(questionRepositoryMock.save(ServiceMockData.testQuestion1))
+        .thenThrow(DataIntegrityViolationException.class);
 
-		when(questionRepositoryMock.save(nonExistentQuestion)).thenReturn(nonExistentQuestion);
+    questionServiceImpl.update(ServiceMockData.testQuestion1);
+  }
 
-		questionServiceImpl.createOrUpdate(nonExistentQuestion);
-		assertEquals(nonExistentQuestion.getId(), new Integer(4));
-		assertEquals(nonExistentQuestion.getBody(), "New question");
-	}
+  /**
+   * Test create or update question
+   * 
+   */
+  @Test
+  public void createOrUpdateQuestionTest() {
+    Question nonExistentQuestion = new Question();
+    nonExistentQuestion.setId(4);
+    nonExistentQuestion.setBody("New question");
 
-	/**
-	 * Testing data integrity violation failure for creating or updating a question
-	 * 
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionFailureToCreateOrUpdateTest() {
-		when(questionRepositoryMock.save(ServiceMockData.testQuestion1))
-				.thenThrow(DataIntegrityViolationException.class);
+    when(questionRepositoryMock.save(nonExistentQuestion)).thenReturn(nonExistentQuestion);
 
-		questionServiceImpl.createOrUpdate(ServiceMockData.testQuestion1);
-	}
+    questionServiceImpl.createOrUpdate(nonExistentQuestion);
+    assertEquals(nonExistentQuestion.getId(), new Integer(4));
+    assertEquals(nonExistentQuestion.getBody(), "New question");
+  }
 
-	/**
-	 * Testing updating tags for a question
-	 * 
-	 */
-	@Test
-	public void questionsUpdateTagsTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion2));
-		when(questionRepositoryMock.save(ServiceMockData.testQuestion2)).thenReturn(ServiceMockData.testQuestion2);
+  /**
+   * Testing data integrity violation failure for creating or updating a question
+   * 
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionFailureToCreateOrUpdateTest() {
+    when(questionRepositoryMock.save(ServiceMockData.testQuestion1))
+        .thenThrow(DataIntegrityViolationException.class);
 
-		questionServiceImpl.updateTags(ServiceMockData.testQuestion1);
+    questionServiceImpl.createOrUpdate(ServiceMockData.testQuestion1);
+  }
 
-		assertEquals(ServiceMockData.testQuestion1.getAssociatedTags(),
-				ServiceMockData.testQuestion2.getAssociatedTags());
-	}
+  /**
+   * Testing updating tags for a question
+   * 
+   */
+  @Test
+  public void questionsUpdateTagsTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion2));
+    when(questionRepositoryMock.save(ServiceMockData.testQuestion2))
+        .thenReturn(ServiceMockData.testQuestion2);
 
-	/**
-	 * Testing failure to find valid question
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsQuestionNotFoundWhenUpdatingTagsExceptionTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-		questionServiceImpl.updateTags(ServiceMockData.testQuestion1);
-	}
+    questionServiceImpl.updateTags(ServiceMockData.testQuestion1);
 
-	/**
-	 * Testing highlighting a response
-	 */
-	@Test
-	public void questionsHighlightResponseTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
-		when(questionRepositoryMock.save(ServiceMockData.testQuestion1)).thenReturn(ServiceMockData.testQuestion1);
+    assertEquals(ServiceMockData.testQuestion1.getAssociatedTags(),
+        ServiceMockData.testQuestion2.getAssociatedTags());
+  }
 
-		assertEquals((Integer) 4, questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
-	}
+  /**
+   * Testing failure to find valid question
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsQuestionNotFoundWhenUpdatingTagsExceptionTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+    questionServiceImpl.updateTags(ServiceMockData.testQuestion1);
+  }
 
-	/**
-	 * Testing failure to find a question when highlighting a response
-	 */
-	@Test(expected = QuestionNotFoundException.class)
-	public void questionsQuestionNotFoundWhenHighlightingResponseTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+  /**
+   * Testing highlighting a response
+   */
+  @Test
+  public void questionsHighlightResponseTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+    when(questionRepositoryMock.save(ServiceMockData.testQuestion1))
+        .thenReturn(ServiceMockData.testQuestion1);
 
-		questionServiceImpl.highlightResponse(1, 4);
-	}
+    assertEquals((Integer) 4,
+        questionServiceImpl.highlightResponse(1, 4).getHighlightedResponseId());
+  }
 
-	/**
-	 * Testing failure to update a response when there is a conflict updating the
-	 * data
-	 */
-	@Test(expected = QuestionConflictException.class)
-	public void questionsConflictExceptionWhenHighlightingResponseTest() {
-		// when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
-		// when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
-		when(questionRepositoryMock.findById(1)).thenThrow(DataIntegrityViolationException.class);
+  /**
+   * Testing failure to find a question when highlighting a response
+   */
+  @Test(expected = QuestionNotFoundException.class)
+  public void questionsQuestionNotFoundWhenHighlightingResponseTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
 
-		questionServiceImpl.highlightResponse(1, 4);
-	}
+    questionServiceImpl.highlightResponse(1, 4);
+  }
 
-	/**
-	 * Testing adding an image to a question
-	 */
-	@Test
-	public void testAddImageToQuestion() throws QuestionNotFoundException, ImageConflictException, IOException {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
-		when(questionServiceImpl.addImageToQuestion(1, mockRequest)).thenReturn(ServiceMockData.testQuestion1);
+  /**
+   * Testing failure to update a response when there is a conflict updating the data
+   */
+  @Test(expected = QuestionConflictException.class)
+  public void questionsConflictExceptionWhenHighlightingResponseTest() {
+    // when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+    // when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
+    when(questionRepositoryMock.findById(1)).thenThrow(DataIntegrityViolationException.class);
 
-		assertTrue(questionServiceImpl.addImageToQuestion(1, mockRequest) == ServiceMockData.testQuestion1);
-	}
+    questionServiceImpl.highlightResponse(1, 4);
+  }
 
-	@Test(expected = QuestionNotFoundException.class)
-	public void testAddImageToQuestionForQuestionNotFoundException()
-			throws QuestionNotFoundException, ImageConflictException, IOException {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
-		assertNotNull(questionRepositoryMock.findById(1));
-		assertEquals(questionRepositoryMock.findById(1), Optional.empty());
+  /**
+   * Testing adding an image to a question
+   */
+  @Test
+  public void testAddImageToQuestion()
+      throws QuestionNotFoundException, ImageConflictException, IOException {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+    when(questionServiceImpl.addImageToQuestion(1, mockRequest))
+        .thenReturn(ServiceMockData.testQuestion1);
 
-		questionServiceImpl.addImageToQuestion(1, mockRequest);
-	}
+    assertTrue(
+        questionServiceImpl.addImageToQuestion(1, mockRequest) == ServiceMockData.testQuestion1);
+  }
 
-	@Test(expected = ImageConflictException.class)
-	public void testAddImageToQuestionForImageConflictException()
-			throws QuestionNotFoundException, ImageConflictException, IOException {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
-		when(imageServiceMock.addImage(ServiceMockData.testQuestion1, mockRequest)).thenThrow(ImageConflictException.class);
-		assertNotNull(questionRepositoryMock.findById(1));
-		assertEquals(questionRepositoryMock.findById(1), Optional.of(ServiceMockData.testQuestion1));
+  @Test(expected = QuestionNotFoundException.class)
+  public void testAddImageToQuestionForQuestionNotFoundException()
+      throws QuestionNotFoundException, ImageConflictException, IOException {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+    assertNotNull(questionRepositoryMock.findById(1));
+    assertEquals(questionRepositoryMock.findById(1), Optional.empty());
 
-		questionServiceImpl.addImageToQuestion(1, mockRequest);
-	}
+    questionServiceImpl.addImageToQuestion(1, mockRequest);
+  }
 
-	@Test(expected = IOException.class)
-	public void testAddImageToQuestionForIOException()
-			throws QuestionNotFoundException, ImageConflictException, IOException {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
-		when(imageServiceMock.addImage(ServiceMockData.testQuestion1, mockRequest)).thenThrow(IOException.class);
-		assertNotNull(questionRepositoryMock.findById(1));
-		assertEquals(questionRepositoryMock.findById(1), Optional.of(ServiceMockData.testQuestion1));
+  @Test(expected = ImageConflictException.class)
+  public void testAddImageToQuestionForImageConflictException()
+      throws QuestionNotFoundException, ImageConflictException, IOException {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+    when(imageServiceMock.addImage(ServiceMockData.testQuestion1, mockRequest))
+        .thenThrow(ImageConflictException.class);
+    assertNotNull(questionRepositoryMock.findById(1));
+    assertEquals(questionRepositoryMock.findById(1), Optional.of(ServiceMockData.testQuestion1));
 
-		questionServiceImpl.addImageToQuestion(1, mockRequest);
-	}
-	
-	@Test
-	public void testFindAllByTagNames() {
-		List<Question> questions1 = new ArrayList<Question>();
-		questions1.add(ServiceMockData.testQuestion1);
-		List<Question> questions2 = new ArrayList<Question>();
-		questions2.add(ServiceMockData.testQuestion2);
-		Page<Question> page1 = new PageImpl<>(questions1);
-		Page<Question> page2 = new PageImpl<>(questions2);
+    questionServiceImpl.addImageToQuestion(1, mockRequest);
+  }
 
-		List<String> tagNames = new ArrayList<String>();
-		tagNames.add(ServiceMockData.testTag1.getName());
-		tagNames.add(ServiceMockData.testTag2.getName());
-		tagNames.add(ServiceMockData.testTag3.getName());
+  @Test(expected = IOException.class)
+  public void testAddImageToQuestionForIOException()
+      throws QuestionNotFoundException, ImageConflictException, IOException {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+    when(imageServiceMock.addImage(ServiceMockData.testQuestion1, mockRequest))
+        .thenThrow(IOException.class);
+    assertNotNull(questionRepositoryMock.findById(1));
+    assertEquals(questionRepositoryMock.findById(1), Optional.of(ServiceMockData.testQuestion1));
 
-		HashSet<Tag> expertTags = new HashSet<Tag>();
-		expertTags.add(ServiceMockData.tagReturnList.get(0));
-		expertTags.add(ServiceMockData.tagReturnList.get(1));
-		expertTags.add(ServiceMockData.tagReturnList.get(2));
-		Pageable pageable = (Pageable) PageRequest.of(0, 20);
+    questionServiceImpl.addImageToQuestion(1, mockRequest);
+  }
 
-		when(tagServiceMock.getTagByName(tagNames.get(0))).thenReturn(ServiceMockData.tagReturnList.get(0));
-		when(tagServiceMock.getTagByName(tagNames.get(1))).thenReturn(ServiceMockData.tagReturnList.get(1));
-		when(tagServiceMock.getTagByName(tagNames.get(2))).thenReturn(ServiceMockData.tagReturnList.get(2));
+  @Test
+  public void testFindAllByTagNames() {
+    List<Question> questions1 = new ArrayList<Question>();
+    questions1.add(ServiceMockData.testQuestion1);
+    List<Question> questions2 = new ArrayList<Question>();
+    questions2.add(ServiceMockData.testQuestion2);
+    Page<Question> page1 = new PageImpl<>(questions1);
+    Page<Question> page2 = new PageImpl<>(questions2);
 
-		when(questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable))
-				.thenReturn(page1);
-		when(questionRepositoryMock.findAllContainingAtLeastOneTag(expertTags, pageable)).thenReturn(page2);
-		assertNotNull(questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable));
-		assertEquals(questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable), page1);
+    List<String> tagNames = new ArrayList<String>();
+    tagNames.add(ServiceMockData.testTag1.getName());
+    tagNames.add(ServiceMockData.testTag2.getName());
+    tagNames.add(ServiceMockData.testTag3.getName());
 
-		questionServiceImpl.findAllByTagNames(true, tagNames, 0, 20);
-		questionServiceImpl.findAllByTagNames(false, tagNames, 0, 20);
-	}
+    HashSet<Tag> expertTags = new HashSet<Tag>();
+    expertTags.add(ServiceMockData.tagReturnList.get(0));
+    expertTags.add(ServiceMockData.tagReturnList.get(1));
+    expertTags.add(ServiceMockData.tagReturnList.get(2));
+    Pageable pageable = (Pageable) PageRequest.of(0, 20);
 
-	@Test(expected = TagNotFoundException.class)
-	public void testFindAllByTagNamesForTagNotFoundException() {
-		List<String> tagNames = new ArrayList<String>();
-		tagNames.add(ServiceMockData.testTag1.getName());
-		tagNames.add(ServiceMockData.testTag2.getName());
-		tagNames.add(ServiceMockData.testTag3.getName());
+    when(tagServiceMock.getTagByName(tagNames.get(0)))
+        .thenReturn(ServiceMockData.tagReturnList.get(0));
+    when(tagServiceMock.getTagByName(tagNames.get(1)))
+        .thenReturn(ServiceMockData.tagReturnList.get(1));
+    when(tagServiceMock.getTagByName(tagNames.get(2)))
+        .thenReturn(ServiceMockData.tagReturnList.get(2));
 
-		HashSet<Tag> expertTags = new HashSet<Tag>();
-		expertTags.addAll(ServiceMockData.tagReturnList);
+    when(questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable))
+        .thenReturn(page1);
+    when(questionRepositoryMock.findAllContainingAtLeastOneTag(expertTags, pageable))
+        .thenReturn(page2);
+    assertNotNull(
+        questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable));
+    assertEquals(
+        questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable),
+        page1);
 
-		when(tagServiceMock.getTagByName(tagNames.get(0))).thenReturn(ServiceMockData.testTag1);
-		when(tagServiceMock.getTagByName(tagNames.get(1))).thenReturn(ServiceMockData.testTag2);
-		when(tagServiceMock.getTagByName(tagNames.get(2))).thenThrow(TagNotFoundException.class);
+    questionServiceImpl.findAllByTagNames(true, tagNames, 0, 20);
+    questionServiceImpl.findAllByTagNames(false, tagNames, 0, 20);
+  }
 
-		questionServiceImpl.findAllByTagNames(true, tagNames, 0, 20);
-		questionServiceMock.findAllByTagNames(false, tagNames, 0, 20);
-	}
+  @Test(expected = TagNotFoundException.class)
+  public void testFindAllByTagNamesForTagNotFoundException() {
+    List<String> tagNames = new ArrayList<String>();
+    tagNames.add(ServiceMockData.testTag1.getName());
+    tagNames.add(ServiceMockData.testTag2.getName());
+    tagNames.add(ServiceMockData.testTag3.getName());
+
+    HashSet<Tag> expertTags = new HashSet<Tag>();
+    expertTags.addAll(ServiceMockData.tagReturnList);
+
+    when(tagServiceMock.getTagByName(tagNames.get(0))).thenReturn(ServiceMockData.testTag1);
+    when(tagServiceMock.getTagByName(tagNames.get(1))).thenReturn(ServiceMockData.testTag2);
+    when(tagServiceMock.getTagByName(tagNames.get(2))).thenThrow(TagNotFoundException.class);
+
+    questionServiceImpl.findAllByTagNames(true, tagNames, 0, 20);
+    questionServiceMock.findAllByTagNames(false, tagNames, 0, 20);
+  }
 }

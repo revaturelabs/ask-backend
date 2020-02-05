@@ -31,96 +31,96 @@ import com.revaturelabs.ask.question.QuestionServiceImpl;
 @SpringBootTest
 public class ImageServiceTest {
 
-	@Test
-	public void contextLoads() {
-	}
+  @Test
+  public void contextLoads() {}
 
-	static ServiceMockData mockData;
+  static ServiceMockData mockData;
 
-	@Mock
-	ImageRepository imageRepositoryMock;
+  @Mock
+  ImageRepository imageRepositoryMock;
 
-	@Mock
-	QuestionRepository questionRepositoryMock;
+  @Mock
+  QuestionRepository questionRepositoryMock;
 
-	@Mock
-	ImageService imageServiceMock;
+  @Mock
+  ImageService imageServiceMock;
 
-	@Mock
-	QuestionService questionServiceMock;
+  @Mock
+  QuestionService questionServiceMock;
 
-	@Mock
-	MultipartHttpServletRequest mockRequest;
+  @Mock
+  MultipartHttpServletRequest mockRequest;
 
-	@InjectMocks
-	ImageService imageServiceImpl = new ImageServiceImpl();
+  @InjectMocks
+  ImageService imageServiceImpl = new ImageServiceImpl();
 
-	@InjectMocks
-	QuestionService questionServiceImpl = new QuestionServiceImpl();
+  @InjectMocks
+  QuestionService questionServiceImpl = new QuestionServiceImpl();
 
-	@InjectMocks
-	ImageController imageControllerImpl = new ImageController();
+  @InjectMocks
+  ImageController imageControllerImpl = new ImageController();
 
-	@InjectMocks
-	QuestionController questionControllerImpl = new QuestionController();
+  @InjectMocks
+  QuestionController questionControllerImpl = new QuestionController();
 
-	/**
-	 * Test retrieval of Image by id
-	 */
-	@Test
-	public void getImageByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+  /**
+   * Test retrieval of Image by id
+   */
+  @Test
+  public void getImageByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
 
-		assertEquals(ServiceMockData.testImageSet1, imageServiceImpl.getImages(1));
-	}
+    assertEquals(ServiceMockData.testImageSet1, imageServiceImpl.getImages(1));
+  }
 
-	/**
-	 * Test valid retrieval of Image by id
-	 * 
-	 */
-	@Test
-	public void getCorrectImageByIdTest() {
-		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
+  /**
+   * Test valid retrieval of Image by id
+   * 
+   */
+  @Test
+  public void getCorrectImageByIdTest() {
+    when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(ServiceMockData.testQuestion1));
 
-		assertNotEquals(ServiceMockData.testImageSet2, imageServiceImpl.getImages(1));
-	}
+    assertNotEquals(ServiceMockData.testImageSet2, imageServiceImpl.getImages(1));
+  }
 
-	@Test(expected = ImageNotFoundException.class)
-	public void getFailedImages() {
-		when(questionRepositoryMock.findById(1)).thenReturn(null);
+  @Test(expected = ImageNotFoundException.class)
+  public void getFailedImages() {
+    when(questionRepositoryMock.findById(1)).thenReturn(null);
 
-		imageServiceImpl.getImages(1);
-	}
+    imageServiceImpl.getImages(1);
+  }
 
-	@Test
-	public void addImageTest() throws IOException, ImageConflictException {
-		MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain",
-				"some xml".getBytes());
-		MultipartFile mpf = firstFile;
-		when(mockRequest.getFile("image")).thenReturn(mpf);
+  @Test
+  public void addImageTest() throws IOException, ImageConflictException {
+    MockMultipartFile firstFile =
+        new MockMultipartFile("data", "filename.txt", "text/plain", "some xml".getBytes());
+    MultipartFile mpf = firstFile;
+    when(mockRequest.getFile("image")).thenReturn(mpf);
 
-		assertNull(imageServiceImpl.addImage(ServiceMockData.testQuestion1, mockRequest));
-	}
+    assertNull(imageServiceImpl.addImage(ServiceMockData.testQuestion1, mockRequest));
+  }
 
-	// Can't pass with current state of addImage
-	@Ignore
-	@Test(expected = ImageConflictException.class)
-	public void addImageFailTest() throws IOException, ImageConflictException {
-		byte[] byteArr = null;
-		MockMultipartFile firstFile = new MockMultipartFile("data", "filename.txt", "text/plain", byteArr);
-		when(mockRequest.getFile("image")).thenReturn(firstFile);
+  // Can't pass with current state of addImage
+  @Ignore
+  @Test(expected = ImageConflictException.class)
+  public void addImageFailTest() throws IOException, ImageConflictException {
+    byte[] byteArr = null;
+    MockMultipartFile firstFile =
+        new MockMultipartFile("data", "filename.txt", "text/plain", byteArr);
+    when(mockRequest.getFile("image")).thenReturn(firstFile);
 
-		imageServiceImpl.addImage(ServiceMockData.testQuestion1, mockRequest);
-	}
+    imageServiceImpl.addImage(ServiceMockData.testQuestion1, mockRequest);
+  }
 
-	/**
-	 * Test failure of retrieval of image by invalid id
-	 * 
-	 */
-	@Test(expected = ImageNotFoundException.class)
-	public void getInvalidImageIdTest() {
-		when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(ServiceMockData.testQuestion2));
+  /**
+   * Test failure of retrieval of image by invalid id
+   * 
+   */
+  @Test(expected = ImageNotFoundException.class)
+  public void getInvalidImageIdTest() {
+    when(questionRepositoryMock.findById(2)).thenReturn(Optional.of(ServiceMockData.testQuestion2));
 
-		imageServiceImpl.getImages(2);
-	}
+    imageServiceImpl.getImages(2);
+  }
 }

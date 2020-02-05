@@ -27,35 +27,34 @@ import com.revaturelabs.ask.question.Question;
 @SpringBootTest
 public class ImageControllerTest {
 
-	@Test
-	public void contextLoads() {
-	}
+  @Test
+  public void contextLoads() {}
 
-	@MockBean
-	ImageService imageServiceMock;
+  @MockBean
+  ImageService imageServiceMock;
 
-	@Autowired
-	ImageController imageControllerImpl;
+  @Autowired
+  ImageController imageControllerImpl;
 
-	@Test
-	public void testGetImage() {
-		Set<Image> images = new HashSet<Image>();
-		Image testImage = new Image();
-		Question imAQuestion = new Question();
-		testImage.setId(10);
-		byte[] byteArr = new byte[1];
-		byteArr[0] = '1';
-		testImage.setImage(byteArr);
-		testImage.setQuestion(imAQuestion);
-		images.add(testImage);
+  @Test
+  public void testGetImage() {
+    Set<Image> images = new HashSet<Image>();
+    Image testImage = new Image();
+    Question imAQuestion = new Question();
+    testImage.setId(10);
+    byte[] byteArr = new byte[1];
+    byteArr[0] = '1';
+    testImage.setImage(byteArr);
+    testImage.setQuestion(imAQuestion);
+    images.add(testImage);
 
-		when(imageServiceMock.getImages(10)).thenReturn(images);
-		assertEquals(ResponseEntity.ok(images), imageControllerImpl.getImage(10));
-	}
+    when(imageServiceMock.getImages(10)).thenReturn(images);
+    assertEquals(ResponseEntity.ok(images), imageControllerImpl.getImage(10));
+  }
 
-	@Test(expected = ResponseStatusException.class)
-	public void testFailureGetImage() {
-		when(imageServiceMock.getImages(10)).thenThrow(ImageNotFoundException.class);
-		imageControllerImpl.getImage(10);
-	}
+  @Test(expected = ResponseStatusException.class)
+  public void testFailureGetImage() {
+    when(imageServiceMock.getImages(10)).thenThrow(ImageNotFoundException.class);
+    imageControllerImpl.getImage(10);
+  }
 }

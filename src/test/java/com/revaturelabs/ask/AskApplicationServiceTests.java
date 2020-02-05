@@ -2,7 +2,9 @@ package com.revaturelabs.ask;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import java.io.IOException;
@@ -22,7 +24,9 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,7 +94,7 @@ public class AskApplicationServiceTests {
 	TagService tagServiceMock;
 
 	@Mock
-	ImageService imageServiceMock
+	ImageService imageServiceMock;
 
 	@Mock
 	ResponseService responseServiceMock;

@@ -1,7 +1,6 @@
 package com.revaturelabs.ask;
 
 import static org.junit.Assert.assertFalse;
-// import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
@@ -68,196 +67,190 @@ import com.revaturelabs.ask.user.UserServiceImpl;
 @SpringBootTest
 public class AskApplicationServiceTests {
 
-  @Test
-  public void contextLoads() {}
+	@Test
+	public void contextLoads() {
+	}
 
-  @Mock
-  TagRepository tagRepositoryMock;
+	@Mock
+	TagRepository tagRepositoryMock;
 
-  @Mock
-  ImageRepository imageRepositoryMock;
+	@Mock
+	ImageRepository imageRepositoryMock;
 
-  @Mock
-  ResponseRepository responseRepositoryMock;
+	@Mock
+	ResponseRepository responseRepositoryMock;
 
-  @Mock
-  UserRepository userRepositoryMock;
+	@Mock
+	UserRepository userRepositoryMock;
 
-  @Mock
-  QuestionRepository questionRepositoryMock;
+	@Mock
+	QuestionRepository questionRepositoryMock;
 
-  @Mock
-  TagService tagServiceMock;
+	@Mock
+	TagService tagServiceMock;
 
-  @Mock
-  ImageService imageServiceMock;
+	@Mock
+	ImageService imageServiceMock
 
-  @Mock
-  ResponseService responseServiceMock;
+	@Mock
+	ResponseService responseServiceMock;
 
-  @Mock
-  UserService userServiceMock;
+	@Mock
+	UserService userServiceMock;
 
-  @Mock
-  QuestionService questionServiceMock;
+	@Mock
+	QuestionService questionServiceMock;
 
-  @Mock
-  MultipartHttpServletRequest mockRequest;
+	@Mock
+	MultipartHttpServletRequest mockRequest;
 
-  @InjectMocks
-  TagService tagServiceImpl = new TagServiceImpl();
+	@InjectMocks
+	TagService tagServiceImpl = new TagServiceImpl();
 
-  @InjectMocks
-  ImageService imageServiceImpl = new ImageServiceImpl();
+	@InjectMocks
+	ImageService imageServiceImpl = new ImageServiceImpl();
 
-  @InjectMocks
-  ResponseService responseServiceImpl = new ResponseServiceImpl();
+	@InjectMocks
+	ResponseService responseServiceImpl = new ResponseServiceImpl();
 
-  @InjectMocks
-  UserService userServiceImpl = new UserServiceImpl();
+	@InjectMocks
+	UserService userServiceImpl = new UserServiceImpl();
 
-  @InjectMocks
-  QuestionService questionServiceImpl = new QuestionServiceImpl();
+	@InjectMocks
+	QuestionService questionServiceImpl = new QuestionServiceImpl();
 
-  @InjectMocks
-  TagController tagControllerImpl = new TagController();
+	@InjectMocks
+	TagController tagControllerImpl = new TagController();
 
-  @InjectMocks
-  ImageController imageControllerImpl = new ImageController();
+	@InjectMocks
+	ImageController imageControllerImpl = new ImageController();
 
-  @InjectMocks
-  ResponseController responseControllerImpl = new ResponseController();
+	@InjectMocks
+	ResponseController responseControllerImpl = new ResponseController();
 
-  @InjectMocks
-  UserController userControllerImpl = new UserController();
+	@InjectMocks
+	UserController userControllerImpl = new UserController();
 
-  @InjectMocks
-  QuestionController questionControllerImpl = new QuestionController();
+	@InjectMocks
+	QuestionController questionControllerImpl = new QuestionController();
 
-  static Tag testTag1;
+	static Tag testTag1;
 
-  static Tag testTag1PostCreate;
+	static Tag testTag1PostCreate;
 
-  static Tag testTag2;
+	static Tag testTag2;
 
-  static Tag testTag3;
+	static Tag testTag3;
 
-  static List<Tag> tagReturnList;
+	static List<Tag> tagReturnList;
 
-  static Set<Image> testImageSet1;
+	static Set<Image> testImageSet1;
 
-  static Set<Image> testImageSet2;
+	static Set<Image> testImageSet2;
 
-  static Image testImage1;
+	static Image testImage1;
 
-  static Image testImage2;
+	static Image testImage2;
 
-  static Response testResponse1;
+	static Response testResponse1;
 
-  static Response testResponse1PostCreate;
+	static Response testResponse1PostCreate;
 
-  static Response testResponse2;
+	static Response testResponse2;
 
   static List<Response> responseReturnList;
 
-  static User testUser1;
+	static User testUser1;
 
-  static User testUser1PostCreate;
+	static User testUser1PostCreate;
 
-  static User testUser2;
+	static User testUser2;
 
-  static Page<User> returnUsersPage;
+	static Page<User> returnUsersPage;
 
-  static Question testQuestion1;
+	static Question testQuestion1;
 
-  static Question testQuestion1PostCreate;
+	static Question testQuestion1PostCreate;
 
-  static Question testQuestion2;
+	static Question testQuestion2;
 
-  static Page<Question> returnQuestionsPage;
+	static Page<Question> returnQuestionsPage;
 
-  static {
-    testTag1 = new Tag();
-    testTag1.setId(0);
-    testTag1.setName("Test 1");
+	static {
+		testTag1 = new Tag();
+		testTag1.setId(0);
+		testTag1.setName("Test 1");
 
-    testTag1PostCreate = new Tag();
-    testTag1PostCreate.setId(1);
-    testTag1PostCreate.setName("Test 1");
+		testTag1PostCreate = new Tag();
+		testTag1PostCreate.setId(1);
+		testTag1PostCreate.setName("Test 1");
 
-    testTag2 = new Tag();
-    testTag2.setId(1);
-    testTag2.setName("Test 2");
+		testTag2 = new Tag();
+		testTag2.setId(1);
+		testTag2.setName("Test 2");
 
-    testTag3 = new Tag();
-    testTag3.setId(2);
-    testTag3.setName("Test 3");
+		testTag3 = new Tag();
+		testTag3.setId(2);
+		testTag3.setName("Test 3");
 
-    tagReturnList = Arrays.asList(testTag1, testTag2, testTag3);
+		tagReturnList = Arrays.asList(testTag1, testTag2, testTag3);
 
-    testResponse1 = new Response();
-    testResponse1.setId(1);
-    testResponse1.setBody("Test response");
+		testResponse1 = new Response();
+		testResponse1.setId(1);
+		testResponse1.setBody("Test response");
 
-    testResponse1PostCreate = new Response();
-    testResponse1PostCreate.setId(1);
-    testResponse1PostCreate.setBody("Updated body");
+		testResponse1PostCreate = new Response();
+		testResponse1PostCreate.setId(1);
+		testResponse1PostCreate.setBody("Updated body");
 
-    testResponse2 = new Response();
-    testResponse2.setId(2);
-    testResponse2.setBody("Test response 2");
+		testResponse2 = new Response();
+		testResponse2.setId(2);
+		testResponse2.setBody("Test response 2");
 
-    responseReturnList = Arrays.asList(testResponse1, testResponse2);
+		responseReturnList = Arrays.asList(testResponse1, testResponse2);
 
-    HashSet<Tag> expertTags = new HashSet<Tag>();
-    expertTags.addAll(tagReturnList);
+		HashSet<Tag> expertTags = new HashSet<Tag>();
+		expertTags.addAll(tagReturnList);
 
-    testUser1 = new User();
-    testUser1.setId(1);
-    testUser1.setExpertTags(expertTags);
+		testUser1 = new User();
+		testUser1.setId(1);
+		testUser1.setExpertTags(expertTags);
 
-    testUser1PostCreate = testUser1;
-    testUser1PostCreate.setUsername("Test username 2");
+		testUser1PostCreate = testUser1;
+		testUser1PostCreate.setUsername("Test username 2");
 
-    testUser2 = new User();
-    testUser2.setId(2);
+		testUser2 = new User();
+		testUser2.setId(2);
 
-    testImage1 = new Image();
-    testImage1.setId(1);
-    testImage2 = new Image();
-    testImage2.setId(2);
+		testImage1 = new Image();
+		testImage1.setId(1);
+		testImage2 = new Image();
+		testImage2.setId(2);
 
-    testImageSet1 = new HashSet<Image>();
-    testImageSet1.add(testImage1);
-    testImageSet2 = new HashSet<Image>();
-    testImageSet2.add(testImage2);
+		testImageSet1 = new HashSet<Image>();
+		testImageSet1.add(testImage1);
+		testImageSet2 = new HashSet<Image>();
+		testImageSet2.add(testImage2);
 
-    testQuestion1 = new Question();
-    testQuestion1.setId(1);
-    testQuestion1.setAssociatedTags(expertTags);
-    testQuestion1.setImages(testImageSet1);
+		testQuestion1 = new Question();
+		testQuestion1.setId(1);
+		testQuestion1.setAssociatedTags(expertTags);
+		testQuestion1.setImages(testImageSet1);
 
-    testQuestion1PostCreate = new Question();
-    testQuestion1PostCreate.setId(1);
-    testQuestion1.setAssociatedTags(expertTags);
+		testQuestion2 = new Question();
+		testQuestion2.setId(2);
+	}
 
-    testQuestion2 = new Question();
-    testQuestion2.setId(2);
-  }
+	/**
+	 * Test of tagService findAll method.
+	 * 
+	 */
+	@Test
+	public void getAllTagsTest() {
 
-
-
-  /**
-   * Test of tagService findAll method.
-   * 
-   */
-  @Test
-  public void getAllTagsTest() {
-
-    when((tagRepositoryMock.findAll())).thenReturn(tagReturnList);
-
-    assertEquals(tagReturnList, tagServiceImpl.getAll());
-  }
+		when((tagRepositoryMock.findAll())).thenReturn(tagReturnList);
+		assertEquals(tagReturnList, tagServiceImpl.getAll());
+	}
 
   /**
    * Test retrieval of getting one tag
@@ -1046,5 +1039,116 @@ public class AskApplicationServiceTests {
     questionServiceImpl.highlightResponse(1, 4);
   }
 
+	/**
+	 * Testing failure to update a response when there is a conflict updating the
+	 * data
+	 */
+	@Test(expected = QuestionConflictException.class)
+	public void questionsConflictExceptionWhenHighlightingResponseTest() {
+		// when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+		// when(questionRepositoryMock.save(testQuestion1)).thenThrow(DataIntegrityViolationException.class);
+		when(questionRepositoryMock.findById(1)).thenThrow(DataIntegrityViolationException.class);
 
+		questionServiceImpl.highlightResponse(1, 4);
+	}
+
+	/**
+	 * Testing adding an image to a question
+	 */
+	@Test
+	public void testAddImageToQuestion() throws QuestionNotFoundException, ImageConflictException, IOException {
+		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+		when(questionServiceImpl.addImageToQuestion(1, mockRequest)).thenReturn(testQuestion1);
+
+		assertTrue(questionServiceImpl.addImageToQuestion(1, mockRequest) == testQuestion1);
+	}
+
+	@Test(expected = QuestionNotFoundException.class)
+	public void testAddImageToQuestionForQuestionNotFoundException()
+			throws QuestionNotFoundException, ImageConflictException, IOException {
+
+		when(questionRepositoryMock.findById(1)).thenReturn(Optional.empty());
+		assertNotNull(questionRepositoryMock.findById(1));
+		assertEquals(questionRepositoryMock.findById(1), Optional.empty());
+
+		questionServiceImpl.addImageToQuestion(1, mockRequest);
+	}
+
+	@Test(expected = ImageConflictException.class)
+	public void testAddImageToQuestionForImageConflictException()
+			throws QuestionNotFoundException, ImageConflictException, IOException {
+
+		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+		when(imageServiceMock.addImage(testQuestion1, mockRequest)).thenThrow(ImageConflictException.class);
+		assertNotNull(questionRepositoryMock.findById(1));
+		assertEquals(questionRepositoryMock.findById(1), Optional.of(testQuestion1));
+
+		questionServiceImpl.addImageToQuestion(1, mockRequest);
+	}
+
+	@Test(expected = IOException.class)
+	public void testAddImageToQuestionForIOException()
+			throws QuestionNotFoundException, ImageConflictException, IOException {
+
+		when(questionRepositoryMock.findById(1)).thenReturn(Optional.of(testQuestion1));
+		when(imageServiceMock.addImage(testQuestion1, mockRequest)).thenThrow(IOException.class);
+		assertNotNull(questionRepositoryMock.findById(1));
+		assertEquals(questionRepositoryMock.findById(1), Optional.of(testQuestion1));
+
+		questionServiceImpl.addImageToQuestion(1, mockRequest);
+	}
+
+	@Test
+	public void testFindAllByTagNames() {
+
+		List<Question> questions1 = new ArrayList<Question>();
+		questions1.add(testQuestion1);
+		List<Question> questions2 = new ArrayList<Question>();
+		questions2.add(testQuestion2);
+		Page<Question> page1 = new PageImpl<>(questions1);
+		Page<Question> page2 = new PageImpl<>(questions2);
+
+		List<String> tagNames = new ArrayList<String>();
+		tagNames.add(testTag1.getName());
+		tagNames.add(testTag2.getName());
+		tagNames.add(testTag3.getName());
+
+		HashSet<Tag> expertTags = new HashSet<Tag>();
+		expertTags.add(tagReturnList.get(0));
+		expertTags.add(tagReturnList.get(1));
+		expertTags.add(tagReturnList.get(2));
+		Pageable pageable = (Pageable) PageRequest.of(0, 20);
+
+		when(tagServiceMock.getTagByName(tagNames.get(0))).thenReturn(tagReturnList.get(0));
+		when(tagServiceMock.getTagByName(tagNames.get(1))).thenReturn(tagReturnList.get(1));
+		when(tagServiceMock.getTagByName(tagNames.get(2))).thenReturn(tagReturnList.get(2));
+
+		when(questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable))
+				.thenReturn(page1);
+		when(questionRepositoryMock.findAllContainingAtLeastOneTag(expertTags, pageable)).thenReturn(page2);
+		assertNotNull(questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable));
+		assertEquals(questionRepositoryMock.findAllContainingAllTags(expertTags, expertTags.size(), pageable), page1);
+
+		questionServiceImpl.findAllByTagNames(true, tagNames, 0, 20);
+		questionServiceImpl.findAllByTagNames(false, tagNames, 0, 20);
+	}
+
+	@Test(expected = TagNotFoundException.class)
+	public void testFindAllByTagNamesForTagNotFoundException() {
+
+		List<String> tagNames = new ArrayList<String>();
+		tagNames.add(testTag1.getName());
+		tagNames.add(testTag2.getName());
+		tagNames.add(testTag3.getName());
+
+		HashSet<Tag> expertTags = new HashSet<Tag>();
+		expertTags.addAll(tagReturnList);
+
+		when(tagServiceMock.getTagByName(tagNames.get(0))).thenReturn(testTag1);
+		when(tagServiceMock.getTagByName(tagNames.get(1))).thenReturn(testTag2);
+		when(tagServiceMock.getTagByName(tagNames.get(2))).thenThrow(TagNotFoundException.class);
+
+		questionServiceImpl.findAllByTagNames(true, tagNames, 0, 20);
+		questionServiceMock.findAllByTagNames(false, tagNames, 0, 20);
+	}
 }

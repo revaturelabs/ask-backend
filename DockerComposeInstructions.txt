@@ -1,0 +1,12 @@
+
+DOCKER COMPOSE INSTRUCTIONS
+===========================
+
+
+To use DOCKER COMPOSE with the docker-compose.yml provided and run,
+
+1.put both the backend and frontend in a common folder
+
+2.put the docker-compose.yml in the root folder outside/alongside ask-frontend and ask-backend folder
+
+3.run docker compose up -d to run it in the background.

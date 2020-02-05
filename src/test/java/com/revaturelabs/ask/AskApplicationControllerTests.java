@@ -4,16 +4,22 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import com.revaturelabs.ask.image.ImageConflictException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
@@ -92,7 +98,10 @@ public class AskApplicationControllerTests {
 
   @Autowired
   QuestionController questionControllerImpl;
-
+  
+	@Mock
+	MultipartHttpServletRequest mockRequest;
+  
   @Test
   public void testGetImage() {
     Set<Image> images = new HashSet<Image>();
@@ -160,6 +169,7 @@ public class AskApplicationControllerTests {
     assertEquals(exampleResponse2,
         this.responseControllerImpl.updateResponse(exampleResponse2, -11));
   }
+  
 
   /**
    * Makes sure attempts on a non-existent id results in an error
@@ -394,20 +404,30 @@ public class AskApplicationControllerTests {
     tagControllerImpl.updateTag(exampleTag, 5);
   }
 
-  /**
-   * Tests related to Questions
-   * 
-   * This will test getting question by Id : qc 79
-   */
-  @Test
-  public void testGetQuestionById() {
-    Question exampleQuestion = new Question();
-    try {
-      when((questionServiceMock.getById(1))).thenReturn(exampleQuestion);
-    } catch (Exception e) {
-    }
-    assertEquals(ResponseEntity.ok(exampleQuestion), questionControllerImpl.getQuestionById(1));
-  }
+ 	/**
+	 * Tests related to Questions
+	 * 
+	 * This will test getting question by Id : qc 79
+	 */
+	@Test
+	public void testGetQuestionById() {
+		Question exampleQuestion = new Question();
+		try {
+			when((questionServiceMock.getById(1))).thenReturn(exampleQuestion);
+		} catch (Exception e) {
+		}
+		assertEquals(ResponseEntity.ok(exampleQuestion), questionControllerImpl.getQuestionById(1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testGetQuestionByIdForResponseStatusException() {
+		Question exampleQuestion = new Question();
+		try {
+			when((questionServiceMock.getById(1))).thenThrow(QuestionNotFoundException.class);
+		} catch (Exception e) {
+		}
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.getQuestionById(1));
+	}
 
   /**
    * This tests creating a question qc 94
@@ -429,27 +449,30 @@ public class AskApplicationControllerTests {
     assertEquals(exampleQuestion, questionControllerImpl.createQuestion(exampleQuestion));
   }
 
-  /**
-   * This test creating or updating a question qc 131
-   */
+	/**
+	 * This test creating or updating a question qc 157
+	 */
 
-  @Test
-  public void testCreateUpdateQuestion() throws QuestionConflictException {
-    Question exampleQuestion = new Question();
-    exampleQuestion.setHead("JavaScript Question Head");
-    exampleQuestion.setBody("JavaScript Question Body");
+	@Test
+	public void testCreateUpdateQuestion() throws QuestionConflictException {
+		Question exampleQuestion = new Question();
+		exampleQuestion.setHead("JavaScript Question Head");
+		exampleQuestion.setBody("JavaScript Question Body");
 
-    when((questionServiceMock.createOrUpdate(exampleQuestion))).thenReturn(null);
-    assertEquals(null, questionControllerImpl.createOrUpdate(exampleQuestion, 1));
-  }
+		when((questionServiceMock.createOrUpdate(exampleQuestion))).thenReturn(null);
+		assertEquals(null, questionControllerImpl.createOrUpdate(exampleQuestion, 1));
+	}
 
-  /**
-   * This test updating a question qc 110
-   * 
-   * @throws QuestionConflictException
-   * @throws QuestionNotFoundException
-   */
+	@Test(expected = ResponseStatusException.class)
+	public void testCreateUpdateQuestionForResponseStatusException() throws QuestionConflictException {
+		Question exampleQuestion = new Question();
+		exampleQuestion.setHead("JavaScript Question Head");
+		exampleQuestion.setBody("JavaScript Question Body");
 
+		when((questionServiceMock.createOrUpdate(exampleQuestion))).thenThrow(QuestionConflictException.class);
+		assertEquals(null, questionControllerImpl.createOrUpdate(exampleQuestion, 1));
+	}
+  
   /*
    * Testing User Controller
    */
@@ -596,16 +619,44 @@ public class AskApplicationControllerTests {
     userControllerImpl.updateUserTags(testUser, 10);
   }
 
-  @Test
-  public void testUpdateQuestion() throws QuestionConflictException, QuestionNotFoundException {
-    Question exampleQuestion = new Question();
-    exampleQuestion.setId(1);
-    exampleQuestion.setHead("JavaScript Question Head");
-    exampleQuestion.setBody("JavaScript Question Body");
-    when((questionServiceMock.update(exampleQuestion))).thenReturn(null);
-    assertEquals(ResponseEntity.ok(null),
-        questionControllerImpl.updateQuestion(exampleQuestion, 1));
-  }
+	/**
+	 * This test updating a question qc 110
+	 * 
+	 * @throws QuestionConflictException
+	 * @throws QuestionNotFoundException
+	 */
+
+	@Test
+	public void testUpdateQuestion() throws QuestionConflictException, QuestionNotFoundException {
+		Question exampleQuestion = new Question();
+		exampleQuestion.setId(1);
+		exampleQuestion.setHead("JavaScript Question Head");
+		exampleQuestion.setBody("JavaScript Question Body");
+		when((questionServiceMock.update(exampleQuestion))).thenReturn(null);
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.updateQuestion(exampleQuestion, 1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testUpdateQuestionForQuestionNotFoundException()
+			throws QuestionConflictException, QuestionNotFoundException {
+		Question exampleQuestion = new Question();
+		exampleQuestion.setId(1);
+		exampleQuestion.setHead("JavaScript Question Head");
+		exampleQuestion.setBody("JavaScript Question Body");
+		when((questionServiceMock.update(exampleQuestion))).thenThrow(QuestionNotFoundException.class);
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.updateQuestion(exampleQuestion, 1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testUpdateQuestionForQuestionConflictException()
+			throws QuestionConflictException, QuestionNotFoundException {
+		Question exampleQuestion = new Question();
+		exampleQuestion.setId(1);
+		exampleQuestion.setHead("JavaScript Question Head");
+		exampleQuestion.setBody("JavaScript Question Body");
+		when((questionServiceMock.update(exampleQuestion))).thenThrow(QuestionConflictException.class);
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.updateQuestion(exampleQuestion, 1));
+	}
 
   @Test
   public void testGettingUserById() {
@@ -736,5 +787,198 @@ public class AskApplicationControllerTests {
     assertEquals(exampleUser, userControllerImpl.createUser(exampleUser));
 
   }
+  
+  	@Test
+	public void testGetImages() {
 
+		Set<Image> images = new HashSet<Image>();
+		Image i1 = new Image();
+		Image i2 = new Image();
+		images.add(i1);
+		images.add(i2);
+
+		Question question = new Question();
+
+		when(questionServiceMock.getById(1)).thenReturn(question);
+		assertEquals(ResponseEntity.ok(questionServiceMock.getById(1).getImages()),
+				questionControllerImpl.getImages(1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testGetImagesForResponseStatusException() {
+
+		when(questionServiceMock.getById(1)).thenThrow(QuestionNotFoundException.class);
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.getImages(1));
+	}
+
+	@Test
+	public void testGetResponses() {
+
+		Question question = new Question();
+
+		when(questionServiceMock.getById(1)).thenReturn(question);
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.getResponses(1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testGetResponsesForResponseStatusException() {
+
+		when(questionServiceMock.getById(1)).thenThrow(QuestionNotFoundException.class);
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.getResponses(1));
+	}
+
+	@Test
+	public void testGetAllQuestions() {
+
+		List<Question> questions = new ArrayList<Question>();
+		Page<Question> page = new PageImpl<>(questions);
+		when(questionServiceMock.getAll(0, 20)).thenReturn(page);
+		assertEquals(ResponseEntity.ok(page.getContent()), questionControllerImpl.getAllQuestions(0, 20));
+		assertEquals(ResponseEntity.ok(page.getContent()), questionControllerImpl.getAllQuestions(null, null));
+	}
+
+	@Test
+	public void testHighlightResponse() {
+
+		Question question = new Question();
+
+		when(questionServiceMock.highlightResponse(1, 1)).thenReturn(question);
+		assertEquals(ResponseEntity.ok(questionControllerImpl.highlightResponse(1, 1).getBody()),
+				questionControllerImpl.highlightResponse(1, 1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testHighlightResponseForQuestionNotFoundException() {
+
+		when(questionServiceMock.highlightResponse(1, 1)).thenThrow(QuestionNotFoundException.class);
+		assertEquals(ResponseEntity.ok(questionControllerImpl.highlightResponse(1, 1).getBody()),
+				questionControllerImpl.highlightResponse(1, 1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testHighlightResponseForQuestionConflictException() {
+
+		when(questionServiceMock.highlightResponse(1, 1)).thenThrow(QuestionConflictException.class);
+		assertEquals(ResponseEntity.ok(questionControllerImpl.highlightResponse(1, 1).getBody()),
+				questionControllerImpl.highlightResponse(1, 1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testHighlightResponseFor() {
+
+		when(questionServiceMock.highlightResponse(1, 1)).thenThrow(DataIntegrityViolationException.class);
+		assertEquals(ResponseEntity.ok(questionControllerImpl.highlightResponse(1, 1).getBody()),
+				questionControllerImpl.highlightResponse(1, 1));
+	}
+
+	@Test
+	public void testFilterByTags() {
+
+		List<Question> questions = new ArrayList<Question>();
+		Page<Question> page = new PageImpl<>(questions);
+		Stream<Question> question = page.get();
+		List<String> tags = new ArrayList<String>();
+		tags.add("Tag 1");
+		tags.add("Tag 2");
+
+		when(questionServiceMock.findAllByTagNames(false, tags, 0, 20)).thenReturn(question);
+		assertEquals(ResponseEntity.ok(question).getBody(),
+				questionControllerImpl.filterByTags(0, 20, false, tags).getBody());
+		assertEquals(ResponseEntity.ok(question).getBody(),
+				questionControllerImpl.filterByTags(null, null, null, tags).getBody());
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testFilterByTagsForTagNotFoundException() {
+
+		List<String> tags = new ArrayList<String>();
+		tags.add("Tag 1");
+		tags.add("Tag 2");
+
+		when(questionServiceMock.findAllByTagNames(true, null, 0, 20)).thenThrow(TagNotFoundException.class);
+
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.filterByTags(0, 20, true, null));
+	}
+
+	@Test
+	public void testSetTags() {
+
+		Question question = new Question();
+		question.setId(1);
+
+		when(questionServiceMock.updateTags(question)).thenReturn(question);
+		assertEquals(ResponseEntity.ok(question), questionControllerImpl.setTags(question, 1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testSetTagsForTagNotFoundException() {
+
+		Question question = new Question();
+		question.setId(1);
+
+		when(questionServiceMock.updateTags(question)).thenThrow(TagNotFoundException.class);
+		assertEquals(ResponseEntity.ok(question), questionControllerImpl.setTags(question, 1));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testSetTagsForQuestionNotFound() {
+
+		Question question = new Question();
+		question.setId(1);
+
+		when(questionServiceMock.updateTags(question)).thenThrow(QuestionNotFoundException.class);
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.setTags(question, 1));
+	}
+
+	@Test
+	public void testAddImage() {
+
+		Question question = new Question();
+		try {
+			when(questionServiceMock.addImageToQuestion(1, mockRequest)).thenReturn(question);
+		} catch (QuestionNotFoundException | ImageConflictException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(ResponseEntity.ok(question), questionControllerImpl.addImage(1, mockRequest));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testAddImageForImageConflictEeption() {
+
+		Question question = new Question();
+		try {
+			when(questionServiceMock.addImageToQuestion(1, mockRequest)).thenThrow(ImageConflictException.class);
+		} catch (QuestionNotFoundException | ImageConflictException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.addImage(1, mockRequest));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testAddImageForQuestionNotFoundException() {
+
+		Question question = new Question();
+		try {
+			when(questionServiceMock.addImageToQuestion(1, mockRequest)).thenThrow(QuestionNotFoundException.class);
+		} catch (QuestionNotFoundException | ImageConflictException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.addImage(1, mockRequest));
+	}
+
+	@Test(expected = ResponseStatusException.class)
+	public void testAddImageForIOException() {
+
+		Question question = new Question();
+		try {
+			when(questionServiceMock.addImageToQuestion(1, mockRequest)).thenThrow(IOException.class);
+		} catch (QuestionNotFoundException | ImageConflictException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(ResponseEntity.ok(null), questionControllerImpl.addImage(1, mockRequest));
+	}
 }

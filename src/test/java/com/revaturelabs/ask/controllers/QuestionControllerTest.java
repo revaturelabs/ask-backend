@@ -121,8 +121,6 @@ public class QuestionControllerTest {
         questionControllerImpl.updateQuestion(exampleQuestion, 1));
   }
 
-  // Tests added below this line---------------------------------
-
   /**
    * This will test getting question by Id while checking for exception thrown
    */

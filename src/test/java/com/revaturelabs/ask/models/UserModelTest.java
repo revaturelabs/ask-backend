@@ -153,7 +153,7 @@ public class UserModelTest {
 		testUserDiffQuestions.setExpert(true);
 		testUserDiffQuestions.setExpertTags(tags);
 		Set<Question> questions2 = new HashSet<Question>();
-		questions2.add(ModelMockData.testQuestion2);
+		questions2.add(ModelMockData.testQuestion3);
 		testUserDiffQuestions.setQuestions(questions2);
 		testUserDiffQuestions.setResponses(responses);
 
@@ -213,5 +213,11 @@ public class UserModelTest {
 		assertFalse(testUserNullQuestions.equals(testUserNullFields) & testUserNullQuestions.equals(testUser));
 		assertFalse(testUserDiffResponses.equals(testUserNullFields) & testUserDiffResponses.equals(testUser));
 		assertFalse(testUserNullResponses.equals(testUserNullFields) & testUserNullResponses.equals(testUser));
+		
+		//.toString()
+		String userString = "User [id="+testUser.getId()+", username="+testUser.getUsername()+", password="+testUser.getPassword()+
+				", isExpert="+testUser.isExpert()+", expertTags="+testUser.getExpertTags()+", questions="
+				+testUser.getQuestions().toString()+", responses="+testUser.getResponses().toString()+"]";
+		assertEquals(testUser.toString(), userString);
 	}
 }

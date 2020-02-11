@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -200,7 +201,46 @@ public class QuestionController {
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such question!");
     }
-
+  }
+  
+  /**
+   * 
+   * Takes HTTP DELETE requests and returns the updated question after deleting the tag specified by id
+   * 
+   * @param question The question object with a tag to be deleted.
+   * @return A Question JSON after updating
+   */
+  @DeleteMapping("/{id}/tags/{tag}")
+  public ResponseEntity<Question> deleteTag(@RequestBody Question question, @PathVariable(name = "id") int id, @PathVariable(name = "tag") int tag) {
+    try {
+      question.setId(id);
+      question.deleteTagFromQuestion(tagService.getById(tag));
+      return ResponseEntity.ok(questionService.updateTags(question));
+    } catch (TagNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A specified tag was not found!");
+    } catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such question!");
+    }
+  }
+  
+  /**
+   * 
+   * Takes HTTP PUT requests and returns the updated question after adding specified tag
+   * 
+   * @param question The question object for the tag specified by id to be added.
+   * @return A Question JSON after updating
+   */
+  @PutMapping("/{id}/tags/{tag}")
+  public ResponseEntity<Question> addTag(@RequestBody Question question, @PathVariable(name = "id") int id, @PathVariable(name = "tag") int tag) {
+    try {
+      question.setId(id);
+      question.addTagToQuestion(tagService.getById(tag));
+      return ResponseEntity.ok(questionService.updateTags(question));
+    } catch (TagNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "A specified tag was not found!");
+    } catch (QuestionNotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such question!");
+    }
   }
 
   /**
@@ -216,7 +256,8 @@ public class QuestionController {
       return ResponseEntity.ok(questionService.getById(id).getImages());
     } catch (QuestionNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Question not found!", e);
-    } }
+    } 
+  }
 
   /**
    * Takes HTTP Put requests. Will add an image to the set of images associated with the question.

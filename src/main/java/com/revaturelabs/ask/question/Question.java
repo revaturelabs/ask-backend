@@ -218,7 +218,17 @@ public class Question {
     }
     associatedTags.add(tag);
   }
-
+  
+  /**
+   * Delete a tag from the associated tags set for this question/.
+   * 
+   * @param tag the tag to delete.
+   */
+  public void deleteTagFromQuestion(Tag tag) {
+    associatedTags.remove(tag);
+  }
+  
+  
   /**
    * Auto-generated getter for responses
    * 

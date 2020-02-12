@@ -12,7 +12,6 @@ CREATE TABLE users (
   password VARCHAR,
   email VARCHAR,
   bio VARCHAR,
-  profile_pic bytea,
   expert BOOLEAN
 );
 

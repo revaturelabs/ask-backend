@@ -73,6 +73,14 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public Tag create(Tag tag) {
+    
+    List<Tag> allTags = getAll();
+    
+    for(Tag dbTag: allTags) {
+      if(dbTag.getName().toLowerCase().equals(tag.getName().toLowerCase())) {
+        throw new TagConflictException("no");
+      }
+    }
     return tagRepository.save(tag);
   }
 

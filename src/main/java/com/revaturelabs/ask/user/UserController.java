@@ -1,7 +1,12 @@
 package com.revaturelabs.ask.user;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +21,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 import com.revaturelabs.ask.question.Question;
 import com.revaturelabs.ask.tag.TagService;
 
 @RestController
 @RequestMapping(path = "/users")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+maxFileSize = 1024 * 1024 * 10, // 10 MB
+maxRequestSize = 1024 * 1024 * 15, // 15 MB
+location = "/")
 
 /**
  * 
@@ -82,6 +93,33 @@ public class UserController {
     } catch (UserNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
+    
+  }
+  
+  @PatchMapping("/profile/{id}")
+  public User updateUserInfo(@RequestBody String why) {
+
+    userService.uploadProfilePicture();
+    /*
+      try {
+        MultipartHttpServletRequest user = null;
+        
+        Part name = user.getPart("name");
+        Part image = user.getPart("myImage");
+        
+        
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (ServletException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      
+      
+    */
+    return null;
+    
   }
 
   @PostMapping

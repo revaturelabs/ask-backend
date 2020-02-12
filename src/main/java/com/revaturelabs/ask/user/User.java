@@ -45,6 +45,9 @@ public class User {
 
   @Column(name = "expert")
   private boolean isExpert;
+  
+  @Column(name = "picture")
+  private String picture;
 
   @ManyToMany
   @JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id"),
@@ -108,6 +111,14 @@ public class User {
 
   public void setExpertTags(Set<Tag> expertTags) {
     this.expertTags = expertTags;
+  }
+
+  public String getPicture() {
+    return picture;
+  }
+
+  public void setPicture(String picture) {
+    this.picture = picture;
   }
 
   /**

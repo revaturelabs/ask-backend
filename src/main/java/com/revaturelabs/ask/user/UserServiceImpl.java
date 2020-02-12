@@ -1,14 +1,31 @@
 package com.revaturelabs.ask.user;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
-
+import javax.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.revaturelabs.ask.image.Image;
+import com.revaturelabs.ask.image.ImageConflictException;
 import com.revaturelabs.ask.user.UserRepository;
+
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -155,6 +172,59 @@ public class UserServiceImpl implements UserService {
     }
 
     return updatedUser;
+  }
+
+  @Override
+  public User updateUserInfo(User user) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String uploadProfilePicture(MultipartFile image) {
+    AWSCredentials credentials = new BasicAWSCredentials(
+        System.getenv("s3_access_key"), 
+        System.getenv("s3_secret_key")
+      );
+    
+    AmazonS3 s3client = AmazonS3ClientBuilder
+        .standard()
+        .withCredentials(new AWSStaticCredentialsProvider(credentials))
+        .withRegion(Regions.US_EAST_1)
+        .build();
+   
+    //EMERGENCY DELETE WEIRD OBJECTS ON BUCKET
+    //s3client.deleteObject(System.getenv("s3_bucket_name"),"/Users/alexmao/Documents/Revature/ask-backend/src/main/java/com/revaturelabs/ask/user/TestFile.txt");
+    
+    try {
+      byte[] bytes = image.getBytes();
+      if (bytes == null) {
+        throw new ImageConflictException("Invalid image");
+      } else {
+        String key = "TestFolder/" + image.getName();
+        System.out.println(key);
+        
+        s3client.putObject(
+            System.getenv("s3_bucket_name"), 
+            key, 
+            new File("/Users/alexmao/Documents/Revature/ask-backend/src/main/java/com/revaturelabs/ask/user/TestFile.txt")
+          );
+      }   
+    }catch(IOException e) {
+        e.printStackTrace();
+    } catch (ImageConflictException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    
+    
+    ObjectListing objectListing = s3client.listObjects(System.getenv("s3_bucket_name"));
+    for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
+        System.out.println(os);
+    }
+    
+    return null;
   }
 }
 

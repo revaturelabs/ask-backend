@@ -2,14 +2,14 @@
 
 --data for the users table
 INSERT INTO users VALUES
-    (default,'Adam Shipe','1234',false), -- user login
-    (default,'Sally OBrien','1234',false), -- user login 2
-    (default,'Zach Marshello','4321',true), -- expert login
-    (default,'Chad Paulson','4321',true),  -- expert login 2
-    (default,'Billy Carter','1234',false), -- user login 3
-    (default,'Winifred Hurst','4321',true),  -- expert login 3
-    (default,'Harry Brandt','1234',false), -- user login 4
-    (default,'Aubrey Garner','4321',true);  -- expert login 4
+    (default,'Adam Shipe','1234',,,,false), -- user login
+    (default,'Sally OBrien','1234',,,,false), -- user login 2
+    (default,'Zach Marshello','4321',,,,true), -- expert login
+    (default,'Chad Paulson','4321',,,,true),  -- expert login 2
+    (default,'Billy Carter','1234',,,,false), -- user login 3
+    (default,'Winifred Hurst','4321',,,,true),  -- expert login 3
+    (default,'Harry Brandt','1234',,,,false), -- user login 4
+    (default,'Aubrey Garner','4321',,,,true);  -- expert login 4
 
 -- data for tags table
 INSERT INTO tags VALUES

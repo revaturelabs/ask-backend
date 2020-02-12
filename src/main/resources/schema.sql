@@ -10,6 +10,9 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username VARCHAR,
   password VARCHAR,
+  email VARCHAR,
+  bio VARCHAR,
+  profile_pic bytea,
   expert BOOLEAN
 );
 

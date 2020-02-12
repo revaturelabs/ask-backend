@@ -9,7 +9,7 @@ INSERT INTO users VALUES
     (default,'Billy Carter','1234','Billy.c@gmail.com','Web designer',false), -- user login 3
     (default,'Winifred Hurst','4321','Winifred.h@gmail.com','Devop Lead',true),  -- expert login 3
     (default,'Harry Brandt','1234','Harry.b@gmail.com','AWS Architecture',false), -- user login 4
-    (default,'Aubrey Garner','4321','Aubrey.g@gmail.com','Scrum Master',true);  -- expert login 4
+    (default,'Aubrey Garner','4321','Aubrey.g@gmail.com','Scrum Master',true);  -- expert login 4  
 
 -- data for tags table
 INSERT INTO tags VALUES

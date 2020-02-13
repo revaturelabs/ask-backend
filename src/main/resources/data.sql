@@ -43,8 +43,7 @@ INSERT INTO tags VALUES
 	(DEFAULT, 'MongoDB'),
 	(DEFAULT, 'C'),
 	(DEFAULT, 'Angular Material'), --30
-	(DEFAULT, 'CSS'),
-	(DEFAULT, 'Other');
+	(DEFAULT, 'CSS');
 
 -- data for questions
 INSERT INTO questions VALUES 

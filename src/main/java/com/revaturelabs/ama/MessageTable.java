@@ -1,10 +1,12 @@
 package com.revaturelabs.ama;
 
+import java.util.Date;
+
 public class MessageTable {
   private int id;
   private int user_id;
   private String message_body;
-  private String time_stamp;
+  private Date time_stamp;
 
   // java default constructor
   public MessageTable() {
@@ -36,11 +38,11 @@ public class MessageTable {
     this.message_body = message_body;
   }
 
-  public String getTime_stamp() {
+  public Date getTime_stamp() {
     return time_stamp;
   }
 
-  public void setTime_stamp(String time_stamp) {
+  public void setTime_stamp(Date time_stamp) {
     this.time_stamp = time_stamp;
   }
 

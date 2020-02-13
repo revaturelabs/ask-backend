@@ -218,7 +218,7 @@ public class UserServiceImpl implements UserService {
           );
         
         uploadImage.delete();
-        FileUtils.deleteDirectory(new File("StagingDir"));
+        FileUtils.deleteDirectory(new File("StagingDir/profilePictures/" + username));
 
       }   
     }catch(IOException e) {

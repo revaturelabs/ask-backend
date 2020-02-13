@@ -52,7 +52,7 @@ public class User {
   @Column(name = "expert")
   private boolean isExpert;
   
-  @Column(name = "profilePic")
+  @Column(name = "profile_pic")
   private String profilePic;
 
   @ManyToMany

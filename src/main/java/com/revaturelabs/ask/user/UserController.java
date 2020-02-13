@@ -29,10 +29,10 @@ import com.revaturelabs.ask.tag.TagService;
 
 @RestController
 @RequestMapping(path = "/users")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
-maxFileSize = 1024 * 1024 * 10, // 10 MB
-maxRequestSize = 1024 * 1024 * 15, // 15 MB
-location = "/")
+/*
+ * @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB maxFileSize = 1024 * 1024 * 10, //
+ * 10 MB maxRequestSize = 1024 * 1024 * 15, // 15 MB location = "/")
+ */
 
 /**
  * 
@@ -97,28 +97,31 @@ public class UserController {
   }
   
   @PatchMapping("/profile/{id}")
-  public User updateUserInfo(@RequestBody String why) {
-
-    userService.uploadProfilePicture();
-    /*
+  public String updateUserInfo(MultipartHttpServletRequest user, @PathVariable int id) {
+    
+    //TEST
+    System.out.println("ID: " + id);
+   
+    
+    String key = "";
+    
       try {
-        MultipartHttpServletRequest user = null;
-        
         Part name = user.getPart("name");
-        Part image = user.getPart("myImage");
+        System.out.println("NAME: " + name);
+        MultipartFile image = user.getFile("myImage");
+        System.out.println("IMAGE: " + image);
+        key = userService.uploadProfilePicture(image);
         
+        User updatedUser = userService.findById(id);
+        updatedUser.setPicture(key);
         
       } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "IOException on File.");
       } catch (ServletException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad multipart file request");
       }
       
-      
-    */
-    return null;
+    return key;
     
   }
 

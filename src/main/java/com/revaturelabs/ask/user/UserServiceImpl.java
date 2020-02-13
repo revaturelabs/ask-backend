@@ -1,10 +1,12 @@
 package com.revaturelabs.ask.user;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.Part;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -180,8 +182,16 @@ public class UserServiceImpl implements UserService {
     return null;
   }
 
+  
+  /**
+   * Function that will convert a multipart file to a file and upload it
+   * to an S3 bucket.
+   */
   @Override
   public String uploadProfilePicture(MultipartFile image) {
+    
+    String key = "";
+    
     AWSCredentials credentials = new BasicAWSCredentials(
         System.getenv("s3_access_key"), 
         System.getenv("s3_secret_key")
@@ -193,21 +203,25 @@ public class UserServiceImpl implements UserService {
         .withRegion(Regions.US_EAST_1)
         .build();
    
-    //EMERGENCY DELETE WEIRD OBJECTS ON BUCKET
-    //s3client.deleteObject(System.getenv("s3_bucket_name"),"/Users/alexmao/Documents/Revature/ask-backend/src/main/java/com/revaturelabs/ask/user/TestFile.txt");
+    s3client.deleteObject(System.getenv("s3_bucket_name"),"TestFolder");
     
+    //Conversion block? Not sure if this works.
     try {
       byte[] bytes = image.getBytes();
       if (bytes == null) {
         throw new ImageConflictException("Invalid image");
       } else {
-        String key = "TestFolder/" + image.getName();
-        System.out.println(key);
+        key = "TestFolder/" + image.getOriginalFilename();
+        System.out.println("TEST PATH: " + key);         
+        
+        File uploadImage = new File("StagingDir/" + key);
+        
+        FileUtils.writeByteArrayToFile(uploadImage, bytes);
         
         s3client.putObject(
             System.getenv("s3_bucket_name"), 
             key, 
-            new File("/Users/alexmao/Documents/Revature/ask-backend/src/main/java/com/revaturelabs/ask/user/TestFile.txt")
+            uploadImage
           );
       }   
     }catch(IOException e) {
@@ -217,14 +231,13 @@ public class UserServiceImpl implements UserService {
       e.printStackTrace();
     }
     
-    
-    
+    //List all objects on the bucket FOR TESTING
     ObjectListing objectListing = s3client.listObjects(System.getenv("s3_bucket_name"));
     for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
         System.out.println(os);
     }
     
-    return null;
+    return key;
   }
 }
 

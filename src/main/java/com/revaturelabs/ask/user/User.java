@@ -51,6 +51,9 @@ public class User {
 
   @Column(name = "expert")
   private boolean isExpert;
+  
+  @Column(name = "profile_pic")
+  private String profilePic;
 
   @ManyToMany
   @JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id"),
@@ -133,6 +136,14 @@ public class User {
 
   public void setExpertTags(Set<Tag> expertTags) {
     this.expertTags = expertTags;
+  }
+
+  public String getProfilePic() {
+    return profilePic;
+  }
+
+  public void setProfilePic(String s3Key) {
+    this.profilePic = s3Key;
   }
 
   /**

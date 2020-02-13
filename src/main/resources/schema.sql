@@ -12,7 +12,7 @@ CREATE TABLE users (
   password VARCHAR,
   email VARCHAR,
   bio VARCHAR,
-  profilePic VARCHAR,
+  profile_pic VARCHAR,
   expert BOOLEAN
 );
 

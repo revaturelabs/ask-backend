@@ -1,14 +1,26 @@
 package com.revaturelabs.ask.user;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
-
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.revaturelabs.ask.image.ImageConflictException;
 import com.revaturelabs.ask.user.UserRepository;
+
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -155,6 +167,67 @@ public class UserServiceImpl implements UserService {
     }
 
     return updatedUser;
+  }
+
+  @Override
+  public User updateUserInfo(User user) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  
+  /**
+   * Function that will convert a multipart file to a file and upload it
+   * to an S3 bucket.
+   * 
+   * On the s3, it will save it to profilePictures/USERNAME/PICTURENAME
+   */
+  @Override
+  public String uploadProfilePicture(MultipartFile image, String username) {
+    
+    String key = "";
+    
+    //AWS connections configured
+    AWSCredentials credentials = new BasicAWSCredentials(
+        System.getenv("s3_access_key"), 
+        System.getenv("s3_secret_key")
+      );
+    
+    AmazonS3 s3client = AmazonS3ClientBuilder
+        .standard()
+        .withCredentials(new AWSStaticCredentialsProvider(credentials))
+        .withRegion(Regions.US_EAST_1)
+        .build();
+    
+    //Conversion block from multipartfile to image, then upload to s3
+    try {
+      byte[] bytes = image.getBytes();
+      if (bytes == null) {
+        throw new ImageConflictException("Invalid image");
+      } else {
+        key = "profilePictures/" + username + "/" + image.getOriginalFilename();    
+        
+        File uploadImage = new File("StagingDir/" + key);
+        
+        FileUtils.writeByteArrayToFile(uploadImage, bytes);
+        
+        s3client.putObject(
+            System.getenv("s3_bucket_name"), 
+            key, 
+            uploadImage
+          );
+        
+        uploadImage.delete();
+        FileUtils.deleteDirectory(new File("StagingDir/profilePictures/" + username));
+
+      }   
+    }catch(IOException e) {
+        e.printStackTrace();
+    } catch (ImageConflictException e) {
+      e.printStackTrace();
+    }
+
+    return key;
   }
 }
 

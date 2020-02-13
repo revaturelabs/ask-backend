@@ -42,6 +42,12 @@ public class User {
   @JsonIgnore
   @Column(name = "password")
   private String password;
+  
+  @Column(name = "email")
+  private String email;
+  
+  @Column(name = "bio")
+  private String bio;
 
   @Column(name = "expert")
   private boolean isExpert;
@@ -67,10 +73,29 @@ public class User {
     super();
   }
 
-  public User(int id, String username, String password) {
+  public User(int id, String username, String password, String email, String bio) {
+    super();
     this.id = id;
     this.username = username;
     this.password = password;
+    this.email = email;
+    this.bio = bio;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getBio() {
+    return bio;
+  }
+
+  public void setBio(String bio) {
+    this.bio = bio;
   }
 
   public int getId() {
@@ -249,13 +274,15 @@ public class User {
    * @return A string representation of the User object
    * 
    */
-
   @Override
   public String toString() {
-    return "User [id=" + id + ", username=" + username + ", password=" + password + ", isExpert="
-        + isExpert + ", expertTags=" + expertTags + ", questions=" + questions + ", responses="
-        + responses + "]";
+    return "User [id=" + id + ", username=" + username + ", password=" + password + ", email="
+        + email + ", bio=" + bio + ", isExpert=" + isExpert + ", expertTags=" + expertTags
+        + ", questions=" + questions + ", responses=" + responses + "]";
   }
+
+
+
 
 
 

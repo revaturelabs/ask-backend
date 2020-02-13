@@ -93,6 +93,6 @@ public interface UserService {
    * @param A Part of a Multipart File referencing the new Image
    * @return An S3 key to the image file
    */
-  String uploadProfilePicture(MultipartFile image);
+  String uploadProfilePicture(MultipartFile image, String username);
 
 }

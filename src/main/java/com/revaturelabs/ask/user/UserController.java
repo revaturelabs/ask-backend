@@ -98,21 +98,18 @@ public class UserController {
   
   @PatchMapping("/profile/{id}")
   public String updateUserInfo(MultipartHttpServletRequest user, @PathVariable int id) {
-    
-    //TEST
-    System.out.println("ID: " + id);
-   
-    
+
     String key = "";
     
       try {
         Part name = user.getPart("name");
-        System.out.println("NAME: " + name);
+
         MultipartFile image = user.getFile("myImage");
-        System.out.println("IMAGE: " + image);
-        key = userService.uploadProfilePicture(image);
         
         User updatedUser = userService.findById(id);
+
+        key = userService.uploadProfilePicture(image, updatedUser.getUsername());
+        
         updatedUser.setProfilePic(key);
         userService.update(updatedUser);
         

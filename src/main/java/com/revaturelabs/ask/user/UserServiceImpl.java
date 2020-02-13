@@ -186,12 +186,15 @@ public class UserServiceImpl implements UserService {
   /**
    * Function that will convert a multipart file to a file and upload it
    * to an S3 bucket.
+   * 
+   * On the s3, it will save it to profilePictures/USERNAME/PICTURENAME
    */
   @Override
-  public String uploadProfilePicture(MultipartFile image) {
+  public String uploadProfilePicture(MultipartFile image, String username) {
     
     String key = "";
     
+    //AWS connections configured
     AWSCredentials credentials = new BasicAWSCredentials(
         System.getenv("s3_access_key"), 
         System.getenv("s3_secret_key")
@@ -202,17 +205,14 @@ public class UserServiceImpl implements UserService {
         .withCredentials(new AWSStaticCredentialsProvider(credentials))
         .withRegion(Regions.US_EAST_1)
         .build();
-   
-    s3client.deleteObject(System.getenv("s3_bucket_name"),"TestFolder");
     
-    //Conversion block? Not sure if this works.
+    //Conversion block from multipartfile to image, then upload to s3
     try {
       byte[] bytes = image.getBytes();
       if (bytes == null) {
         throw new ImageConflictException("Invalid image");
       } else {
-        key = "TestFolder/" + image.getOriginalFilename();
-        System.out.println("TEST PATH: " + key);         
+        key = "profilePictures/" + username + "/" + image.getOriginalFilename();    
         
         File uploadImage = new File("StagingDir/" + key);
         
@@ -223,20 +223,17 @@ public class UserServiceImpl implements UserService {
             key, 
             uploadImage
           );
+        
+        uploadImage.delete();
+        FileUtils.deleteDirectory(new File("StagingDir"));
+
       }   
     }catch(IOException e) {
         e.printStackTrace();
     } catch (ImageConflictException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    
-    //List all objects on the bucket FOR TESTING
-    ObjectListing objectListing = s3client.listObjects(System.getenv("s3_bucket_name"));
-    for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
-        System.out.println(os);
-    }
-    
+
     return key;
   }
 }

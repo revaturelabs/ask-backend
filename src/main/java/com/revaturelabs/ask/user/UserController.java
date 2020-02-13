@@ -113,7 +113,8 @@ public class UserController {
         key = userService.uploadProfilePicture(image);
         
         User updatedUser = userService.findById(id);
-        updatedUser.setPicture(key);
+        updatedUser.setProfilePic(key);
+        userService.update(updatedUser);
         
       } catch (IOException e) {
         throw new ResponseStatusException(HttpStatus.NO_CONTENT, "IOException on File.");

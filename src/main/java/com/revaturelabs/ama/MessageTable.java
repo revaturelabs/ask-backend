@@ -1,11 +1,31 @@
 package com.revaturelabs.ama;
 
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+/**
+ * 
+ * @author Bianca/Updates to follow
+ *
+ */
+@Entity
+@Table(name = "AMASession")
 public class MessageTable {
+  @Id
+  @Column(name = "id")
   private int id;
+  @Column(name = "user_id")
   private int user_id;
+  @Column(name = "message_body")
   private String message_body;
+  @ManyToOne
+  @Column(name = "AMA_id")
+  private int AMA_id;
+  @Column(name = "time_stamp")
   private Date time_stamp;
 
   // java default constructor
@@ -46,11 +66,20 @@ public class MessageTable {
     this.time_stamp = time_stamp;
   }
 
+  public int getAMA_id() {
+    return AMA_id;
+  }
+
+  public void setAMA_id(int aMA_id) {
+    AMA_id = aMA_id;
+  }
+
   // generate toString
   @Override
   public String toString() {
     return "MessageTable [id=" + id + ", user_id=" + user_id + ", message_body=" + message_body
-        + ", time_stamp=" + time_stamp + "]";
+        + ", AMA_id=" + AMA_id + ", time_stamp=" + time_stamp + "]";
   }
+
 
 }

@@ -91,7 +91,7 @@ public class UserController {
   }
   
   @PatchMapping("/picture/{id}")
-  public String updateUserPicture(MultipartHttpServletRequest user, @PathVariable int id) {
+  public String uploadUserPicture(MultipartHttpServletRequest user, @PathVariable int id) {
     
     try {
       MultipartFile image = user.getFile("myImage");

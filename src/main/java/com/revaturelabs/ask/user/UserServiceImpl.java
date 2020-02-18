@@ -17,7 +17,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.revaturelabs.ask.image.ImageConflictException;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.revaturelabs.ask.user.UserRepository;
 
 
@@ -168,13 +169,6 @@ public class UserServiceImpl implements UserService {
 
     return updatedUser;
   }
-
-  @Override
-  public User updateUserInfo(User user) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   
   /**
    * Function that will convert a multipart file to a file and upload it
@@ -203,7 +197,7 @@ public class UserServiceImpl implements UserService {
     try {
       byte[] bytes = image.getBytes();
       if (bytes == null) {
-        throw new ImageConflictException("Invalid image");
+        throw new NullProfileImageFileException("Image Byte array is null.");
       } else {
         key = "profilePictures/" + username + "/" + image.getOriginalFilename();    
         
@@ -211,19 +205,29 @@ public class UserServiceImpl implements UserService {
         
         FileUtils.writeByteArrayToFile(uploadImage, bytes);
         
+        //Clears user picture directory of old pictures to save space before uploading        
+        ObjectListing objectListing = s3client.listObjects(System.getenv("s3_bucket_name"),
+            "profilePictures/" + username + "/");
+        System.out.println("____DEMARK____");
+        for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
+          s3client.deleteObject(System.getenv("s3_bucket_name"),os.getKey());
+        }
+        
+        //Upload image to s3
         s3client.putObject(
             System.getenv("s3_bucket_name"), 
             key, 
             uploadImage
           );
         
+        //Delete local staging folders, leaving StagingDir empty.
         uploadImage.delete();
         FileUtils.deleteDirectory(new File("StagingDir/profilePictures/" + username));
 
       }   
     }catch(IOException e) {
         e.printStackTrace();
-    } catch (ImageConflictException e) {
+    } catch (NullProfileImageFileException e) {
       e.printStackTrace();
     }
 

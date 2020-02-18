@@ -1,10 +1,7 @@
 package com.revaturelabs.ask.user;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +24,6 @@ import com.revaturelabs.ask.tag.TagService;
 
 @RestController
 @RequestMapping(path = "/users")
-/*
- * @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB maxFileSize = 1024 * 1024 * 10, //
- * 10 MB maxRequestSize = 1024 * 1024 * 15, // 15 MB location = "/")
- */
 
 /**
  * 
@@ -94,31 +87,25 @@ public class UserController {
     
   }
   
-  @PatchMapping("/profile/{id}")
-  public String updateUserInfo(MultipartHttpServletRequest user, @PathVariable int id) {
-
-    String key = "";
+  @PatchMapping("/picture/{id}")
+  public String uploadUserPicture(MultipartHttpServletRequest user, @PathVariable int id) {
     
-      try {
-        Part name = user.getPart("name");
-
-        MultipartFile image = user.getFile("myImage");
-        
-        User updatedUser = userService.findById(id);
-
-        key = userService.uploadProfilePicture(image, updatedUser.getUsername());
-        
-        updatedUser.setProfilePic(key);
-        userService.update(updatedUser);
-        
-      } catch (IOException e) {
-        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "IOException on File.");
-      } catch (ServletException e) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad multipart file request");
-      }
+    try {
+      MultipartFile image = user.getFile("myImage");
+      if (image == null) throw new InvalidImageUploadException("Invalid image upload.");
       
-    return key;
-    
+      User updatedUser = userService.findById(id);
+  
+      String key = userService.uploadProfilePicture(image, updatedUser.getUsername());
+      
+      updatedUser.setProfilePic(key);
+      userService.update(updatedUser);
+        
+      return key;
+    }catch(InvalidImageUploadException e) {
+      e.getStackTrace();
+    }
+    return null;
   }
 
   @PostMapping

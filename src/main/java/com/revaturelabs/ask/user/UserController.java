@@ -1,10 +1,7 @@
 package com.revaturelabs.ask.user;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

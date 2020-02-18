@@ -17,7 +17,6 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.revaturelabs.ask.image.ImageConflictException;
 import com.revaturelabs.ask.user.UserRepository;
 
 
@@ -168,13 +167,6 @@ public class UserServiceImpl implements UserService {
 
     return updatedUser;
   }
-
-  @Override
-  public User updateUserInfo(User user) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   
   /**
    * Function that will convert a multipart file to a file and upload it
@@ -203,7 +195,7 @@ public class UserServiceImpl implements UserService {
     try {
       byte[] bytes = image.getBytes();
       if (bytes == null) {
-        throw new ImageConflictException("Invalid image");
+        throw new NullProfileImageFileException("Image Byte array is null.");
       } else {
         key = "profilePictures/" + username + "/" + image.getOriginalFilename();    
         
@@ -223,7 +215,7 @@ public class UserServiceImpl implements UserService {
       }   
     }catch(IOException e) {
         e.printStackTrace();
-    } catch (ImageConflictException e) {
+    } catch (NullProfileImageFileException e) {
       e.printStackTrace();
     }
 

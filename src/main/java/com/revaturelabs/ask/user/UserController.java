@@ -27,10 +27,6 @@ import com.revaturelabs.ask.tag.TagService;
 
 @RestController
 @RequestMapping(path = "/users")
-/*
- * @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB maxFileSize = 1024 * 1024 * 10, //
- * 10 MB maxRequestSize = 1024 * 1024 * 15, // 15 MB location = "/")
- */
 
 /**
  * 
@@ -94,31 +90,25 @@ public class UserController {
     
   }
   
-  @PatchMapping("/profile/{id}")
-  public String updateUserInfo(MultipartHttpServletRequest user, @PathVariable int id) {
-
-    String key = "";
+  @PatchMapping("/picture/{id}")
+  public String updateUserPicture(MultipartHttpServletRequest user, @PathVariable int id) {
     
-      try {
-        Part name = user.getPart("name");
-
-        MultipartFile image = user.getFile("myImage");
-        
-        User updatedUser = userService.findById(id);
-
-        key = userService.uploadProfilePicture(image, updatedUser.getUsername());
-        
-        updatedUser.setProfilePic(key);
-        userService.update(updatedUser);
-        
-      } catch (IOException e) {
-        throw new ResponseStatusException(HttpStatus.NO_CONTENT, "IOException on File.");
-      } catch (ServletException e) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad multipart file request");
-      }
+    try {
+      MultipartFile image = user.getFile("myImage");
+      if (image == null) throw new InvalidImageUploadException("Invalid image upload.");
       
-    return key;
-    
+      User updatedUser = userService.findById(id);
+  
+      String key = userService.uploadProfilePicture(image, updatedUser.getUsername());
+      
+      updatedUser.setProfilePic(key);
+      userService.update(updatedUser);
+        
+      return key;
+    }catch(InvalidImageUploadException e) {
+      e.getStackTrace();
+    }
+    return null;
   }
 
   @PostMapping

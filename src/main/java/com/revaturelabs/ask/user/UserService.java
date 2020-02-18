@@ -1,6 +1,5 @@
 package com.revaturelabs.ask.user;
 
-import javax.servlet.http.Part;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,13 +79,6 @@ public interface UserService {
    * @return The updated user object
    */
   User updateTags(User user);
-  
-  /**
-   * "updateUserInfo" is used to update user info
-   * @param A user object
-   * @return The updated User with new information
-   */
-  User updateUserInfo(User user);
   
   /**
    * uploadProfilePicture handles uploading the image to an S3 bucket

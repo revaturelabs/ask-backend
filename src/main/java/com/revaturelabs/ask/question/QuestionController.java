@@ -164,6 +164,25 @@ public class QuestionController {
           "Error during update/creation of question", e);
     }
   }
+  
+  /**
+   * Gets questions that experts have responded to
+   * 
+   * @param expertId is the ID of the desired expert
+   */
+  @GetMapping("/{expertId}/response")
+  public ResponseEntity<List<Question>> getQuestionsByExpert(@PathVariable int expertId,
+      @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size){
+    
+    if (page == null) {
+      page = 0;
+    }
+    if (size == null) {
+      size = 20;
+    }
+    
+    return ResponseEntity.ok(questionService.getQuestionsByExpertReponses(expertId, page, size).getContent());
+  }
 
   /**
    * Accepts HTTP GET requests. Takes in an id from the url and returns the responses to that

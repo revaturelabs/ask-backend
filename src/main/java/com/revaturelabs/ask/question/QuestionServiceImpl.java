@@ -240,4 +240,10 @@ public class QuestionServiceImpl implements QuestionService {
       throw new ImageConflictException("There was an issue when uploading the image!");
     }
   }
+
+  @Override
+  public Page<Question> getQuestionsByExpertReponses(int expertId, int page, int size) {
+    Pageable pageable = (Pageable) PageRequest.of(page, size);
+    return questionRepository.findAllQuestionsByExpertResponses(pageable, expertId);
+  }
 }

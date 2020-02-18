@@ -27,4 +27,5 @@ public interface QuestionService {
 
   Question addImageToQuestion(int id, MultipartHttpServletRequest request) throws QuestionNotFoundException, ImageConflictException, IOException;
 
+  Page<Question> getQuestionsByExpertReponses(int expertId, int page, int size);
 }

@@ -64,3 +64,24 @@ CREATE TABLE users_tags (
   FOREIGN KEY (user_id) REFERENCES users (id),
   FOREIGN KEY (tag_id) REFERENCES tags (id)
 );
+
+CREATE TABLE AMASession (
+  id SERIAL PRIMARY KEY,
+  date DATE,
+  topic VARCHAR,
+  expert VARCHAR,
+  FOREIGN KEY (topic) REFERENCES tags (id),
+  FOREIGN KEY (expert) REFERENCES users (id)
+);
+
+CREATE TABLE MessageTable (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER,
+  message_body CLOB,
+  AMA_id INTEGER,
+  time_stamp TIME WITH TIME ZONE,
+  session_id INTEGER,
+  FOREIGN KEY (session_id) REFERENCES AMASession (id)
+);
+
+  

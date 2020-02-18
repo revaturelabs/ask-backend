@@ -13,7 +13,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "AMASession")
+@Table(name = "MessageTable")
 public class MessageTable {
   @Id
   @Column(name = "id")

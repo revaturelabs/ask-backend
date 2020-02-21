@@ -1,4 +1,4 @@
-package com.revaturelabs.chat;
+package com.revaturelabs.ask.ama;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

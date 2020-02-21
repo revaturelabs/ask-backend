@@ -1,4 +1,4 @@
-package com.revaturelabs.ama;
+package com.revaturelabs.ask.ama;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.revaturelabs.ask.response.Response;

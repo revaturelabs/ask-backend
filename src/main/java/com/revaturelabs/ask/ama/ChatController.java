@@ -1,4 +1,4 @@
-package com.revaturelabs.chat;
+package com.revaturelabs.ask.ama;
 
 
 

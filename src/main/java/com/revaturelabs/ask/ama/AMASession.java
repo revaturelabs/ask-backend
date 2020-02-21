@@ -1,4 +1,4 @@
-package com.revaturelabs.ama;
+package com.revaturelabs.ask.ama;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

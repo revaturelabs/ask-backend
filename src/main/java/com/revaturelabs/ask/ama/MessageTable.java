@@ -1,4 +1,4 @@
-package com.revaturelabs.ama;
+package com.revaturelabs.ask.ama;
 
 import java.util.Date;
 import javax.persistence.Column;

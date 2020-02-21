@@ -71,20 +71,20 @@ CREATE TABLE users_tags (
 CREATE table AMASession (
   id SERIAL PRIMARY KEY,
   ama_date DATE,
-  topic VARCHAR,
-  expert VARCHAR,
-  FOREIGN KEY (topic) REFERENCES tags (id),
-  FOREIGN KEY (expert) REFERENCES users (id)
+  topic_id INTEGER,
+  expert_id INTEGER,
+  FOREIGN KEY (topic_id) REFERENCES tags (id),
+  FOREIGN KEY (expert_id) REFERENCES users (id)
 );
 
 CREATE TABLE MessageTable (
   id SERIAL PRIMARY KEY,
   user_id INTEGER,
   message_body VARCHAR,
-  AMA_id INTEGER,
   time_stamp TIMESTAMP WITH TIME ZONE,
   session_id INTEGER,
-  FOREIGN KEY (session_id) REFERENCES AMASession (id)
+  FOREIGN KEY (session_id) REFERENCES AMASession (id),
+  FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
   

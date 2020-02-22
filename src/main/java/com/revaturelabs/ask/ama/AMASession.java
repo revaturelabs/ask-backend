@@ -1,6 +1,7 @@
 package com.revaturelabs.ask.ama;
 
-import java.sql.Date;
+
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +22,7 @@ public class AMASession {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   
-  @Column(name = "date")
+  @Column(name = "ama_date")
   private Date date;
   
   @JoinColumn(name="topic_id")

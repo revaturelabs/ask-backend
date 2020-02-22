@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.revaturelabs.ask.user.User;
+import com.revaturelabs.ask.user.UserService;
 
 @RestController
 @RequestMapping(path = "/amaSession")
@@ -17,9 +19,13 @@ public class AMASessionController {
   @Autowired
   AMASessionService amaService;
   
-  @GetMapping("/{expertName}")
-  public ResponseEntity<List<AMASession>> getSessionsByTrainer(@PathVariable String expertName){
-    return ResponseEntity.ok(amaService.getAllSessionsByExpert(expertName));
+  @Autowired
+  UserService userService;
+  
+  @GetMapping("/{expertId}")
+  public ResponseEntity<List<AMASession>> getSessionsByExpert(@PathVariable int expertId){
+    User expert = userService.findById(expertId);
+    return ResponseEntity.ok(amaService.getAllSessionsByExpert(expert));
   }
   
   @GetMapping

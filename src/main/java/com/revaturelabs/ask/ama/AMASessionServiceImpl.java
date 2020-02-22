@@ -3,6 +3,7 @@ package com.revaturelabs.ask.ama;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.revaturelabs.ask.user.User;
 
 @Service
 public class AMASessionServiceImpl implements AMASessionService{
@@ -11,7 +12,7 @@ public class AMASessionServiceImpl implements AMASessionService{
   AMASessionRepository amaRepository;
   
   @Override
-  public List<AMASession> getAllSessionsByExpert(String expertName) {
+  public List<AMASession> getAllSessionsByExpert(User expertName) {
     // TODO Auto-generated method stub
     return amaRepository.getAMASessionsByExpert(expertName);
   }

@@ -19,7 +19,7 @@ import com.revaturelabs.ask.user.User;
  *
  */
 @Entity
-@Table(name = "MessageTable")
+@Table(name = "message_table")
 public class MessageTable {
   @Id
   @Column(name = "id")

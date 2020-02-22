@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS responses;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS AMASession;
-DROP TABLE IF EXISTS MessageTable;
+DROP TABLE IF EXISTS message_table;
 
 
 CREATE TABLE users (
@@ -70,18 +70,18 @@ CREATE TABLE users_tags (
 
 CREATE table AMASession (
   id SERIAL PRIMARY KEY,
-  ama_date DATE,
+  ama_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   topic_id INTEGER,
   expert_id INTEGER,
   FOREIGN KEY (topic_id) REFERENCES tags (id),
   FOREIGN KEY (expert_id) REFERENCES users (id)
 );
 
-CREATE TABLE MessageTable (
+CREATE TABLE message_table (
   id SERIAL PRIMARY KEY,
   user_id INTEGER,
   message_body VARCHAR,
-  time_stamp TIMESTAMP WITH TIME ZONE,
+  time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   session_id INTEGER,
   FOREIGN KEY (session_id) REFERENCES AMASession (id),
   FOREIGN KEY (user_id) REFERENCES users (id)

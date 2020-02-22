@@ -4,6 +4,8 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,9 +23,10 @@ import com.revaturelabs.ask.user.User;
 public class MessageTable {
   @Id
   @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @JoinColumn(name = "user_id")
   @ManyToOne(cascade = CascadeType.REFRESH)
   private User user;
   
@@ -33,7 +36,7 @@ public class MessageTable {
   @Column(name = "time_stamp")
   private Date timeStamp;
   
-  @JoinColumn(name = "session_id", insertable = false, updatable = false)
+  @JoinColumn(name = "session_id")
   @ManyToOne(cascade = CascadeType.REFRESH)
   private AMASession session;
 

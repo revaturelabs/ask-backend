@@ -9,4 +9,6 @@ public interface AMASessionService {
   
   List<AMASession> getAllSessions();
   
+  AMASession postNewSession(AMASession newSession);
+  
 }

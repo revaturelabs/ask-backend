@@ -11,16 +11,16 @@ public class AMASessionServiceImpl implements AMASessionService{
   @Autowired
   AMASessionRepository amaRepository;
   
-  @Override
   public List<AMASession> getAllSessionsByExpert(User expertName) {
-    // TODO Auto-generated method stub
     return amaRepository.getAMASessionsByExpert(expertName);
   }
 
-  @Override
   public List<AMASession> getAllSessions() {
-    // TODO Auto-generated method stub
     return amaRepository.findAll();
+  }
+
+  public AMASession postNewSession(AMASession newSession) {
+    return amaRepository.save(newSession);
   }
 
 }

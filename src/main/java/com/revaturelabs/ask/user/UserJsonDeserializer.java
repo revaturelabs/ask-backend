@@ -43,6 +43,12 @@ public class UserJsonDeserializer extends JsonDeserializer<User> {
       if (root.password != null) {
         user.setPassword(root.password);
       }
+      if (root.email != null) {
+        user.setEmail(root.email);
+      }
+      if (root.bio != null) {
+        user.setBio(root.bio);
+      }
       if (root.expertTags != null) {
         user.setExpertTags(root.expertTags);
       }
@@ -62,6 +68,10 @@ public class UserJsonDeserializer extends JsonDeserializer<User> {
 
       if ((Boolean) root.expert != null) {
         user.setExpert(root.expert);
+      }
+      
+      if (root.profilePic != null) {
+        user.setProfilePic(root.profilePic);
       }
     }
     return user;
@@ -83,6 +93,15 @@ public class UserJsonDeserializer extends JsonDeserializer<User> {
 
     @JsonProperty("password")
     public String password;
+    
+    @JsonProperty("email")
+    public String email;
+    
+    @JsonProperty("bio")
+    public String bio;
+    
+    @JsonProperty("profilePic")
+    public String profilePic;
 
     @JsonProperty("expertTags")
     public Set<Tag> expertTags;

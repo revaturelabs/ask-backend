@@ -17,7 +17,9 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.revaturelabs.ask.user.UserRepository;
 
@@ -208,17 +210,27 @@ public class UserServiceImpl implements UserService {
         //Clears user picture directory of old pictures to save space before uploading        
         ObjectListing objectListing = s3client.listObjects(System.getenv("s3_bucket_name"),
             "profilePictures/" + username + "/");
-        System.out.println("____DEMARK____");
+        
         for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
           s3client.deleteObject(System.getenv("s3_bucket_name"),os.getKey());
         }
         
         //Upload image to s3
+        
+        s3client.putObject(new PutObjectRequest(
+            System.getenv("s3_bucket_name"), 
+            key, 
+            uploadImage)
+            .withCannedAcl(CannedAccessControlList.PublicRead)
+          );
+         
+        /*
         s3client.putObject(
             System.getenv("s3_bucket_name"), 
             key, 
             uploadImage
           );
+          */
         
         //Delete local staging folders, leaving StagingDir empty.
         uploadImage.delete();

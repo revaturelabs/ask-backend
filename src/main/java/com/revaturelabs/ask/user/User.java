@@ -28,7 +28,6 @@ import com.revaturelabs.ask.tag.Tag;
  */
 @Entity
 @Table(name = "users")
-@JsonDeserialize(using = UserJsonDeserializer.class)
 public class User {
 
   @Id
@@ -73,13 +72,16 @@ public class User {
     super();
   }
 
-  public User(int id, String username, String password, String email, String bio) {
+  public User(int id, String username, String password, String email, String bio, boolean isExpert,
+      String profilePic) {
     super();
     this.id = id;
     this.username = username;
     this.password = password;
     this.email = email;
     this.bio = bio;
+    this.isExpert = isExpert;
+    this.profilePic = profilePic;
   }
 
   public String getEmail() {

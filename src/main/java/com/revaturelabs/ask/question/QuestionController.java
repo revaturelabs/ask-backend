@@ -170,7 +170,7 @@ public class QuestionController {
    * 
    * @param expertId is the ID of the desired expert
    */
-  @GetMapping("/{expertId}/response")
+  @GetMapping("/{expertId}/answeredQuestions")
   public ResponseEntity<List<Question>> getQuestionsByExpert(@PathVariable int expertId,
       @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size){
     

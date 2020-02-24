@@ -1,85 +1,73 @@
 package com.revaturelabs.ask.ama;
-
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import com.revaturelabs.ask.user.User;
 /**
  * 
  * @author Bianca/Updates to follow
  *
  */
 @Entity
-@Table(name = "MessageTable")
+@Table(name = "message_table")
 public class MessageTable {
   @Id
   @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-  @Column(name = "user_id")
-  private int user_id;
+  @JoinColumn(name = "user_id")
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private User user;
   @Column(name = "message_body")
-  private String message_body;
-  @ManyToOne
-  @Column(name = "AMA_id")
-  private int AMA_id;
+  private String messageBody;
   @Column(name = "time_stamp")
-  private Date time_stamp;
-
+  private Date timeStamp;
+  @JoinColumn(name = "session_id")
+  @ManyToOne(cascade = CascadeType.REFRESH)
+  private AMASession session;
   // java default constructor
   public MessageTable() {
-
   }
-
-  // generate getters and setters.
   public int getId() {
     return id;
   }
-
   public void setId(int id) {
     this.id = id;
   }
-
-  public int getUser_id() {
-    return user_id;
+  public User getUser() {
+    return user;
   }
-
-  public void setUser_id(int user_id) {
-    this.user_id = user_id;
+  public void setUser(User user) {
+    this.user = user;
   }
-
-  public String getMessage_body() {
-    return message_body;
+  public String getMessageBody() {
+    return messageBody;
   }
-
-  public void setMessage_body(String message_body) {
-    this.message_body = message_body;
+  public void setMessageBody(String messageBody) {
+    this.messageBody = messageBody;
   }
-
-  public Date getTime_stamp() {
-    return time_stamp;
+  public Date getTimeStamp() {
+    return timeStamp;
   }
-
-  public void setTime_stamp(Date time_stamp) {
-    this.time_stamp = time_stamp;
+  public void setTimeStamp(Date timeStamp) {
+    this.timeStamp = timeStamp;
   }
-
-  public int getAMA_id() {
-    return AMA_id;
+  public AMASession getSession() {
+    return session;
   }
-
-  public void setAMA_id(int aMA_id) {
-    AMA_id = aMA_id;
+  public void setSession(AMASession session) {
+    this.session = session;
   }
-
-  // generate toString
   @Override
   public String toString() {
-    return "MessageTable [id=" + id + ", user_id=" + user_id + ", message_body=" + message_body
-        + ", AMA_id=" + AMA_id + ", time_stamp=" + time_stamp + "]";
+    return "MessageTable [id=" + id + ", user=" + user + ", messageBody=" + messageBody
+        + ", timeStamp=" + timeStamp + ", session=" + session + "]";
   }
-
-
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revaturelabs.ask.question.Question;
 import com.revaturelabs.ask.tag.TagService;
 
@@ -89,7 +90,6 @@ public class UserController {
   
   @PatchMapping("/picture/{id}")
   public String uploadUserPicture(MultipartHttpServletRequest user, @PathVariable int id) {
-    
     try {
       MultipartFile image = user.getFile("myImage");
       if (image == null) throw new InvalidImageUploadException("Invalid image upload.");
@@ -101,7 +101,7 @@ public class UserController {
       updatedUser.setProfilePic(key);
       userService.update(updatedUser);
         
-      return key;
+      return "{\"key\" : \"" + key +"\"}";
     }catch(InvalidImageUploadException e) {
       e.getStackTrace();
     }

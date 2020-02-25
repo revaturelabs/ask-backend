@@ -2,14 +2,14 @@
 
 --data for the users table
 INSERT INTO users VALUES
-    (default,'Adam Shipe','1234',false), -- user login
-    (default,'Sally OBrien','1234',false), -- user login 2
-    (default,'Zach Marshello','4321',true), -- expert login
-    (default,'Chad Paulson','4321',true),  -- expert login 2
-    (default,'Billy Carter','1234',false), -- user login 3
-    (default,'Winifred Hurst','4321',true),  -- expert login 3
-    (default,'Harry Brandt','1234',false), -- user login 4
-    (default,'Aubrey Garner','4321',true);  -- expert login 4
+    (default,'Adam Shipe','1234','Adam.s@gmail.com','Front-end Developer','',false), -- user login
+    (default,'Sally OBrien','1234','Sally.o@gmail.com','Jr Database Ddministrator','',false), -- user login 2
+    (default,'Zach Marshello','4321','Zach.m@gmail.com','Senior Java Developer','',true), -- expert login
+    (default,'Chad Paulson','4321','Chad.p@gmail.com','Back-end Lead developer','',true),  -- expert login 2
+    (default,'Billy Carter','1234','Billy.c@gmail.com','Web designer','',false), -- user login 3
+    (default,'Winifred Hurst','4321','Winifred.h@gmail.com','Devop Lead','',true),  -- expert login 3
+    (default,'Harry Brandt','1234','Harry.b@gmail.com','AWS Architecture','',false), -- user login 4
+    (default,'Aubrey Garner','4321','Aubrey.g@gmail.com','Scrum Master','',true);  -- expert login 4  
 
 -- data for tags table
 INSERT INTO tags VALUES

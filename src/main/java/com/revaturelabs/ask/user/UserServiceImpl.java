@@ -1,14 +1,29 @@
 package com.revaturelabs.ask.user;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
-
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.revaturelabs.ask.user.UserRepository;
+
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -155,6 +170,80 @@ public class UserServiceImpl implements UserService {
     }
 
     return updatedUser;
+  }
+  
+  /**
+   * Function that will convert a multipart file to a file and upload it
+   * to an S3 bucket.
+   * 
+   * On the s3, it will save it to profilePictures/USERNAME/PICTURENAME
+   */
+  @Override
+  public String uploadProfilePicture(MultipartFile image, String username) {
+    
+    String key = "";
+    
+    //AWS connections configured
+    AWSCredentials credentials = new BasicAWSCredentials(
+        System.getenv("s3_access_key"), 
+        System.getenv("s3_secret_key")
+      );
+    
+    AmazonS3 s3client = AmazonS3ClientBuilder
+        .standard()
+        .withCredentials(new AWSStaticCredentialsProvider(credentials))
+        .withRegion(Regions.US_EAST_1)
+        .build();
+    
+    //Conversion block from multipartfile to image, then upload to s3
+    try {
+      byte[] bytes = image.getBytes();
+      if (bytes == null) {
+        throw new NullProfileImageFileException("Image Byte array is null.");
+      } else {
+        key = "profilePictures/" + username + "/" + image.getOriginalFilename();    
+        
+        File uploadImage = new File("StagingDir/" + key);
+        
+        FileUtils.writeByteArrayToFile(uploadImage, bytes);
+        
+        //Clears user picture directory of old pictures to save space before uploading        
+        ObjectListing objectListing = s3client.listObjects(System.getenv("s3_bucket_name"),
+            "profilePictures/" + username + "/");
+        
+        for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
+          s3client.deleteObject(System.getenv("s3_bucket_name"),os.getKey());
+        }
+        
+        //Upload image to s3
+        
+        s3client.putObject(new PutObjectRequest(
+            System.getenv("s3_bucket_name"), 
+            key, 
+            uploadImage)
+            .withCannedAcl(CannedAccessControlList.PublicRead)
+          );
+         
+        /*
+        s3client.putObject(
+            System.getenv("s3_bucket_name"), 
+            key, 
+            uploadImage
+          );
+          */
+        
+        //Delete local staging folders, leaving StagingDir empty.
+        uploadImage.delete();
+        FileUtils.deleteDirectory(new File("StagingDir/profilePictures/" + username));
+
+      }   
+    }catch(IOException e) {
+        e.printStackTrace();
+    } catch (NullProfileImageFileException e) {
+      e.printStackTrace();
+    }
+
+    return key;
   }
 }
 

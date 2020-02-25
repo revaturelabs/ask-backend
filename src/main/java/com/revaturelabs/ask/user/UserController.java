@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revaturelabs.ask.question.Question;
 import com.revaturelabs.ask.tag.TagService;
 
@@ -82,6 +85,27 @@ public class UserController {
     } catch (UserNotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e);
     }
+    
+  }
+  
+  @PatchMapping("/picture/{id}")
+  public String uploadUserPicture(MultipartHttpServletRequest user, @PathVariable int id) {
+    try {
+      MultipartFile image = user.getFile("myImage");
+      if (image == null) throw new InvalidImageUploadException("Invalid image upload.");
+      
+      User updatedUser = userService.findById(id);
+  
+      String key = userService.uploadProfilePicture(image, updatedUser.getUsername());
+      
+      updatedUser.setProfilePic(key);
+      userService.update(updatedUser);
+        
+      return "{\"key\" : \"" + key +"\"}";
+    }catch(InvalidImageUploadException e) {
+      e.getStackTrace();
+    }
+    return null;
   }
 
   @PostMapping

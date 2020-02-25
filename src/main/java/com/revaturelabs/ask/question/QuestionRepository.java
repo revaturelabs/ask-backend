@@ -44,4 +44,11 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
    */
   @Query(value = "SELECT q FROM Question q ORDER BY q.id desc")
   Page<Question> findAll(Pageable pageable);
+  
+  @Query(value = 
+      "SELECT q FROM Question q "+ 
+      "JOIN Response r " + 
+      "ON q.id = r.questionId " + 
+      "WHERE r.responderId = :expertId")
+  Page<Question> findAllQuestionsByExpertResponses(Pageable pageable, int expertId);
 }

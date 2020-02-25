@@ -1,5 +1,4 @@
 package com.revaturelabs.ask.user;
-
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -19,8 +18,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.revaturelabs.ask.question.Question;
 import com.revaturelabs.ask.response.Response;
 import com.revaturelabs.ask.tag.Tag;
-
-
 /**
  * 
  * @author Carlos Santos, Chris Allen
@@ -29,49 +26,36 @@ import com.revaturelabs.ask.tag.Tag;
 @Entity
 @Table(name = "users")
 public class User {
-
   @Id
   @Column
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-
   @Column(name = "username")
   private String username;
-
   @JsonIgnore
   @Column(name = "password")
   private String password;
-  
   @Column(name = "email")
   private String email;
-  
   @Column(name = "bio")
   private String bio;
-
   @Column(name = "expert")
   private boolean isExpert;
-  
   @Column(name = "profile_pic")
   private String profilePic;
-
   @ManyToMany
   @JoinTable(name = "users_tags", joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> expertTags;
-
-
   @JsonIgnoreProperties({"user", "responses", "associatedTags", "images"})
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private Set<Question> questions;
-
   @JsonIgnoreProperties({"user", "question"})
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private Set<Response> responses;
-
   public User() {
     super();
   }
-
   public User(int id, String username, String password, String email, String bio, boolean isExpert,
       String profilePic) {
     super();
@@ -83,71 +67,54 @@ public class User {
     this.isExpert = isExpert;
     this.profilePic = profilePic;
   }
-
   public String getEmail() {
     return email;
   }
-
   public void setEmail(String email) {
     this.email = email;
   }
-
   public String getBio() {
     return bio;
   }
-
   public void setBio(String bio) {
     this.bio = bio;
   }
-
   public int getId() {
     return id;
   }
-
   public void setId(int id) {
     this.id = id;
   }
-
   public String getUsername() {
     return username;
   }
-
   public void setUsername(String username) {
     this.username = username;
   }
-
   public String getPassword() {
     return password;
   }
-
   public void setPassword(String password) {
     this.password = password;
   }
-
   public boolean isExpert() {
     return isExpert;
   }
-
   public void setExpert(boolean isExpert) {
     this.isExpert = isExpert;
   }
-
   public Set<Tag> getExpertTags() {
     return expertTags;
   }
-
   public void setExpertTags(Set<Tag> expertTags) {
     this.expertTags = expertTags;
   }
-
   public String getProfilePic() {
     return profilePic;
   }
-
   public void setProfilePic(String s3Key) {
     this.profilePic = s3Key;
   }
-
   /**
    * Auto-generated getter for questions.
    * 
@@ -156,7 +123,6 @@ public class User {
   public Set<Question> getQuestions() {
     return questions;
   }
-
   /**
    * Auto-generated setter for questions.
    * 
@@ -165,7 +131,6 @@ public class User {
   public void setQuestions(Set<Question> questions) {
     this.questions = questions;
   }
-
   /**
    * 
    * Method for adding tags to the set of user tags.
@@ -178,7 +143,6 @@ public class User {
     }
     this.expertTags.add(tag);
   }
-
   /**
    * Auto-generated getter for responses.
    * 
@@ -187,7 +151,6 @@ public class User {
   public Set<Response> getResponses() {
     return responses;
   }
-
   /**
    * Auto-generated setter for responses.
    * 
@@ -196,7 +159,6 @@ public class User {
   public void setResponses(Set<Response> responses) {
     this.responses = responses;
   }
-
   /**
    * 
    * Hashing function for response. DOES include questions and responses attributes in hashing
@@ -204,8 +166,6 @@ public class User {
    * there may be an infinite recursion error if a corresponding change is not made on the User
    * object.
    */
-
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -219,7 +179,6 @@ public class User {
     result = prime * result + ((username == null) ? 0 : username.hashCode());
     return result;
   }
-
   /**
    * 
    * Auto-generated equals function
@@ -227,7 +186,6 @@ public class User {
    * @param obj The object to be compared
    * 
    */
-
   @Override
   public boolean equals(Object obj) {
     if (this == obj)
@@ -268,7 +226,6 @@ public class User {
       return false;
     return true;
   }
-
   /**
    * 
    * Automatically generated toString method.
@@ -282,10 +239,4 @@ public class User {
         + email + ", bio=" + bio + ", isExpert=" + isExpert + ", expertTags=" + expertTags
         + ", questions=" + questions + ", responses=" + responses + "]";
   }
-
-
-
-
-
-
 }

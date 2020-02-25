@@ -22,16 +22,21 @@ public class MessageTable {
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
+  
   @JoinColumn(name = "user_id")
   @ManyToOne(cascade = CascadeType.REFRESH)
   private User user;
+  
   @Column(name = "message_body")
   private String messageBody;
+  
   @Column(name = "time_stamp")
   private Date timeStamp;
+  
   @JoinColumn(name = "session_id")
   @ManyToOne(cascade = CascadeType.REFRESH)
   private AMASession session;
+  
   // java default constructor
   public MessageTable() {
   }

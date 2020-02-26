@@ -42,4 +42,8 @@ public class ImageController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found!", e);
     }
   }
+  @GetMapping("/env")
+  public String getenv(){
+	  return System.getenv("s3_bucket_name");
+  }
 }

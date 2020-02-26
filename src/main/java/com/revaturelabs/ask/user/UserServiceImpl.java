@@ -185,8 +185,8 @@ public class UserServiceImpl implements UserService {
     
     //AWS connections configured
     AWSCredentials credentials = new BasicAWSCredentials(
-        System.getenv("s3_access_key"), 
-        System.getenv("s3_secret_key")
+        System.getProperty("s3_access_key"), 
+        System.getProperty("s3_secret_key")
       );
     
     AmazonS3 s3client = AmazonS3ClientBuilder
@@ -208,17 +208,17 @@ public class UserServiceImpl implements UserService {
         FileUtils.writeByteArrayToFile(uploadImage, bytes);
         
         //Clears user picture directory of old pictures to save space before uploading        
-        ObjectListing objectListing = s3client.listObjects(System.getenv("s3_bucket_name"),
+        ObjectListing objectListing = s3client.listObjects(System.getProperty("s3_bucket_name"),
             "profilePictures/" + username + "/");
         
         for(S3ObjectSummary os : objectListing.getObjectSummaries()) {
-          s3client.deleteObject(System.getenv("s3_bucket_name"),os.getKey());
+          s3client.deleteObject(System.getProperty("s3_bucket_name"),os.getKey());
         }
         
         //Upload image to s3
         
         s3client.putObject(new PutObjectRequest(
-            System.getenv("s3_bucket_name"), 
+            System.getProperty("s3_bucket_name"), 
             key, 
             uploadImage)
             .withCannedAcl(CannedAccessControlList.PublicRead)
@@ -226,7 +226,7 @@ public class UserServiceImpl implements UserService {
          
         /*
         s3client.putObject(
-            System.getenv("s3_bucket_name"), 
+            System.getProperty("s3_bucket_name"), 
             key, 
             uploadImage
           );
